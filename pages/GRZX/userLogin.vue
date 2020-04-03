@@ -438,7 +438,7 @@
 	}
 	.wxClass1{  //微信1
 		position: absolute;
-		left: 44%;
+		left: 46%;
 		top:1015upx;
 		width: 67upx;
 		height: 54upx;	

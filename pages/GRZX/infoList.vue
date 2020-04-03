@@ -54,13 +54,13 @@
 			<button type="warn" @click="deletePassenger" class="btnAdd">删除</button>
 		</view>
 		
-		<view v-if="type==1" class="navClass" >
+		<!-- <view v-if="type==1" class="navClass" >
 			<view class="passengerClass1" @click="passengerClick">
 				<text class="textClass">常用出行人</text>
 				<view class="lineClass"></view>
 			</view>
 			<view class="addressClass1" @click="addressClick"><text class="textClass">常用地址</text></view>
-		</view>
+		</view> -->
 		
 		<!-- 常用地址 -->
 		
@@ -338,7 +338,8 @@
 	//乘车人管理
 	.mt{
 		width: 100%;
-		margin-top: 292upx;
+		margin-top: 200upx;
+		//margin-top: 292upx;
 		margin-bottom: 160upx;
 	}
 	.boxClass{
