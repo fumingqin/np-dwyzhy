@@ -166,7 +166,7 @@
 							//loginType=1,泉运登录界面
 							//loginType=2,今点通登录界面
 							//loginType=3,武夷股份登录界面
-							url  : '/pages/GRZX/userLogin?loginType=3'
+							url  : '/pages/GRZX/userLogin?loginType=1'
 						}) 
 					},1500);
 				}else{
@@ -177,12 +177,12 @@
 			},
 			collectionClick(){
 				uni.navigateTo({
-					url:'/pages/GRZX/collection'
+					url:'/pages/LYFW/ouristRoute/collection'
 				}) 
 			},
 			historyClick(){
 				uni.navigateTo({
-					url:'/pages/GRZX/history'
+					url:'/pages/LYFW/ouristRoute/history'
 				}) 
 				
 			},
