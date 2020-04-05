@@ -169,7 +169,7 @@
 										}
 									})
 									uni.switchTab({
-										url:'/pages/Home/Index',
+										url:'/pages/Home/indexZhly',
 									}) 
 								}else{
 									uni.showToast({
