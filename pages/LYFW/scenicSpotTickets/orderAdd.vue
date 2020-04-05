@@ -367,7 +367,7 @@
 								uni.request({
 									url : 'http://218.67.107.93:9210/api/app/scenicSpotSetOrder',
 									data:{
-										unid : '12321',
+										unid : this.userInfo.unid,
 										ticketProductId : this.admissionTicket.admissionTicketID,
 										ticketId : 0,
 										ticketContain : this.admissionTicket.ticketContain,

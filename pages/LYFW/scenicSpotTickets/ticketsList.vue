@@ -199,9 +199,11 @@
 					success:(res) => {
 						// console.log(res)
 						this.scenicList = res.data.data;
-						uni.stopPullDownRefresh();
 					}
 				})
+				setTimeout(()=>{
+					uni.stopPullDownRefresh();
+				},1000)
 			},
 			
 			//获取定位数据

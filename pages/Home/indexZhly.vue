@@ -3,7 +3,7 @@
 		<!-- 小程序头部兼容 -->
 		<!-- #ifdef MP -->
 		<view class="mp-search-box">
-			<input class="ser-input" type="text" value="输入关键字搜索" disabled />
+			<input class="ser-input" type="text" value="输入关键字搜索" disabled @click="searchTo" />
 		</view>
 		<!-- #endif -->
 
@@ -13,7 +13,7 @@
 			<view class="titleNview-placing"></view>
 			<!-- 背景色区域 -->
 			<!-- <view class="titleNview-background" :style="{backgroundA:titleNViewBackground}"></view> -->
-			<view class="titleNview-background" style="background:#69b4e6;"></view>
+			<view class="titleNview-background" style="background:#149bf0;"></view>
 			<swiper class="carousel" circular @change="swiperChange" autoplay>
 				<!-- <swiper-item v-for="(item, index) in rotationPicture" :key="index" class="carousel-item" @click="navToDetailPage(index)">
 					<image style="width: 100%;" :src="item.ticketImage" mode="aspectFill" />
@@ -124,19 +124,21 @@
 		onLoad() {
 			this.loadData();
 		},
-
+		onPullDownRefresh:function(){
+			this.loadData(); //请求接口数据
+		},
 		methods: {
 			loadData: function() {
 				// 轮播图
-				uni.request({
-						url: 'http://218.67.107.93:9266/travelImage/getRotationPicture',
-						method: 'POST',
-						success: (e) => {
-							this.titleNViewBackground = e.data.data[0].background;
-							this.swiperLength = e.data.data.length;
-							this.rotationPicture = e.data.data;
-						}
-					}),
+				// uni.request({
+				// 		url: 'http://218.67.107.93:9266/travelImage/getRotationPicture',
+				// 		method: 'POST',
+				// 		success: (e) => {
+				// 			this.titleNViewBackground = e.data.data[0].background;
+				// 			this.swiperLength = e.data.data.length;
+				// 			this.rotationPicture = e.data.data;
+				// 		}
+				// 	}),
 					// 四宫格
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getFourScenicspotList',
@@ -155,6 +157,10 @@
 							// console.log(e)
 						}
 					})
+					setTimeout(()=>{
+						uni.stopPullDownRefresh();
+					},1000)
+					
 			},
 
 
@@ -212,8 +218,15 @@
 					url: '/pages/CTKY/ctkyIndex'
 				}) 
 			},
-
+			
+			//小程序-搜索框点击事件
+			searchTo:function(){
+				uni.navigateTo({
+					url: './navigation'
+				})
+			},
 		},
+		
 		// #ifndef MP
 		// 搜索框点击事件
 		onNavigationBarSearchInputClicked: async function(e) {
@@ -221,6 +234,8 @@
 				url: 'navigation'
 			})
 		},
+		
+		
 		//扫描按钮点击事件
 		onNavigationBarButtonTap(e) {
 			// console.log(e);
