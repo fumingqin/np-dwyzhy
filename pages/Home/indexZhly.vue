@@ -12,11 +12,14 @@
 			<!-- 标题栏和状态栏占位符 -->
 			<view class="titleNview-placing"></view>
 			<!-- 背景色区域 -->
-			<view class="titleNview-background" :style="{backgroundColor:titleNViewBackground}"></view>
-
+			<!-- <view class="titleNview-background" :style="{backgroundA:titleNViewBackground}"></view> -->
+			<view class="titleNview-background" style="background:#69b4e6;"></view>
 			<swiper class="carousel" circular @change="swiperChange" autoplay>
-				<swiper-item v-for="(item, index) in rotationPicture" :key="index" class="carousel-item" @click="navToDetailPage(index)">
+				<!-- <swiper-item v-for="(item, index) in rotationPicture" :key="index" class="carousel-item" @click="navToDetailPage(index)">
 					<image style="width: 100%;" :src="item.ticketImage" mode="aspectFill" />
+				</swiper-item> -->
+				<swiper-item  class="carousel-item" @click="navToDetailPage(index)">
+					<image style="width: 100%;" src="../../static/GRZX/banner3.jpg" mode="aspectFill" />
 				</swiper-item>
 			</swiper>
 
@@ -29,23 +32,23 @@
 		</view>
 		<!-- 分类 -->
 		<view class="cate-section">
-			<view class="cate-item" @click="route('/pages/LYFW/independentTravel/it_list')">
+			<view class="cate-item" @click="route1">
 				<image src="../../static/Home/indexzhly/fujin.png" mode="aspectFit"></image>
 				<text>自由行</text>
 			</view>
-			<view class="cate-item" @click="route('/pages/LYFW/groupTour/groupTourList')">
+			<view class="cate-item" @click="route2">
 				<image src="../../static/Home/indexzhly/luxian.png" mode="aspectFit"></image>
 				<text>跟团游</text>
 			</view>
-			<view class="cate-item" @click="route('/pages/GJCX/busIndex')">
+			<view class="cate-item" @click="route3">
 				<image src="../../static/Home/indexzhly/gongJiao.png" mode="aspectFit"></image>
 				<text>公交查询</text>
 			</view>
-			<view class="cate-item" @click="route('/pages/LYFW/scenicSpotTickets/ticketsList')">
+			<view class="cate-item" @click="route4">
 				<image src="../../static/Home/indexzhly/menpiao.png" mode="aspectFit"></image>
 				<text>景区门票</text>
 			</view>
-			<view class="cate-item" @click="route('/pages/CTKY/ctkyIndex')">
+			<view class="cate-item" @click="route5">
 				<image src="../../static/Home/indexzhly/chepiao.png" mode="aspectFit"></image>
 				<text>车票订购</text>
 			</view>
@@ -156,39 +159,59 @@
 
 
 			//轮播图切换修改背景色
-			swiperChange(e) {
+			swiperChange:function(e) {
 				// console.log(e)
 				const index = e.detail.current;
 				this.swiperCurrent = index;
 				this.titleNViewBackground = this.rotationPicture[index].background;
 			},
 			//轮播图跳详情页
-			navToDetailPage(e) {
+			navToDetailPage:function(e) {
 				uni.navigateTo({
 					url: '/pages/LYFW/scenicSpotTickets/ticketsDetails?ticketId=' + JSON.stringify(this.rotationPicture[e].ticketId)
 				})
 			},
 			
 			//资讯详情页
-			informationTo(e) {
+			informationTo:function(e) {
 				uni.navigateTo({
 					url: 'InformationDetails?id=' +e
 				})
 			},
 			
 			//四方格跳详情
-			navTo(e) {
+			navTo:function(e) {
 				uni.navigateTo({
 					url: '/pages/LYFW/scenicSpotTickets/ticketsDetails?ticketId=' + JSON.stringify(this.square[e].ticketId)
 				})
 			},
-			//金刚取各模块入口
-			route(url) {
+			
+			//金刚区各模块入口
+			route1:function() {
 				uni.navigateTo({
-					url: url
+					url: '/pages/LYFW/independentTravel/it_list'
 				})
 			},
-
+			route2:function() {
+				uni.navigateTo({
+					url: '/pages/LYFW/groupTour/groupTourList'
+				})
+			},
+			route3:function() {
+				uni.navigateTo({
+					url: '/pages/GJCX/busIndex'
+				})
+			},
+			route4:function() {
+				uni.navigateTo({
+					url: '/pages/LYFW/scenicSpotTickets/ticketsList'
+				})
+			},
+			route5:function() {
+				uni.navigateTo({
+					url: '/pages/CTKY/ctkyIndex'
+				}) 
+			},
 
 		},
 		// #ifndef MP
@@ -281,9 +304,25 @@
 			}
 		}
 	}
-
 	/* #endif */
-
+	
+	/* #ifdef H5 */
+	page {
+		.carousel-section {
+			.titleNview-background {
+				height: 376upx;
+			}
+			.carousel {
+				margin-top: 0upx;
+			}
+			.swiper-dots {
+				top: 400upx;
+			}
+		}
+	}
+	/* #endif */
+	
+	
 
 	page {
 		background: #f5f5f5;

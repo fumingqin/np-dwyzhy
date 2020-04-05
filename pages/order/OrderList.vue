@@ -782,6 +782,7 @@
 					}
 				],
 				info : '',//请求服务器订单列表
+				userInfo : '',//个人信息
 				// info: [{
 				// 		title: '客车-传统',
 				// 		titleIndex: 2,
@@ -1064,22 +1065,33 @@
 			toFinished: function() {
 				var that = this;
 				uni.request({
-					url:'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=17',
+					url:'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' +that.userInfo.unid,
 					method:'POST',
 					success:(res)=>{
 						// console.log(res)
+						// console.log(that.info)
 						that.info = res.data.data;
-						for (var i = 0; i < that.info.length; i++) {
-							if (that.info[i].orderType == '已完成' || that.info[i].orderType == '已使用') {
-								that.finishArr.push(that.info[i]);
-							} else if (that.info[i].orderType == '进行中' || that.info[i].orderType == '待使用') {
-								that.goingArr.push(that.info[i]);
-							} else if (that.info[i].orderType == '未支付' || that.info[i].orderType == '待支付') {
-								that.unfinishArr.push(that.info[i]);
-							} else if (that.info[i].orderType == '已取消' || that.info[i].orderType == '已退票') {
-								that.cancelArr.push(that.info[i]);
+						if(that.info !== ''){
+							for (var i = 0; i < that.info.length; i++) {
+								if (that.info[i].orderType == '已完成' || that.info[i].orderType == '已使用') {
+									that.finishArr.push(that.info[i]);
+								} else if (that.info[i].orderType == '进行中' || that.info[i].orderType == '待使用') {
+									that.goingArr.push(that.info[i]);
+								} else if (that.info[i].orderType == '未支付' || that.info[i].orderType == '待支付') {
+									that.unfinishArr.push(that.info[i]);
+								} else if (that.info[i].orderType == '已取消' || that.info[i].orderType == '已退票') {
+									that.cancelArr.push(that.info[i]);
+								}
 							}
 						}
+						
+					}
+				})
+				uni.getStorage({
+					key:'userInfo',
+					success:(res) =>{
+						this.userInfo = res.data;
+						// console.log(res)
 					}
 				})
 				

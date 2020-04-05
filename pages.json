@@ -49,6 +49,7 @@
 			"style": {
 				"navigationBarTitleText": "景区列表",
 				"navigationBarBackgroundColor": "#FFFFFF",
+				"enablePullDownRefresh":true,
 				"onReachBottomDistance": 0,
 				"app-plus": {
 					"softinputNavBar": "none"
