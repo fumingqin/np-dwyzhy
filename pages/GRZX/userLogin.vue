@@ -163,6 +163,9 @@
 												key:'userInfo',
 												success:function(user){
 													console.log(user,"user")
+													if(user.data.nickname==""||user.data.nickname==null){
+														user.data.nickname="用户"+user.data.username;
+													}
 													that.login(user.data);
 												}
 											})
