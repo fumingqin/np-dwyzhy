@@ -286,7 +286,7 @@
 
 	.topSearch {
 		background-color: #FFFFFF;
-		margin-bottom: 20upx;
+		// margin-bottom: 20upx;
 
 		//搜索框
 		.searchTopBox {
