@@ -12,14 +12,10 @@
 			<!-- 标题栏和状态栏占位符 -->
 			<view class="titleNview-placing"></view>
 			<!-- 背景色区域 -->
-			<!-- <view class="titleNview-background" :style="{backgroundA:titleNViewBackground}"></view> -->
-			<view class="titleNview-background" style="background:#149bf0;"></view>
+			<view class="titleNview-background" :style="{background:titleNViewBackground}"></view>
 			<swiper class="carousel" circular @change="swiperChange" autoplay>
-				<!-- <swiper-item v-for="(item, index) in rotationPicture" :key="index" class="carousel-item" @click="navToDetailPage(index)">
+				<swiper-item v-for="(item, index) in rotationPicture" :key="index" class="carousel-item" @click="navToDetailPage(index)">
 					<image style="width: 100%;" :src="item.ticketImage" mode="aspectFill" />
-				</swiper-item> -->
-				<swiper-item  class="carousel-item" @click="navToDetailPage(index)">
-					<image style="width: 100%;" src="../../static/GRZX/banner3.jpg" mode="aspectFill" />
 				</swiper-item>
 			</swiper>
 
@@ -130,15 +126,17 @@
 		methods: {
 			loadData: function() {
 				// 轮播图
-				// uni.request({
-				// 		url: 'http://218.67.107.93:9266/travelImage/getRotationPicture',
-				// 		method: 'POST',
-				// 		success: (e) => {
-				// 			this.titleNViewBackground = e.data.data[0].background;
-				// 			this.swiperLength = e.data.data.length;
-				// 			this.rotationPicture = e.data.data;
-				// 		}
-				// 	}),
+				uni.request({
+						url: 'http://218.67.107.93:9266/travelImage/getRotationPicture',
+						method: 'POST',
+						header: {'content-type': 'application/x-www-form-urlencoded'},
+						success: (e) => {
+							console.log(e)
+							this.titleNViewBackground = e.data.data[0].background;
+							this.swiperLength = e.data.data.length;
+							this.rotationPicture = e.data.data;
+						}
+					}),
 					// 四宫格
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getFourScenicspotList',
