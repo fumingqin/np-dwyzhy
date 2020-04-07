@@ -165,10 +165,11 @@
 						uni.navigateTo({	
 							//loginType=1,泉运登录界面
 							//loginType=2,今点通登录界面
-							//loginType=3,武夷股份登录界面
-							url  : '/pages/GRZX/userLogin?loginType=3'
+							//loginType=3,南平综合出行界面
+							//loginType=4,武夷股份登录界面
+							url  : '/pages/GRZX/userLogin?loginType=4'
 						}) 
-					},1500);
+					},500);
 				}else{
 					uni.navigateTo({
 						url :'/pages/GRZX/personal',
@@ -253,7 +254,7 @@
 		height: 127upx;
 	}
 	.usernameClass{		//昵称
-		height: 44upx;
+		height: 60upx;
 		line-height: 44upx;
 		font-size: 48upx;
 		color: #FFFFFF;

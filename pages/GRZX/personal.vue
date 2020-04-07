@@ -297,13 +297,13 @@
 						uni.saveFile({
 						  tempFilePath: tempFilePaths[0],
 						  success: function (res1) {
-							//var savedFilePath = res1.savedFilePath;
+							var savedFilePath = res1.savedFilePath;
 							// pathToBase64(res1.savedFilePath)
 							// .then(base64 => {
-							// 	that.portrait=base64;
+							// 	that.portrait=JSON.stringify(base64);
 							// 	console.log(that.portrait)
 							// })
-								that.portrait=res1.savedFilePath;
+							that.portrait=res1.savedFilePath;
 						  }
 						});
 						// pathToBase64(res.tempFilePaths[0])
