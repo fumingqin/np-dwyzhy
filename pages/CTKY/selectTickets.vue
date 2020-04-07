@@ -98,7 +98,7 @@
 
 		},
 		methods: {
-			//加载班次列表数据
+			//----------------------------加载班次列表数据----------------------------
 			getTicketInfo:function(date){
 				//加载数据提示菊花
 				uni.showLoading();
@@ -127,13 +127,13 @@
 				this.date = item.longDate;
 				this.getDeparture();
 			},
-			//显示日期
+			//----------------------------显示日期----------------------------
 			onShowDatePicker(type) { //显示
 				this.type = type;
 				this.showPicker = true;
 				this.value = this[type];
 			},
-			//选择日期
+			//----------------------------选择日期----------------------------
 			onSelected(e) { 
 				this.showPicker = false;
 				if (e) {
@@ -182,7 +182,7 @@
 					}
 				}
 			},
-			//点击班次进行缓存，并打开页面
+			//----------------------------点击班次进行缓存，并打开页面----------------------------
 			ticketDetail(item) {
 				var that = this;
 				
