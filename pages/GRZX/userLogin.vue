@@ -10,6 +10,9 @@
 		<view v-if="loginType==3">
 			<image src="../../static/GRZX/login3.png" class="backClass"></image>			
 		</view>
+		<view v-if="loginType==4">
+			<image src="../../static/GRZX/login4.png" class="backClass"></image>			
+		</view>
 		
 		<image src="../../static/GRZX/loginReturn.png" class="returnClass" @click="returnClick"></image>
 		<view class="inputContent">
@@ -19,7 +22,7 @@
 			</view>
 			<view class="inputItem Captcha">
 				<image src="../../static/GRZX/yanzhengma.png" class="iconClass2"></image>
-				<input type="number" placeholder="输入验证码" maxlength="6" class="inputClass" data-key="captchaCode" @input="inputChange2" />
+				<input type="number" placeholder="输入验证码" maxlength="4" class="inputClass" data-key="captchaCode" @input="inputChange2" />
 			</view>
 			
 			<!-- 按钮颜色和发送验证码的样式 -->
@@ -35,6 +38,10 @@
 				<view class="getCode style3" @click="getCodeClick" id="Code">{{textCode}}</view>
 				<image src="../../static/GRZX/btnLogin3.png" class="btnLogin"></image>
 			</view>
+			<view v-if="loginType==4">
+				<view class="getCode style4" @click="getCodeClick" id="Code">{{textCode}}</view>
+				<image src="../../static/GRZX/btnLogin4.png" class="btnLogin"></image>
+			</view>
 			
 			<text class="fontStyle" @click="loginClick">确定</text>
 		</view>
@@ -48,6 +55,9 @@
 		</view>
 		<view v-if="loginType==3">
 			<image src="../../static/GRZX/logo3.png" class="logoClass"></image>	
+		</view>
+		<view v-if="loginType==4">
+			<image src="../../static/GRZX/logo4.png" class="logoClass"></image>	
 		</view>
 		
 		<!-- <view class="loginMode">第三方登录</view>
@@ -145,7 +155,7 @@
 						uni.getStorage({
 							key:'captchaCode',
 							success(res) {
-								if(captcha==res.data){
+								if(captcha==res.data.code&&phone==res.data.phone){
 									uni.request({
 										url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+phone,
 										method:"POST",
@@ -163,6 +173,9 @@
 												key:'userInfo',
 												success:function(user){
 													console.log(user,"user")
+													if(user.data.nickname==""||user.data.nickname==null){
+														user.data.nickname="用户"+user.data.username;
+													}
 													that.login(user.data);
 												}
 											})
@@ -316,12 +329,17 @@
 						 		console.log(res.data.code);
 								uni.setStorage({
 									key:'captchaCode',
-									data:res.data.code,
+									data:{
+										phone:self.phoneNumber,
+										code:res.data.code,
+									}
 								})
+								//定时删除手机验证码（用于登录使用）
 								setTimeout(function(){
 									uni.removeStorage({
 										key:'captchaCode',
 									})
+									console.log('删除成功！')
 								},300000);
 						 		// if(res.data){
 						 			
@@ -426,8 +444,8 @@
 		left: 12%;
 		top:51upx;
 		font-size: 32upx;
-		height: 30upx;
-		line-height: 30upx;
+		height: 50upx;
+		line-height: 50upx;
 		color: #999999;
 	}
 	.btnLogin{ //按钮
@@ -504,6 +522,10 @@
 		border:1px solid #FF971E;
 		color: #FF971E;
 	}	
+	.style4{
+		border:1px solid #1D2087;
+		color: #1D2087;
+	}
 	.fontStyle{		//确定字体样式
 		position: absolute;
 		top: 450upx;
