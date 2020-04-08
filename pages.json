@@ -398,7 +398,7 @@
 			}
 		}, {
 			"path": "pages/CTKY/ctkyIndex",
-			"style": {} 
+			"style": {}
 		},
 		{
 			"path": "pages/GRZX/notice", //推文通知
