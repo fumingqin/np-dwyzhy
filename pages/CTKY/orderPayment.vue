@@ -182,7 +182,7 @@
 					key: 'userInfo',
 					success: function(data) {
 						that.userInfo = data.data;
-						console.log('用户信息', that.userInfo);
+						// console.log('用户信息', that.userInfo);
 					}
 				})
 			},
@@ -206,15 +206,15 @@
 								userType: data.data[i].userType,
 							}
 							that.idNameType.push(array);
-							console.log('idNameType', that.idNameType);
+							// console.log('idNameType', that.idNameType);
 							that.ticketNum++;
 							//把儿童票筛选出来
 							if (that.passengerInfo.userType == '儿童') {
 								that.childrenNum++;
-								console.log('idNameType', that.childrenNum);
+								// console.log('idNameType', that.childrenNum);
 							} else {
 								that.adultNum++;
-								console.log('idNameType', that.adultNum);
+								// console.log('idNameType', that.adultNum);
 							}
 						}
 					},
@@ -312,7 +312,7 @@
 						uni.hideLoading();
 						
 						let that = this;
-						console.log('订单返回数据',res);
+						// console.log('订单返回数据',res);
 						//获取车票支付参数
 						that.getTicketPaymentInfo(res);
 					},
@@ -343,33 +343,39 @@
 							uni.hideLoading();
 							console.log('支付参数返回数据', res);
 							if (res.data.msg != '') {
-								clearInterval(timer);
+								
 								uni.showToast({
 									title: res.data.msg,
 									icon: 'none'
 								})
+								clearInterval(timer);
 							}
 							if(res.data.data != null) {
-								console.log('有数据了',that.paymentData);
+								// console.log('有数据了',res.data.data);
 								clearInterval(timer);
-								that.paymentData = res.data.data;
+								that.paymentData = JSON.parse(res.data.data);
+								
 							}
 						},
 						fail(res) {
 							uni.hideLoading();
+							console.log('失败');
 							//回调失败，取消定时器
 							clearInterval(timer);
 						}
 					})
 				}, 3000)
-				
-				// console.log(res.data.data.resultStr)
-				// console.log(res.data.data.id)
 			},
 			//--------------------------调起支付--------------------------
 			payment: function() {
 				console.log('点击了支付');
+				
 				var that = this;
+				console.log('点击了支付',that.paymentData);
+				// uni.showToast({
+				// 	title: that.paymentData.AppId + that.paymentData.TimeStamp + that.paymentData.NonceStr + that.paymentData.Package + that.paymentData.SignType + that.paymentData.PaySign,
+				// 	icon: 'none'
+				// }),
 				// history.pushState(null, null, "/");
 				WeixinJSBridge.invoke('getBrandWCPayRequest', {
 					"appId": that.paymentData.AppId,//公众号名称，由商户传入
