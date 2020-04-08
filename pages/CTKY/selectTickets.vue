@@ -111,7 +111,9 @@
 						date:date,
 					},
 					method:"POST",
-					header : {'content-type':'application/json'},
+					header : {
+						'content-type': 'application/x-www-form-urlencoded'
+						},
 					success: (res) => {
 						console.log(res)
 						uni.hideLoading();
