@@ -447,10 +447,16 @@
 		}
         ,{
             "path" : "pages/LYFW/groupTour/groupTourList",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "跟团游列表"
+			}
         }
         ,{
             "path" : "pages/LYFW/groupTour/viewMore",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/Home/ho_zhly",
             "style" : {}
         }
     ],
