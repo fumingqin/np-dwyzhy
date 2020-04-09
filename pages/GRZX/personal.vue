@@ -119,13 +119,12 @@
 								}else{
 									theself.nickname =res1.data.data.nickname;
 								}
-								theself.selector=res1.data.data.gender;
-								// if(res1.data.data.gender==null||res1.data.data.gender==""){
-								// 	theself.gender=0;
-								// }else{
-								// 	theself.gender=res1.data.data.gender;
-								// 	theself.selector=theself.genderSex[res1.data.data.gender];
-								// }
+								
+								if(res1.data.data.gender==null||res1.data.data.gender==""){
+									theself.selector="请选择";
+								}else{
+									theself.selector=res1.data.data.gender;
+								}
 								if(res1.data.data.birthday==null||res1.data.data.birthday==""){
 									theself.birthday="请选择";
 								}else{
@@ -297,7 +296,7 @@
 						uni.saveFile({
 						  tempFilePath: tempFilePaths[0],
 						  success: function (res1) {
-							var savedFilePath = res1.savedFilePath;
+							//var savedFilePath = res1.savedFilePath;
 							// pathToBase64(res1.savedFilePath)
 							// .then(base64 => {
 							// 	that.portrait=JSON.stringify(base64);

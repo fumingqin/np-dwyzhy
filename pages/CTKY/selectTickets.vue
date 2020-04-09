@@ -105,14 +105,15 @@
 				uni.request({
 					url: "http://27.148.155.9:9055/CTKY/getListSchedulesInfo",
 					data: {
-						systemName:'',
+						systemName:'南平旅游H5',
 						startPosition:this.startStation,
 						endPosition:this.endStation,
 						date:date,
 					},
 					method:"POST",
-					header : {'content-type':'application/json'},
+					header:{'content-type':'application/x-www-form-urlencoded'},
 					success: (res) => {
+						console.log(res)
 						uni.hideLoading();
 						let that = this;
 						that.departureData = res.data.data;
