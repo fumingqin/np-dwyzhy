@@ -176,6 +176,14 @@
 													if(user.data.nickname==""||user.data.nickname==null){
 														user.data.nickname="用户"+user.data.username;
 													}
+													var base64=res.data.data.portrait;
+													base64ToPath(base64)
+													  .then(path => {
+													    user.data.portrait=path;
+													  })
+													  .catch(error => {
+													    console.error(error)
+													  })
 													that.login(user.data);
 												}
 											})
@@ -403,14 +411,14 @@
 	.iconClass1{   //手机图标
 		width: 26upx;
 		height: 36upx;
-		top: 55upx;
+		top: 58upx;
 		left:2%;
 		position: absolute;
 	}
 	.iconClass2{	//验证码图标
 		width: 31upx;
 		height: 38upx;
-		top: 54upx;
+		top: 56upx;
 		left: 2%;
 		position: absolute;
 	}
