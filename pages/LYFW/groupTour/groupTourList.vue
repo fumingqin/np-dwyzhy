@@ -228,6 +228,7 @@
 							this.searchValue = ''
 							this.searchIndex = 1;
 							uni.hideLoading()
+							console.log(searchData)
 						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
 							uni.hideLoading()
 							uni.showToast({
