@@ -396,7 +396,7 @@
 	.logoClass{		//logo的样式
 		width: 32.4%;
 		height: 233upx;
-		top: 147upx;
+		top: 200upx;
 		left: 33.87%;
 		position: absolute;
 	}
@@ -419,7 +419,7 @@
 		//height: 874upx;
 		height: 700upx;
 		position: absolute;
-		top:277upx;
+		top:324upx;
 		left: 4.8%;
 		background-color: white;
 		border-radius: 20upx;
