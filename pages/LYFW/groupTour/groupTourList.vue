@@ -49,7 +49,7 @@
 					<view style="background: #00B5FF;width: 56upx;height: 56upx;border-radius:4px;"><text class="titleId">{{item.groupId}}</text></view>
 					<text class="contentTitle">{{item.groupTItle}}</text>
 				</view>
-				<view class="groupTour" v-for="(item2,index2) in item.content" :key="index2" v-if="index2<3">
+				<view class="groupTour" v-for="(item2,index2) in item.content" :key="index2" v-if="index2<3" @click="details">
 					<view class="groupContent">
 						<image class="contentImage" :src="item2.contentImage" mode="aspectFill"></image>
 					</view>
@@ -137,6 +137,7 @@
 		onLoad() {
 			this.routeInit();
 			this.Getpostion();
+			// this.lyfwData();
 		},
 
 		methods: {
@@ -179,7 +180,7 @@
 					this.regionWeixin = e.cityName
 					this.regionApp = e.cityName
 					this.$refs.popupRef.close();
-					this.lyfwData();
+					// this.lyfwData();
 					this.screenIndex = 0;
 					this.searchIndex = 0;
 				} else if(e == 'yes'){
@@ -240,6 +241,18 @@
 					}
 				})
 			},
+			
+			details:function(e){
+				uni.navigateTo({
+					url: '../currency/travelDetails'
+				})
+			},
+			
+			// details:function(e){
+			// 	uni.navigateTo({
+			// 		url: 'travelDetails?id=' +e
+			// 	})
+			// },
 
 			//tabbar筛选点击
 			change(e) {
