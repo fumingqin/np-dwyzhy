@@ -252,7 +252,7 @@
 						// console.log(res)
 							uni.setStorage({
 								key: 'app_position',
-								data:res.address,
+								data:res.address, 
 							})
 							that.loadCity();//小程序-调用高德
 						},
