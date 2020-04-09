@@ -153,14 +153,14 @@
 					this.regionWeixin = e.cityName
 					this.regionApp = e.cityName
 					this.$refs.popupRef.close();
-					this.lyfwData();
+					// this.lyfwData();
 					this.screenIndex = 0;
 					this.searchIndex = 0;
 				} else if(e == 'yes'){
 					uni.getStorage({
 						key:'wx_position',
 						success:(res)=>{
-							// console.log(res)
+							// console.log(res) 
 							this.regionWeixin = res.data;
 						}
 					}),
