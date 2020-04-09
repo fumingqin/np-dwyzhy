@@ -195,7 +195,7 @@
 			getArticleInfo: function() {
 				var that =this;
 				uni.request({
-					url: 'http://218.67.107.93:9210/api/app/getInformationList',
+					url: 'http://218.67.107.93:9210/api/app/getInformationList?id='+this.id,
 					method: "POST",
 					success:function(res){
 						that.information = res.data.data;
