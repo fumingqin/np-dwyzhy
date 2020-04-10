@@ -9,24 +9,24 @@
 		<view class="zl_click">
 			<view class="zl_topClick">
 				<!-- 自由行 -->
-				<view class="zl_independentTravel">
+				<view class="zl_independentTravel" @click="route1">
 					<image class="zl_itImage" src="../../static/Home/ho_zhly/ziyouxin.png"></image>
 					<text class="zl_itText">自由行</text>
 				</view>
 				<!-- 跟团游 -->
-				<view class="zl_groupTour">
+				<view class="zl_groupTour" @click="route2">
 					<image class="zl_gtImage" src="../../static/Home/ho_zhly/gentuanyou.png"></image>
 					<text class="zl_gtText">跟团游</text>
 				</view>
 				<!-- 景区门票 -->
-				<view class="zl_admissionTicket">
+				<view class="zl_admissionTicket" @click="route3">
 					<image class="zl_atImage" src="../../static/Home/ho_zhly/jinqugoupiao.png"></image>
 					<text class="zl_atText">景区门票</text>
 				</view>
 				<!-- 景区商品 -->
-				<view class="zl_commodity">
+				<view class="zl_commodity" @click="route4">
 					<image class="zl_coImage" src="../../static/Home/ho_zhly/jinqushangpin.png"></image>
-					<text class="zl_coText">景区门票</text>
+					<text class="zl_coText">景区商品</text>
 				</view>
 			</view>
 		</view>
@@ -87,6 +87,22 @@
 				</view>
 			</view>
 		</view>
+		
+		<!-- 新闻资讯 -->
+		<view class="titNp">新闻资讯</view>
+		<view class="guess-section">
+			<view v-for="(item, index) in goodsList" :key="index" class="guess-item" @click="informationTo(item.id)">
+				<view class="image-wrapper">
+					<image :src="item.imgUrl" mode="aspectFill"></image>
+				</view>
+				<view class="title clamp">{{item.title}}</view>
+				<view>
+					<image class="Portrait" src="../../static/GRZX/missing-face.png" mode="aspectFill"></image>
+					<text class="price">{{item.createdTime}}</text>
+					<text class="price-zan">阅读{{item.count+1080}}</text> 
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -95,11 +111,23 @@
 		data() {
 			return {
 				Announcement: '', //通知内容
-				recommendedContent: [], //推荐内容
+				recommendedContent: [{
+					rc_image : ''
+				},{
+					rc_image : ''
+				},{
+					rc_image : ''
+				},{
+					rc_image : ''
+				},{
+					rc_image : ''
+				}], //推荐内容
+				goodsList: [],
 			}
 		},
 		onLoad() {
 			this.routeInit();
+			this.loadData();
 		},
 		methods: {
 			//读取静态数据json.js
@@ -108,6 +136,49 @@
 				this.Announcement = Announcement.data;
 				let recommendedContent = await this.$api.lyfwcwd('recommendedContent');
 				this.recommendedContent = recommendedContent.data;
+			},
+			
+			loadData: function() {
+				uni.request({
+					url: 'http://218.67.107.93:9210/api/app/getInformationList',
+					method: 'POST',
+					success: (e) => {
+						this.goodsList = e.data.data;
+						// console.log(e)
+					}
+				})
+				setTimeout(()=>{
+					uni.stopPullDownRefresh();
+				},1000)
+			},
+			
+			//资讯详情页
+			informationTo:function(e) {
+				uni.navigateTo({
+					url: 'InformationDetails?id=' +e
+				})
+			},
+			
+			//金刚区各模块入口
+			route1:function() {
+				uni.navigateTo({
+					url: '/pages/LYFW/independentTravel/it_list'
+				})
+			},
+			route2:function() {
+				uni.navigateTo({
+					url: '/pages/LYFW/groupTour/groupTourList'
+				})
+			},
+			route3:function() {
+				uni.navigateTo({
+					url: '/pages/LYFW/scenicSpotTickets/ticketsList'
+				})
+			},
+			route4:function() {
+				uni.navigateTo({
+					url: '/pages/CTKY/ctkyIndex'
+				})
 			},
 		}
 	}
@@ -140,86 +211,93 @@
 	.zl_click {
 		position: absolute;
 		background: rgba(255, 255, 255, 1);
-		border-radius: 12px;
 		z-index: 2;
-		width: 706upx;
+		width: 708upx;
 		height: 178upx;
-		margin-left: 22upx;
-		top: 352upx;
+		top: 355upx;
 		box-shadow: 0px 6px 20px 0px rgba(231, 231, 231, 0.53);
+		border-radius:12px;
+		margin: 0 20upx;
 
 		.zl_topClick {
 			display: flex;
 
 			// 自由行
 			.zl_independentTravel {
-				position: relative;
-				margin: 44upx 45upx;
-
+				width: 25%;
+				height: 178upx;
+				text-align: center;
 				.zl_itImage {
 					width: 44upx;
 					height: 44upx;
-					margin: 0rpx 15rpx 11rpx 15rpx;
+					margin-top: 47upx;
 				}
 
 				.zl_itText {
 					font-size: 26upx;
 					color: FF333333;
 					display: block;
+					line-height: 50upx;
 				}
 			}
 
 			//跟团游
 			.zl_groupTour {
-				position: relative;
-				margin: 44upx 45upx;
+				width: 25%;
+				height: 178upx;
+				text-align: center;
 
 				.zl_gtImage {
 					width: 53upx;
 					height: 44upx;
-					margin: 0rpx 12rpx 11rpx 12rpx;
+					margin-top: 47upx;
 				}
 
 				.zl_gtText {
 					font-size: 26upx;
 					color: FF333333;
 					display: block;
+					line-height: 50upx;
 				}
 			}
 
 			//景区门票
 			.zl_admissionTicket {
-				position: relative;
-				margin: 44upx 40upx;
+				width: 25%;
+				height: 178upx;
+				text-align: center;
 
 				.zl_atImage {
 					width: 48upx;
 					height: 35upx;
-					margin: 0rpx 27rpx 18rpx 27rpx;
+					margin-top: 53upx;
 				}
 
 				.zl_atText {
 					font-size: 26upx;
 					color: FF333333;
 					display: block;
+					line-height: 61upx;
 				}
 			}
 
 			//景区商品
 			.zl_commodity {
-				position: relative;
-				margin: 44upx 39upx;
+				width: 25%;
+				height: 178upx;
+				text-align: center;
 
 				.zl_coImage {
 					width: 42upx;
 					height: 41upx;
-					margin: 0rpx 29rpx 11rpx 29rpx;
+					margin-top: 50upx;
 				}
 
 				.zl_coText {
 					font-size: 26upx;
 					color: FF333333;
 					display: block;
+					line-height: 50upx;
 				}
 			}
 		}
@@ -228,7 +306,7 @@
 	//消息通告
 	.notice {
 		background: #fff;
-		margin-top: 146upx;
+		margin-top: 147upx;
 
 		.zl_content {
 			display: flex;
@@ -237,7 +315,7 @@
 				width: 146upx;
 				height: 83upx;
 				margin: 47upx 0upx;
-				margin-left: 32upx;
+				margin-left: 31upx;
 			}
 
 			.zl_noContent {
@@ -247,12 +325,12 @@
 					font-size: 26upx;
 					color: #333333;
 					margin-top: 35upx;
-					margin-left: 46upx;
+					margin-left: 55upx;
 				}
 
 				.zl_label {
 					display: flex;
-					margin-left: 35upx;
+					margin-left: 45upx;
 					margin-top: 27upx;
 
 					.la_label {
@@ -416,5 +494,87 @@
 				}
 			}
 		}
+	}
+	
+	/* 南平周边-样式*/
+	.guess-section {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0 30upx;
+		background: #fff;
+	
+		.guess-item {
+			display: flex;
+			flex-direction: column;
+			width: 48%;
+			padding-bottom: 40upx;
+	
+			&:nth-child(2n+1) {
+				margin-right: 4%;
+			}
+		}
+	
+		.image-wrapper {
+			width: 100%;
+			height: 360upx;
+			border-radius: 3px;
+			overflow: hidden;
+	
+			image {
+				width: 100%;
+				height: 100%;
+				opacity: 1;
+			}
+		}
+	
+		.title {
+			font-size: 32upx;
+			color: #333;
+			line-height: 72upx;
+			display: block;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 160px;
+		}
+	
+		.Portrait {
+			width: 40upx;
+			height: 40upx;
+			opacity: 1;
+		}
+	
+		.price {
+			position: relative;
+			font-size: 26upx;
+			color: #666;
+			left: 54upx;
+			top: 32upx;
+			max-width: 5;
+			display: block;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 76px;
+			margin-top: -80upx;
+		}
+	
+		.price-zan {
+			font-size: 24upx;
+			color: #666;
+			float: right;
+			margin-top: 3upx;
+		}
+	}
+	
+	/*通用字体样式*/
+	.titNp {
+		margin-top: 20upx;
+		padding: 32upx;
+		color: #333333;
+		font-size: 34upx;
+		font-weight: bold;
+		background: #fff;
+	
 	}
 </style>
