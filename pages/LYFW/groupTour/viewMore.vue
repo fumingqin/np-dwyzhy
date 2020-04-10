@@ -2,16 +2,16 @@
 	<view>
 		<!-- 内容1 -->
 		<view>
-			<view class="groupTour" v-for="(item,index) in groupTitle" :key="index">
+			<view class="groupTour" v-for="(item,index) in content" :key="index">
 				<view class="groupContent">
 					<image class="contentImage" :src="item.contentImage" mode="aspectFill"></image>
 				</view>
 				<view class="groupText">
 					<text class="contentText">{{item.contentTitle}}</text>
-					<text class="contentLabel">{{item.contentLabel}}</text>
+					<text class="contentLabel">{{item.contentLabelS1}} | {{item.contentLabelS2}} | {{item.contentLabelS3}}</text>
 					<view class="groupCost">
-						<view class="cost">￥<text class="contentCost">{{item.cost}}</text>元</view>
-						<text class="sellComment">已售{{item.sell}}&nbsp;&nbsp;{{item.comment}}评论</text>
+						<text class="cost">￥<text class="contentCost">{{item.cost}}</text>元</text>
+						<text class="sellComment">已售{{item.sell}}</text>
 					</view>
 				</view>
 			</view>
@@ -43,9 +43,9 @@
 
 			getContentInfo() {
 				uni.getStorage({
-					key: 'groupTourContent',
+					key: 'groupTour',
 					success: (e) => {
-						this.groupTitle = e.data;
+						this.content = e.data.data;
 						console.log(e)
 					}
 				})
@@ -59,11 +59,11 @@
 
 	.groupTour {
 		display: flex;
-		padding: 40upx 32upx;
+		margin: 40upx 30upx;
 		border-bottom: 1px #F5F5F5 dotted;
-
+	
 		.groupContent {
-
+	
 			// display: flex;
 			.contentImage {
 				width: 228upx;
@@ -71,12 +71,12 @@
 				border-radius: 8px;
 			}
 		}
-
+	
 		.groupText {
 			margin-left: 25upx;
-
+	
 			.contentText {
-				font-size: 32upx;
+				font-size: 36upx;
 				font-weight: 40;
 				font-family: Source Han Sans SC;
 				overflow: hidden; //超出溢出
@@ -85,30 +85,31 @@
 				display: -webkit-box;
 				-webkit-box-orient: vertical;
 				text-align: justify;
+				margin-top: 4upx;
 			}
-
+	
 			.contentLabel {
 				display: block;
 				font-size: 28upx;
 				color: #aba9aa;
-				margin-top: 21upx;
+				margin-top: 24upx;
 			}
-
+	
 			.groupCost {
-				margin-top: 12upx;
-				display: flex;
+				margin-top: 18upx;
 				position: relative;
-
+				width: 430upx;
+	
 				.cost {
 					font-size: 28upx;
 					color: #FF6600;
-
+	
 					.contentCost {
 						font-size: 36upx;
 						color: #FF6600;
 					}
 				}
-
+	
 				.sellComment {
 					position: absolute;
 					font-size: 28upx;

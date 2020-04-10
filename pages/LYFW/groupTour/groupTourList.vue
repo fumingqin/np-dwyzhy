@@ -55,14 +55,14 @@
 					</view>
 					<view class="groupText">
 						<text class="contentText">{{item2.contentTitle}}</text>
-						<text class="contentLabel">{{item2.contentLabel}}</text>
+						<text class="contentLabel">{{item2.contentLabelS1}} | {{item2.contentLabelS2}} | {{item2.contentLabelS3}}</text>
 						<view class="groupCost">
-							<view class="cost">￥<text class="contentCost">{{item2.cost}}</text>元</view>
-							<text class="sellComment">已售{{item2.sell}}&nbsp;&nbsp;{{item2.comment}}评论</text>
+							<text class="cost">￥<text class="contentCost">{{item2.cost}}</text>元</text>
+							<text class="sellComment">已售{{item2.sell}}</text>
 						</view>
 					</view>
 				</view>
-				<view class="findMore" v-if="item.content.length>3">
+				<view class="findMore" v-if="index>3">
 					<text class="findMoreText" @click="selete(item.content)">查看更多>></text>
 				</view>
 			</view>
@@ -77,10 +77,10 @@
 					</view>
 					<view class="groupText">
 						<text class="contentText">{{item.contentTitle}}</text>
-						<text class="contentLabel">{{item.contentLabel}}</text>
+						<text class="contentLabel">{{item.contentLabelS1}} | {{item.contentLabelS2}} | {{item.contentLabelS3}}</text>
 						<view class="groupCost">
-							<view class="cost">￥<text class="contentCost">{{item.cost}}</text>元</view>
-							<text class="sellComment">已售{{item.sell}}&nbsp;&nbsp;{{item.comment}}评论</text>
+							<text class="cost">￥<text class="contentCost">{{item.cost}}</text>元</text>
+							<text class="sellComment">已售{{item.sell}}</text>
 						</view>
 					</view>
 				</view>
@@ -92,8 +92,8 @@
 			<view class="cate-mask" :class="currentIndex===0 ? 'none' : currentIndex===1 ? 'show' : ''" @click="close">
 				<view class="cate-content">
 					<scroll-view scroll-y class="cate">
-						<view class="cate-list" v-for="item in groupTitle" :key="item.groupId" @click="changeCate(item.content)">
-							<text class="cate-Text">{{item.groupId}}&nbsp;&nbsp;{{item.groupTItle}}</text>
+						<view class="cate-list" v-for="item2 in groupTitle" :key="item2.groupId" @click="changeCate(item2.content)">
+							<text class="cate-Text">{{item2.groupId}}&nbsp;&nbsp;{{item2.groupTItle}}</text>
 						</view>
 					</scroll-view>
 				</view>
@@ -121,11 +121,13 @@
 				regionWeixin: '请选择', //微信地区数值
 				regionApp : '请选择',//APP地区数值
 				
+				content:[],
+				
 				searchIndex: 0, //搜索框是否启用状态值
 				searchData: '', //搜索后的值
 				current: 0, //标题下标
 				currentIndex : 0,//弹框默认值
-				
+				groupId:'',
 				screenContent : [],
 				
 				tabs: ['推荐', '全部'], //选项标题
@@ -135,17 +137,29 @@
 		},
 
 		onLoad() {
-			this.routeInit();
+			// this.routeInit();
 			this.Getpostion();
-			// this.lyfwData();
+			this.routeData();
 		},
 
 		methods: {
 			//读取静态数据json.js
-			async routeInit() {
-				let groupTour = await this.$api.lyfwcwd('groupTour');
-				this.groupTitle = groupTour.data;
+			// async routeInit() {
+			// 	let groupTour = await this.$api.lyfwcwd('groupTour');
+			// 	this.groupTitle = groupTour.data;
+			// },
+			
+			routeData : function(){
+				uni.request({
+					url:'http://218.67.107.93:9210/api/app/getPackageTourList',
+					method:'POST',
+					success: (e) => {
+						console.log(e)
+						this.groupTitle = e.data.data;
+					}
+				})
 			},
+			
 			//获取定位数据
 			Getpostion:function(){
 				setTimeout(()=>{
@@ -172,7 +186,7 @@
 			oncity() {
 				this.$refs.popupRef.show();
 			},
-
+			
 			//地区获取
 			backCity(e) {
 				if (e !== 'no' && e !== 'yes') {
@@ -257,7 +271,7 @@
 
 			//tabbar筛选点击
 			change(e) {
-				console.log(e)
+				// console.log(e)
 				if(e==0){
 					this.current = e;
 					this.currentIndex = 0;
@@ -272,9 +286,10 @@
 			},
 			
 			selete(e) {
-				// console.log(e)
+				
+				// console.log(e.contents)
 				uni.setStorage({
-					key: 'groupTourContent',
+					key: 'groupTour',
 					data: e
 				})
 				uni.navigateTo({
@@ -451,7 +466,7 @@
 				margin-left: 25upx;
 
 				.contentText {
-					font-size: 32upx;
+					font-size: 36upx;
 					font-weight: 40;
 					font-family: Source Han Sans SC;
 					overflow: hidden; //超出溢出
@@ -460,19 +475,20 @@
 					display: -webkit-box;
 					-webkit-box-orient: vertical;
 					text-align: justify;
+					margin-top: 4upx;
 				}
 
 				.contentLabel {
 					display: block;
 					font-size: 28upx;
 					color: #aba9aa;
-					margin-top: 21upx;
+					margin-top: 24upx;
 				}
 
 				.groupCost {
-					margin-top: 12upx;
-					display: flex;
+					margin-top: 18upx;
 					position: relative;
+					width: 430upx;
 
 					.cost {
 						font-size: 28upx;
