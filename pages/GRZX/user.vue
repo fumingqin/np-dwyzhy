@@ -254,8 +254,8 @@
 		height: 127upx;
 	}
 	.usernameClass{		//昵称
-		height: 60upx;
-		line-height: 44upx;
+		// height: 60upx;
+		// line-height: 44upx;
 		font-size: 48upx;
 		color: #FFFFFF;
 		margin-top: 20upx;
