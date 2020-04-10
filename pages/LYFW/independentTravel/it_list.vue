@@ -80,7 +80,7 @@
 					<scroll-view class="mainScView" scroll-y="true">
 							<!-- 大图样式，命名：big -->
 							<view>
-								<image class="big_image" ></image>
+								<image class="big_image" :src="ifyFirst.src"></image>
 								<view style="margin: 0upx 32upx;">
 									<text class="big_title" >{{ifyFirst.title}}</text>
 									<text class="big_text" >京城上下五千年 历史沉淀</text>
@@ -90,7 +90,7 @@
 							<!-- 小图样式，命名:sma -->
 							<view class="sma_view" style="">
 								<view style="float: left;" v-for="(item,index) in ifyList" :key="index" >
-									<image class="sma_image"  ></image>
+									<image class="sma_image" :src="item.src" ></image>
 									<text class="sma_title">{{item.title}}</text>
 									<text class="sma_text" >销售量：{{item.salesVolume}}</text>
 								</view>
@@ -178,6 +178,7 @@
 						var sc = res.data.data;
 						sc.shift();
 						this.ifyList = sc;
+						uni.hideLoading();
 					}
 				})
 			},
@@ -294,9 +295,12 @@
 			},
 			
 			/* 左侧导航点击 */
-			leftTap(item,index){
+			leftTap:function(item,index){
 				this.leftIndex=index;
-				this.textData(item);
+				this.classifyList(item);
+				uni.showLoading({
+					title:'正在搜索'+item
+				});
 			},
 		}
 	}
@@ -545,7 +549,6 @@
 					margin: 12upx 32upx; 
 					width: 492upx; 
 					height: 240upx; 
-					background: red; 
 					border-radius:8upx;
 				}
 				.big_title{
@@ -563,7 +566,6 @@
 						margin: 24upx 12upx 12upx 12upx; 
 						width: 232upx; 
 						height: 190upx; 
-						background: red; 
 						border-radius:8upx;
 					}
 					.sma_title{
