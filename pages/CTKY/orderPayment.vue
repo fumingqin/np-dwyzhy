@@ -340,22 +340,20 @@
 							id: res.data.data.id
 						},
 						success: (res) => {
-							uni.hideLoading();
-							console.log('支付参数返回数据', res);
-							if (res.data.msg != '') {
-								
+							if(res.data.data != null) {
+								uni.hideLoading();
+								that.paymentData = JSON.parse(res.data.data);
+								that.isPayEnable = 1;
+								clearInterval(timer);
+							}
+							if (res.data.msg != null) {
 								uni.showToast({
-									title: res.data.msg,
+									title: '请在2分钟内完成支付',
 									icon: 'none'
 								})
 								clearInterval(timer);
 							}
-							if(res.data.data != null) {
-								// console.log('有数据了',res.data.data);
-								clearInterval(timer);
-								that.paymentData = JSON.parse(res.data.data);
-								
-							}
+							// console.log('支付参数返回数据', res);
 						},
 						fail(res) {
 							uni.hideLoading();
@@ -369,37 +367,41 @@
 			//--------------------------调起支付--------------------------
 			payment: function() {
 				console.log('点击了支付');
-				
 				var that = this;
-				console.log('点击了支付',that.paymentData);
-				// uni.showToast({
-				// 	title: that.paymentData.AppId + that.paymentData.TimeStamp + that.paymentData.NonceStr + that.paymentData.Package + that.paymentData.SignType + that.paymentData.PaySign,
-				// 	icon: 'none'
-				// }),
-				// history.pushState(null, null, "/");
-				WeixinJSBridge.invoke('getBrandWCPayRequest', {
-					"appId": that.paymentData.AppId,//公众号名称，由商户传入
-					"timeStamp": that.paymentData.TimeStamp, //时间戳
-					"nonceStr": that.paymentData.NonceStr, //随机串
-					"package": that.paymentData.Package, //扩展包
-					"signType": that.paymentData.SignType, //微信签名方式:MD5
-					"paySign": that.paymentData.PaySign //微信签名
-				}, function(res) {
-					if (res.err_msg == "get_brand_wcpay_request:ok") {
-						//支付成功再进计时器查询状态
-						// location.href = "/Order/BaseCallback/" + flowID;
-						alert("支付成功");
-					}
-					else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
-					   alert("您取消了支付，请重新支付");
-					}
-					else if(res.err_msg == "get_brand_wcpay_request:faile" ){
-					   alert("支付失败，请重新支付");
-					}
-					else {
-						// location.href = "/Coach/GetCoach";
-					}
-				});
+				if(that.isPayEnable == 0) {
+					uni.showToast({
+						title: '正在获取支付,请稍等...',
+						icon: 'none'
+					})
+				}else {
+					console.log('点击了支付',that.paymentData);
+					WeixinJSBridge.invoke('getBrandWCPayRequest', {
+						"appId": that.paymentData.AppId,//公众号名称，由商户传入
+						"timeStamp": that.paymentData.TimeStamp, //时间戳
+						"nonceStr": that.paymentData.NonceStr, //随机串
+						"package": that.paymentData.Package, //扩展包
+						"signType": that.paymentData.SignType, //微信签名方式:MD5
+						"paySign": that.paymentData.PaySign //微信签名
+					}, function(res) {
+						if (res.err_msg == "get_brand_wcpay_request:ok") {
+							//支付成功再进计时器查询状态
+							// location.href = "/Order/BaseCallback/" + flowID;
+							alert("支付成功");
+							uni.navigateTo({
+								url:'../LYFW/scenicSpotTickets/successfulPayment'
+							})
+						}
+						else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
+						   alert("您取消了支付，请重新支付");
+						}
+						else if(res.err_msg == "get_brand_wcpay_request:faile" ){
+						   alert("支付失败，请重新支付");
+						}
+						else {
+							// location.href = "/Coach/GetCoach";
+						}
+					});
+				}
 					//威富通
 				// 	if (res.jsapi.TokenID != null) {
 				// 		window.location.href = "https://pay.swiftpass.cn/pay/jspay?showwxtitle=1&token_id=" + result.jsapi.TokenID;

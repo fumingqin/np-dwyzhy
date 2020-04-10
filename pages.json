@@ -89,6 +89,7 @@
 		
 			"path": "pages/LYFW/currency/travelDetails",
 			"style": {
+				"navigationBarTitleText": "详情页",
 				// #ifdef APP-PLUS
 				"navigationStyle": "custom",
 				// #endif
@@ -457,7 +458,17 @@
         }
         ,{
             "path" : "pages/Home/ho_zhly",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "南平智慧旅游APP",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
         }
     ],
 	"globalStyle": {
