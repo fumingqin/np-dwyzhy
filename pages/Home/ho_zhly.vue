@@ -138,6 +138,16 @@
 				this.recommendedContent = recommendedContent.data;
 			},
 			
+			routeData : function(){
+				uni.request({
+					url:'http://218.67.107.93:9210/api/app/getPackageTourList',
+					method:'POST',
+					success: (e) => {
+						console.log(e)
+					}
+				})
+			},
+			
 			loadData: function() {
 				uni.request({
 					url: 'http://218.67.107.93:9210/api/app/getInformationList',

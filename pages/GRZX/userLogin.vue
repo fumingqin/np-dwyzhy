@@ -180,11 +180,11 @@
 													base64ToPath(base64)
 													  .then(path => {
 													    user.data.portrait=path;
+														that.login(user.data);
 													  })
 													  .catch(error => {
 													    console.error(error)
 													  })
-													that.login(user.data);
 												}
 											})
 										}

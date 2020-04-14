@@ -251,7 +251,7 @@
 
 			//路由统一事件
 			godetail: function(url) {
-				uni.navigateTo({
+				uni.reLaunch({
 					url: url
 				});
 			},
