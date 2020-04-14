@@ -287,8 +287,10 @@
 					},
 					data: {
 						companyCode: '南平旅游H5',
-						clientID: that.userInfo.unid,
-						clientName: that.userInfo.username,
+						clientID: that.userInfo.unid,//用户ID
+						clientName: that.userInfo.username,//用户名
+						phoneNumber: that.userInfo.phoneNumber,//手机号码
+						
 						scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
 						executeScheduleID: that.orderInfo.executeScheduleID,
 						startSiteID: that.orderInfo.startSiteID,//上车点ID
@@ -296,17 +298,17 @@
 						startSiteName: that.orderInfo.startStaion,//起点站
 						endSiteName: that.orderInfo.endStation,//终点站
 						priceID: that.orderInfo.priceID,//价格ID
-						phoneNumber: that.userInfo.phoneNumber,//手机号码
+						setOutTime: that.orderInfo.setTime,//订单时间
+						insuredPrice: that.orderInfo.insurePrice,//保险价格
+						carType: that.orderInfo.shuttleType,//班车类型
+						
 						fullTicket: that.adultNum,//全票人数
 						halfTicket: that.childrenNum,//半票人数
 						carryChild: that.childrenNum,//携童人数
 						idNameType: that.idNameType,
 						insured: that.isInsurance,//是否选择了保险
-						insuredPrice: that.orderInfo.insurePrice,//保险价格
 						openId: 'oMluguFoTfQ7YajiqYVxj3YzxhMI',
 						totalPrice: that.totalPrice,//总价格
-						setOutTime: that.orderInfo.setTime,//订单时间
-						carType: that.orderInfo.shuttleType,//班车类型
 					},
 					success: (res) => {
 						uni.hideLoading();
@@ -388,7 +390,7 @@
 							// location.href = "/Order/BaseCallback/" + flowID;
 							alert("支付成功");
 							uni.navigateTo({
-								url:'../LYFW/scenicSpotTickets/successfulPayment'
+								url:'./CTKYPaySuccess'
 							})
 						}
 						else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
@@ -396,6 +398,9 @@
 						}
 						else if(res.err_msg == "get_brand_wcpay_request:faile" ){
 						   alert("支付失败，请重新支付");
+						   uni.navigateTo({
+						   	url:'./CTKYPayFail'
+						   })
 						}
 						else {
 							// location.href = "/Coach/GetCoach";
