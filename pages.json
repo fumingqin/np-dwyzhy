@@ -300,7 +300,7 @@
 		{
 			"path": "pages/CTKY/oederList",
 			"style": {
-				"navigationBarTitleText": "班次列表"
+				"navigationBarTitleText": "订单列表"
 			}
 		},
 		{
@@ -468,6 +468,18 @@
 						"type": "transparent"
 					}
 				}
+			}
+        }
+        ,{
+            "path" : "pages/CTKY/paySuccess",
+            "style" : {
+				"navigationBarTitleText": "支付结果"
+			}
+        }
+        ,{
+            "path" : "pages/CTKY/payFail",
+            "style" : {
+				"navigationBarTitleText": "支付结果"
 			}
         }
     ],

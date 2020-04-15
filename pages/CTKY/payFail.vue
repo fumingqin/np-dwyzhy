@@ -5,8 +5,8 @@
 		</view>
 
 		<view class="cover-container">
-			<image class="okImage" mode="aspectFill" src='../../static/CZC/Success.png'></image>
-			<text class="title">支付成功</text>
+			<image class="okImage" mode="aspectFill" src='../../static/CZC/Fail.png'></image>
+			<text class="title">支付失败</text>
 			<text class="content">无选择操作，将在10秒后自动返回首页</text>
 			<view class="buttonView">
 				<view class="orderButton" @click="godetail(0)">查看订单</view>
@@ -19,7 +19,21 @@
 <script>
 	export default {
 		data() {
-			return {}
+			return {
+				orderInfo:[],//订单参数数据
+			}
+		},
+		onLoad() {
+			this.getTicketPaymentInfo()
+		},
+		onShow() {
+			var that = this;
+			uni.getStorage({
+				key:'payInfo',
+				success:function(data) {
+					that.orderInfo = data;
+				}
+			})
 		},
 		onReady() {
 			this.backHome();
@@ -38,13 +52,45 @@
 				}
 			},
 			backHome : function() {
-				setTimeout(() => { 
+				setTimeout(() => {
 					uni.switchTab({
 						url: '/pages/Home/Index'
 					});
-				}, 10000)
-			}
-
+				}, 10000);
+			},
+			//--------------------------获取车票支付参数--------------------------
+			getTicketPaymentInfo: function() {
+				console.log(res);
+				var that = this;
+				uni.request({
+					url: 'http://218.67.107.93:9210/api/app/getPayParam',
+					method: 'POST',
+					header: {
+						'content-type': 'application/x-www-form-urlencoded'
+					},
+					data: {
+						resultStr: that.orderInfo.resultStr,
+						id: that.orderInfo.id
+					},
+					success: (res) => {
+						if(res.data.data != null) {
+							that.paymentData = JSON.parse(res.data.data);
+							clearInterval(timer);
+						}
+						if (res.data.msg != null) {
+							uni.showToast({
+								title: '请在2分钟内完成支付',
+								icon: 'none'
+							})
+							clearInterval(timer);
+						}
+						console.log('支付参数返回数据', res);
+					},
+					fail(res) {
+						console.log('失败');
+					}
+				})
+			},
 		}
 	}
 </script>
