@@ -909,24 +909,25 @@
 						unid : that.userInfo.unid
 					},
 					success: (res) => {
-						console.log('返回数据',res);
+						// console.log('返回数据',res);
 						var ticketArray = []; 
-						
-						for(var i = 0; i < res.data.data.length; i++) {
-							that.info.push(res.data.data[i]);
-						}
-						console.log('返回数据',that.info);
-						// that.info = res.data.data;
-						for (var i = 0; i < res.data.data.length; i++) {
-							if (res.data.data[i].orderState == '已完成' || res.data.data[i].orderState == '已使用') {
-								that.finishArr.push(res.data.data[i]);
-							} else if (res.data.data[i].orderState == '进行中' || res.data.data[i].orderState == '待使用') {
-								that.goingArr.push(res.data.data[i]);
-							} else if (res.data.data[i].orderState == '未支付' || res.data.data[i].orderState == '待支付') {
-								that.unfinishArr.push(res.data.data[i]);
-								// console.log(res.data.data);
-							} else if (res.data.data[i].orderState == '已取消' || res.data.data[i].orderState == '已退票') {
-								that.cancelArr.push(res.data.data[i]);
+						if (res.data.data.length > 0){
+							for(var i = 0; i < res.data.data.length; i++) {
+								that.info.push(res.data.data[i]);
+							}
+							// console.log('返回数据',that.info);
+							// that.info = res.data.data;
+							for (var i = 0; i < res.data.data.length; i++) {
+								if (res.data.data[i].orderState == '已完成' || res.data.data[i].orderState == '已使用') {
+									that.finishArr.push(res.data.data[i]);
+								} else if (res.data.data[i].orderState == '进行中' || res.data.data[i].orderState == '待使用') {
+									that.goingArr.push(res.data.data[i]);
+								} else if (res.data.data[i].orderState == '未支付' || res.data.data[i].orderState == '待支付') {
+									that.unfinishArr.push(res.data.data[i]);
+									// console.log(res.data.data);
+								} else if (res.data.data[i].orderState == '已取消' || res.data.data[i].orderState == '已退票') {
+									that.cancelArr.push(res.data.data[i]);
+								}
 							}
 						}
 					},
