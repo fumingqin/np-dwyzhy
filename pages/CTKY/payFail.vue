@@ -24,14 +24,14 @@
 			}
 		},
 		onLoad() {
-			this.getTicketPaymentInfo()
 		},
 		onShow() {
 			var that = this;
 			uni.getStorage({
 				key:'payInfo',
-				success:function(data) {
-					that.orderInfo = data;
+				success: (res) => {
+				    that.orderInfo = res.data;
+					this.getTicketPaymentInfo()
 				}
 			})
 		},
@@ -60,36 +60,35 @@
 			},
 			//--------------------------获取车票支付参数--------------------------
 			getTicketPaymentInfo: function() {
-				console.log(res);
 				var that = this;
-				uni.request({
-					url: 'http://218.67.107.93:9210/api/app/getPayParam',
-					method: 'POST',
-					header: {
-						'content-type': 'application/x-www-form-urlencoded'
-					},
-					data: {
-						resultStr: that.orderInfo.resultStr,
-						id: that.orderInfo.id
-					},
-					success: (res) => {
-						if(res.data.data != null) {
-							that.paymentData = JSON.parse(res.data.data);
-							clearInterval(timer);
+				var timer=null;
+				that.timer = timer;
+				timer=setInterval(function(){
+					uni.request({
+						url: 'http://218.67.107.93:9210/api/app/getPayParam',
+						method: 'POST',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						data: {
+							resultStr: that.orderInfo.resultStr,
+							id: that.orderInfo.orderID
+						},
+						success: (res) => {
+							if(res.data.data != null) {
+								that.paymentData = JSON.parse(res.data.data);
+								clearInterval(timer);
+							}
+							if (res.data.msg != null) {
+								clearInterval(timer);
+							}
+							// console.log('支付参数返回数据', res);
+						},
+						fail(res) {
+							console.log('失败');
 						}
-						if (res.data.msg != null) {
-							uni.showToast({
-								title: '请在2分钟内完成支付',
-								icon: 'none'
-							})
-							clearInterval(timer);
-						}
-						console.log('支付参数返回数据', res);
-					},
-					fail(res) {
-						console.log('失败');
-					}
-				})
+					})
+				}, 3000)
 			},
 		}
 	}

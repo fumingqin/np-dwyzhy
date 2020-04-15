@@ -32,17 +32,11 @@
 			var that = this;
 			uni.getStorage({
 				key:'payInfo',
-				success:function(data) {
-					
-				},
 				success: (res) => {
-				    console.log(res);
 				    that.orderInfo = res.data;
-					console.log(that.orderInfo);
 					this.getTicketPaymentInfo()
 				}
 			})
-			
 		},
 		methods: {
 			//--------------------------路由统一事件--------------------------
@@ -70,9 +64,6 @@
 				var that = this;
 				var timer=null;
 				that.timer = timer;
-				console.log('支付参数',that.orderInfo);
-				console.log('支付参数',that.orderInfo.resultStr);
-				console.log('支付参数',that.orderInfo.orderID);
 				timer=setInterval(function(){
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getPayParam',
@@ -90,13 +81,9 @@
 								clearInterval(timer);
 							}
 							if (res.data.msg != null) {
-								uni.showToast({
-									title: '请在2分钟内完成支付',
-									icon: 'none'
-								})
 								clearInterval(timer);
 							}
-							console.log('支付参数返回数据', res);
+							// console.log('支付参数返回数据', res);
 						},
 						fail(res) {
 							console.log('失败');
