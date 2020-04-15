@@ -976,12 +976,14 @@
 							success:(res)=>{
 								// console.log(res)
 								// console.log(that.info)
+								
 								that.info = res.data.data;
+								that.info = this.info.sort((a, b) => b.orderNumber - a.orderNumber)
 								that.finishArr = [];
 								that.goingArr = [];
 								that.unfinishArr = [];
 								that.cancelArr = [];
-								if(that.info !== ''){
+								if(that.info !== ''){ 
 									for (var i = 0; i < that.info.length; i++) {
 										if (that.info[i].orderType == '已完成' || that.info[i].orderType == '已使用') {
 											that.finishArr.push(that.info[i]);
@@ -994,6 +996,7 @@
 										}
 									}
 								}
+							
 							}
 						})
 					},
@@ -1053,19 +1056,20 @@
 			//-------------------------景区门票-详情跳转-------------------------
 			details(e) {
 					uni.navigateTo({
-						url: '../LYFW/scenicSpotTickets/orderDetails?orderNumber=' + JSON.stringify(e)
+						url: '../LYFW/scenicSpotTickets/orderDetails?orderNumber=' +e
 					})
 			},
 			//-------------------------景区门票-去支付跳转-------------------------
 			topay(e) {
+				console.log(e)
 					uni.navigateTo({
-						url: '../LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + JSON.stringify(e)
+						url: '../LYFW/scenicSpotTickets/selectivePayment?orderNumber=' +e
 					})
 			},
 			//-------------------------景区门票-再次购买-------------------------
 			repurchase(e) {
 					uni.navigateTo({
-						url: '../LYFW/scenicSpotTickets/ticketsDetails?ticketId=' + JSON.stringify(e)
+						url: '../LYFW/scenicSpotTickets/ticketsDetails?ticketId=' +e
 					})
 			},
 			//-------------------------景区门票-退票-------------------------
