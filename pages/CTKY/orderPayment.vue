@@ -287,8 +287,10 @@
 					},
 					data: {
 						companyCode: '南平旅游H5',
-						clientID: that.userInfo.unid,
-						clientName: that.userInfo.username,
+						clientID: that.userInfo.unid,//用户ID
+						clientName: that.userInfo.username,//用户名
+						phoneNumber: that.userInfo.phoneNumber,//手机号码
+						
 						scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
 						executeScheduleID: that.orderInfo.executeScheduleID,
 						startSiteID: that.orderInfo.startSiteID,//上车点ID
@@ -296,28 +298,40 @@
 						startSiteName: that.orderInfo.startStaion,//起点站
 						endSiteName: that.orderInfo.endStation,//终点站
 						priceID: that.orderInfo.priceID,//价格ID
-						phoneNumber: that.userInfo.phoneNumber,//手机号码
+						setOutTime: that.orderInfo.setTime,//订单时间
+						insuredPrice: that.orderInfo.insurePrice,//保险价格
+						carType: that.orderInfo.shuttleType,//班车类型
+						
 						fullTicket: that.adultNum,//全票人数
 						halfTicket: that.childrenNum,//半票人数
 						carryChild: that.childrenNum,//携童人数
 						idNameType: that.idNameType,
 						insured: that.isInsurance,//是否选择了保险
-						insuredPrice: that.orderInfo.insurePrice,//保险价格
-						openId: 'oMluguFoTfQ7YajiqYVxj3YzxhMI',
+						openId: 'oMluguPZ6VukBpWUdhyTnhM6gpOg',
 						totalPrice: that.totalPrice,//总价格
-						setOutTime: that.orderInfo.setTime,//订单时间
-						carType: that.orderInfo.shuttleType,//班车类型
 					},
 					success: (res) => {
-						uni.hideLoading();
-						
 						let that = this;
 						// console.log('订单返回数据',res);
+						uni.setStorage({
+							key:'payInfo',
+							data:{
+								resultStr:res.data.data.resultStr,
+								orderID:res.data.data.id,
+							},
+							success() {
+								console.log('success');
+							}
+						})
 						//获取车票支付参数
 						that.getTicketPaymentInfo(res);
 					},
 					fail(res) {
 						uni.hideLoading();
+						uni.showToast({
+							title: '下单失败，请重新下单',
+							icon: 'none'
+						})
 					}
 				})
 			},
@@ -328,7 +342,7 @@
 				var timer=null;
 				that.timer = timer;
 				timer=setInterval(function(){
-					uni.showLoading();
+					// uni.showLoading();
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getPayParam',
 						method: 'POST',
@@ -340,19 +354,27 @@
 							id: res.data.data.id
 						},
 						success: (res) => {
+							// console.log(res.data.msg);
 							if(res.data.data != null) {
 								uni.hideLoading();
 								that.paymentData = JSON.parse(res.data.data);
 								that.isPayEnable = 1;
 								clearInterval(timer);
 							}
-							if (res.data.msg != null) {
+							if (res.data.msg == '获取支付参数成功！') {
 								uni.showToast({
 									title: '请在2分钟内完成支付',
 									icon: 'none'
 								})
 								clearInterval(timer);
+							}else {
+								uni.showToast({
+									title: res.data.msg,
+									icon: 'none'
+								})
+								clearInterval(timer);
 							}
+							
 							// console.log('支付参数返回数据', res);
 						},
 						fail(res) {
@@ -386,16 +408,31 @@
 						if (res.err_msg == "get_brand_wcpay_request:ok") {
 							//支付成功再进计时器查询状态
 							// location.href = "/Order/BaseCallback/" + flowID;
-							alert("支付成功");
-							uni.navigateTo({
-								url:'../LYFW/scenicSpotTickets/successfulPayment'
+							// alert("支付成功");
+							uni.showToast({
+								title: '支付成功',
+								icon: 'none'
+							})
+							uni.redirectTo({
+								url:'/pages/CTKY/paySuccess',
 							})
 						}
 						else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
-						   alert("您取消了支付，请重新支付");
+						   // alert("您取消了支付，请重新支付");
+						   uni.showToast({
+						   	title: '您取消了支付，请重新支付',
+						   	icon: 'none'
+						   })
 						}
 						else if(res.err_msg == "get_brand_wcpay_request:faile" ){
-						   alert("支付失败，请重新支付");
+						   // alert("支付失败，请重新支付");
+						   uni.showToast({
+						   	title: '支付失败，请重新支付',
+						   	icon: 'none'
+						   })
+						   uni.redirectTo({
+						   	url:'/pages/CTKY/payFail'
+						   })
 						}
 						else {
 							// location.href = "/Coach/GetCoach";

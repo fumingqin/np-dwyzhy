@@ -89,6 +89,7 @@
 		
 			"path": "pages/LYFW/currency/travelDetails",
 			"style": {
+				"navigationBarTitleText": "详情页",
 				// #ifdef APP-PLUS
 				"navigationStyle": "custom",
 				// #endif
@@ -299,7 +300,7 @@
 		{
 			"path": "pages/CTKY/oederList",
 			"style": {
-				"navigationBarTitleText": "班次列表"
+				"navigationBarTitleText": "订单列表"
 			}
 		},
 		{
@@ -457,7 +458,29 @@
         }
         ,{
             "path" : "pages/Home/ho_zhly",
-            "style" : {}
+            "style" : {
+				"navigationBarTitleText": "南平智慧旅游APP",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+        }
+        ,{
+            "path" : "pages/CTKY/paySuccess",
+            "style" : {
+				"navigationBarTitleText": "支付结果"
+			}
+        }
+        ,{
+            "path" : "pages/CTKY/payFail",
+            "style" : {
+				"navigationBarTitleText": "支付结果"
+			}
         }
     ],
 	"globalStyle": {
@@ -497,7 +520,7 @@
 		"current": 0, //当前激活的模式(list 的索引项)
 		"list": [{
 			"name": "", //模式名称
-			"path": "pages/LYFW/scenicSpotTickets/selectivePayment", //启动页面，必选
+			"path": "", //启动页面，必选
 			"query": "" //启动参数，在页面的onLoad函数里面得到
 		}] 
 	}

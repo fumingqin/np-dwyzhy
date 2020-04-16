@@ -465,7 +465,7 @@
 					
 					//请求成功之后跳转到支付页面,传是否选择保险1:选择 0:未选择
 					uni.navigateTo({
-						url:'/pages/CTKY/orderPayment?isInsurance=' + that.isInsurance + '&totalPrice=' + that.totalPrice
+						url:'/pages/CTKY/orderPayment?isInsurance=' + that.isInsurance + '&totalPrice=' + that.totalPrice,
 					})
 				}
 
