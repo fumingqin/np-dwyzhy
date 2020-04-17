@@ -110,13 +110,17 @@
 									data:res1.data.data,
 								})
 								var base64=res1.data.data.portrait;
-								base64ToPath(base64)
-								  .then(path => {
-								    theself.portrait=path;
-								  })
-								  .catch(error => {
-								    console.error(error)
-								  })
+								if(theself.isBase64(base64)){
+									base64ToPath(base64)
+									  .then(path => {
+										theself.portrait=path;
+									  })
+									  .catch(error => {
+										console.error(error)
+									  })	
+								}else{
+									theself.portrait=base64;
+								}
 								if(res1.data.data.nickname==null||res1.data.data.nickname==""){
 									theself.nickname="";
 								}else{
@@ -229,10 +233,35 @@
 				console.log(this.username)
 				var that=this;
 				var port=this.portrait;
-				pathToBase64(this.portrait)
-				.then(base64 => {
-					that.portrait=JSON.stringify(base64);
-					console.log(that.portrait)
+				if(this.isBase64(port)){
+					pathToBase64(this.portrait)
+					.then(base64 => {
+						that.portrait=JSON.stringify(base64);
+						console.log(that.portrait)
+						uni.request({
+							url:'http://218.67.107.93:9210/api/app/changeInfo',
+							data:{
+								portrait:this.portrait,
+								unid:this.unid,
+								openId_qq:this.openId_qq,
+								openId_wx:this.openId_wx,
+								// openId_qq:'',
+								// openId_wx:'',
+								gender:this.selector,
+								address:this.address,
+								nickname:this.nickname,
+								birthday:this.birthday,
+								backImg:this.backImg,
+								phoneNumber:this.phoneNumber,
+								username:this.username,
+							},
+							method:'POST',
+							success(res) {
+								console.log(res)
+							}
+						})
+					})//结束
+				}else{
 					uni.request({
 						url:'http://218.67.107.93:9210/api/app/changeInfo',
 						data:{
@@ -240,8 +269,6 @@
 							unid:this.unid,
 							openId_qq:this.openId_qq,
 							openId_wx:this.openId_wx,
-							// openId_qq:'',
-							// openId_wx:'',
 							gender:this.selector,
 							address:this.address,
 							nickname:this.nickname,
@@ -255,7 +282,7 @@
 							console.log(res)
 						}
 					})
-				})//结束
+				}
 				var list={
 						portrait:port,
 						unid:this.unid,
@@ -285,31 +312,28 @@
 					count:1,
 					//sourceType:['album'],
 					success(res) {
-						//console.log(res.tempFilePaths,"res11");
 						var tempFilePaths = res.tempFilePaths;
 						that.port=res.tempFiles;
 						uni.saveFile({
 						  tempFilePath: tempFilePaths[0],
 						  success: function (res1) {
 							var savedFilePath = res1.savedFilePath;
-							// pathToBase64(res1.savedFilePath)
-							// .then(base64 => {
-							// 	that.portrait=JSON.stringify(base64);
-							// 	console.log(that.portrait)
-							// })
 							 that.portrait=res1.savedFilePath;
-							// console.log(that.portrait,"301")
 						  }
-						});
-						// pathToBase64(res.tempFilePaths[0])
-						// .then(base64 => {
-						// 	that.portrait=base64;
-						// })
-						 
+						}); 
 					}
 				})
 				
 				
+			},
+			//------------判断是否为base64格式-----------
+			isBase64:function(str) {
+			    if (str ==='' || str.trim() ===''){ return false; }
+			    try {
+			        return btoa(atob(str)) == str;
+			    } catch (err) {
+			        return false;
+			    }
 			},
 	}
 }

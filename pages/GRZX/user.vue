@@ -167,7 +167,7 @@
 							//loginType=2,今点通登录界面
 							//loginType=3,南平综合出行界面
 							//loginType=4,武夷股份登录界面
-							url  : '/pages/GRZX/userLogin?loginType=4'
+							url  : '/pages/GRZX/userLogin?loginType=4&&urlData=1'
 						}) 
 					},500);
 				}else{

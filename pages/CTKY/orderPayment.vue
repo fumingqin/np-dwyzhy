@@ -74,7 +74,7 @@
 				</view>
 			</view>
 
-			<view class="MP_information2">
+			<view class="MP_information2" v-if="false">
 				<view class="MP_optionBar">
 					<text class="Mp-icon jdticon icon-alipay"></text>
 					<text class="Mp_title">支付宝</text>
@@ -117,12 +117,12 @@
 				adultTotalPrice: '', //成人总价
 				childrenTotalPrice: '', //儿童总价
 				totalPrice: '', //总价格
-				paymentData:[],//保存支付参数
-				timer:'',//定时器数据
+				paymentData: [], //保存支付参数
+				timer: '', //定时器数据
 			}
 		},
 		onLoad: function(param) {
-			
+
 			this.totalPrice = param.totalPrice;
 			//读取车票信息
 			this.getTickerInfo();
@@ -150,10 +150,17 @@
 					this.countDown();
 				}
 			})
-			
+
 		},
 		onUnload() {
 			clearInterval(this.timer);
+		},
+		//--------------------------监听页面返回--------------------------
+		onBackPress(options) {
+			if (options.from === 'backbutton | navigateBack') {  
+				//当页面返回的时候取消订单
+				
+			}
 		},
 		methods: {
 			//--------------------------读取车票信息--------------------------
@@ -164,7 +171,7 @@
 					key: 'ticketDate',
 					success: function(data) {
 						that.orderInfo = data.data;
-						console.log('订单数据',that.orderInfo)
+						console.log('订单数据', that.orderInfo)
 					},
 					fail() {
 						uni.showToast({
@@ -182,7 +189,7 @@
 					key: 'userInfo',
 					success: function(data) {
 						that.userInfo = data.data;
-						// console.log('用户信息', that.userInfo);
+						console.log('用户信息', that.userInfo);
 					}
 				})
 			},
@@ -287,44 +294,51 @@
 					},
 					data: {
 						companyCode: '南平旅游H5',
-						clientID: that.userInfo.unid,//用户ID
-						clientName: that.userInfo.username,//用户名
-						phoneNumber: that.userInfo.phoneNumber,//手机号码
-						
+						clientID: that.userInfo.unid, //用户ID
+						clientName: that.userInfo.username, //用户名
+						phoneNumber: that.userInfo.phoneNumber, //手机号码
+
 						scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
 						executeScheduleID: that.orderInfo.executeScheduleID,
-						startSiteID: that.orderInfo.startSiteID,//上车点ID
-						endSiteID: that.orderInfo.endSiteID,//下车点ID
-						startSiteName: that.orderInfo.startStaion,//起点站
-						endSiteName: that.orderInfo.endStation,//终点站
-						priceID: that.orderInfo.priceID,//价格ID
-						setOutTime: that.orderInfo.setTime,//订单时间
-						insuredPrice: that.orderInfo.insurePrice,//保险价格
-						carType: that.orderInfo.shuttleType,//班车类型
-						
-						fullTicket: that.adultNum,//全票人数
-						halfTicket: that.childrenNum,//半票人数
-						carryChild: that.childrenNum,//携童人数
+						startSiteID: that.orderInfo.startSiteID, //上车点ID
+						endSiteID: that.orderInfo.endSiteID, //下车点ID
+						startSiteName: that.orderInfo.startStaion, //起点站
+						endSiteName: that.orderInfo.endStation, //终点站
+						priceID: that.orderInfo.priceID, //价格ID
+						setOutTime: that.orderInfo.setTime, //订单时间
+						insuredPrice: that.orderInfo.insurePrice, //保险价格
+						carType: that.orderInfo.shuttleType, //班车类型
+
+						fullTicket: that.adultNum, //全票人数
+						halfTicket: that.childrenNum, //半票人数
+						carryChild: that.childrenNum, //携童人数
 						idNameType: that.idNameType,
-						insured: that.isInsurance,//是否选择了保险
-						openId: 'oMluguPZ6VukBpWUdhyTnhM6gpOg',
-						totalPrice: that.totalPrice,//总价格
+						insured: that.isInsurance, //是否选择了保险
+						openId: 'oer8S1YCUPVxV_ceq0xL_bZkcKjo',
+						totalPrice: that.totalPrice, //总价格
 					},
 					success: (res) => {
 						let that = this;
-						// console.log('订单返回数据',res);
-						uni.setStorage({
-							key:'payInfo',
-							data:{
-								resultStr:res.data.data.resultStr,
-								orderID:res.data.data.id,
-							},
-							success() {
-								console.log('success');
-							}
-						})
-						//获取车票支付参数
-						that.getTicketPaymentInfo(res);
+						console.log('订单返回数据', res);
+						if (res.data.msg == '下单成功！') {
+							uni.setStorage({
+								key: 'payInfo',
+								data: {
+									resultStr: res.data.data.resultStr,
+									orderID: res.data.data.id,
+								},
+								success() {
+									console.log('success');
+								}
+							})
+							//获取车票支付参数
+							that.getTicketPaymentInfo(res);
+						} else if (res.data.code == 'FAILED') {
+							uni.showToast({
+								title: res.data.message,
+								icon: 'none'
+							})
+						}
 					},
 					fail(res) {
 						uni.hideLoading();
@@ -339,9 +353,9 @@
 			getTicketPaymentInfo: function(res) {
 				console.log(res);
 				var that = this;
-				var timer=null;
+				var timer = null;
 				that.timer = timer;
-				timer=setInterval(function(){
+				timer = setInterval(function() {
 					// uni.showLoading();
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getPayParam',
@@ -354,28 +368,34 @@
 							id: res.data.data.id
 						},
 						success: (res) => {
-							// console.log(res.data.msg);
-							if(res.data.data != null) {
-								uni.hideLoading();
-								that.paymentData = JSON.parse(res.data.data);
-								that.isPayEnable = 1;
-								clearInterval(timer);
-							}
-							if (res.data.msg == '获取支付参数成功！') {
-								uni.showToast({
-									title: '请在2分钟内完成支付',
-									icon: 'none'
-								})
-								clearInterval(timer);
+							// console.log(res.data);
+							if (res.data != null) {
+								if (res.data.data != null) {
+									uni.hideLoading();
+									that.paymentData = JSON.parse(res.data.data);
+									that.isPayEnable = 1;
+									clearInterval(timer);
+								}
+								if (res.data.msg == '获取支付参数成功！') {
+									uni.hideLoading();
+									uni.showToast({
+										title: '请在2分钟内完成支付',
+										icon: 'none'
+									})
+									clearInterval(timer);
+								} else if (res.data.msg != null) {
+									uni.showToast({
+										title: res.data.msg,
+										icon: 'none'
+									})
+									clearInterval(timer);
+								}
 							}else {
 								uni.showToast({
-									title: res.data.msg,
+									title: '请求错误，请重新选择班次',
 									icon: 'none'
 								})
-								clearInterval(timer);
 							}
-							
-							// console.log('支付参数返回数据', res);
 						},
 						fail(res) {
 							uni.hideLoading();
@@ -390,15 +410,15 @@
 			payment: function() {
 				console.log('点击了支付');
 				var that = this;
-				if(that.isPayEnable == 0) {
+				if (that.isPayEnable == 0) {
 					uni.showToast({
 						title: '正在获取支付,请稍等...',
 						icon: 'none'
 					})
-				}else {
-					console.log('点击了支付',that.paymentData);
+				} else {
+					console.log('点击了支付', that.paymentData);
 					WeixinJSBridge.invoke('getBrandWCPayRequest', {
-						"appId": that.paymentData.AppId,//公众号名称，由商户传入
+						"appId": that.paymentData.AppId, //公众号名称，由商户传入
 						"timeStamp": that.paymentData.TimeStamp, //时间戳
 						"nonceStr": that.paymentData.NonceStr, //随机串
 						"package": that.paymentData.Package, //扩展包
@@ -414,36 +434,33 @@
 								icon: 'none'
 							})
 							uni.redirectTo({
-								url:'/pages/CTKY/paySuccess',
+								url: '/pages/CTKY/paySuccess',
 							})
-						}
-						else if(res.err_msg == "get_brand_wcpay_request:cancel" ){
-						   // alert("您取消了支付，请重新支付");
-						   uni.showToast({
-						   	title: '您取消了支付，请重新支付',
-						   	icon: 'none'
-						   })
-						}
-						else if(res.err_msg == "get_brand_wcpay_request:faile" ){
-						   // alert("支付失败，请重新支付");
-						   uni.showToast({
-						   	title: '支付失败，请重新支付',
-						   	icon: 'none'
-						   })
-						   uni.redirectTo({
-						   	url:'/pages/CTKY/payFail'
-						   })
-						}
-						else {
+						} else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+							// alert("您取消了支付，请重新支付");
+							uni.showToast({
+								title: '您取消了支付，请重新支付',
+								icon: 'none'
+							})
+						} else if (res.err_msg == "get_brand_wcpay_request:faile") {
+							// alert("支付失败，请重新支付");
+							uni.showToast({
+								title: '支付失败，请重新支付',
+								icon: 'none'
+							})
+							uni.redirectTo({
+								url: '/pages/CTKY/payFail'
+							})
+						} else {
 							// location.href = "/Coach/GetCoach";
 						}
 					});
 				}
-					//威富通
+				//威富通
 				// 	if (res.jsapi.TokenID != null) {
 				// 		window.location.href = "https://pay.swiftpass.cn/pay/jspay?showwxtitle=1&token_id=" + result.jsapi.TokenID;
 				// 	} else {
-						
+
 				// }
 				// 	uni.requestPayment({
 				// 		provider: 'alipay',

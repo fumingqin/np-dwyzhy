@@ -82,9 +82,11 @@
 				captchaCode:'',
 				imgHeight:'',
 				loginType:'',
+				urlData:'',
 			}
 		},
 		onLoad(options) {
+			this.urlData=options.urlData;
 			this.load(options.loginType);
 		},
 		methods: {
@@ -177,21 +179,33 @@
 														user.data.nickname="用户"+user.data.username;
 													}
 													var base64=res.data.data.portrait;
-													base64ToPath(base64)
-													  .then(path => {
-													    user.data.portrait=path;
+													if(base64!=""&&base64!=null){
+														if(that.isBase64(base64)){
+															base64ToPath(base64)
+															  .then(path => {
+																user.data.portrait=path;
+																that.login(user.data);
+															  })
+															  .catch(error => {
+																console.error(error)
+															  })
+														}else{
+															that.login(user.data);
+														}
+													}else{
 														that.login(user.data);
-													  })
-													  .catch(error => {
-													    console.error(error)
-													  })
+													}
+													  if(that.urlData==1){
+													  	uni.switchTab({  //返回首页
+													  		url:'/pages/Home/indexZhly',
+													  	}) 
+													  }else{
+													  	uni.navigateBack();//返回上一页
+													  }
 												}
 											})
 										}
 									})
-									uni.switchTab({
-										url:'/pages/Home/indexZhly',
-									}) 
 								}else{
 									uni.showToast({
 										title:"验证码错误",
@@ -373,6 +387,15 @@
 				uni.switchTab({
 					url:'/pages/GRZX/user'
 				})
+			},
+			//------------判断是否为base64格式-----------
+			isBase64:function(str) {
+			    if (str ==='' || str.trim() ===''){ return false; }
+			    try {
+			        return btoa(atob(str)) == str;
+			    } catch (err) {
+			        return false;
+			    }
 			},
 		}
 	}
