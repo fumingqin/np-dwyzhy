@@ -401,6 +401,8 @@
 				var that = this;
 				//儿童票数量
 				let childNum = 0;
+				//清空乘车人
+				that.passengerNum = 0;
 				//成年票数量
 				let adultNum = 0;
 				//儿童数组
