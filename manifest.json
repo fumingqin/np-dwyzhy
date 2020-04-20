@@ -65,12 +65,22 @@
                 },
                 "ad" : {},
                 "payment" : {
-                    "alipay" : {}
+                    "alipay" : {},
+                    "weixin" : {
+                        "appid" : "wxefe31fcc2fba222e",
+                        "UniversalLinks" : ""
+                    }
                 },
                 "push" : {
                     "unipush" : {}
                 },
-                "oauth" : {}
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "wxefe31fcc2fba222e",
+                        "appsecret" : "68c6ad3f32aefd0029d962f2d7bee8c9",
+                        "UniversalLinks" : ""
+                    }
+                }
             },
             "icons" : {
                 "android" : {
