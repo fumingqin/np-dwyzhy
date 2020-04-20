@@ -975,7 +975,7 @@
 							url:'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' +that.userInfo.unid,
 							method:'POST',
 							success:(res)=>{
-								// console.log(res)
+								console.log(res)
 								// console.log(that.info)
 								
 								that.info = res.data.data;
