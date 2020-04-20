@@ -2,21 +2,21 @@
 	<view class="content">
 		<image src="../../static/GRZX/logo_wuyi.png" class="logoClass"></image>
 		<text class="titleClass">{{title}}</text>
-		<text class="versionClass">{{versionNum}}</text>
+		<text class="versionClass">{{versionNum}}  {{version}}</text>
 		<view class="boxClass1">
-			<view class="functionClass" @click="functionClick">
+			<!-- <view class="functionClass" @click="functionClick">
 				<text class="fontClass">{{functionIntroduction}}</text>
 				<image src="../../static/GRZX/btnRight.png" class="imgClass1"></image>
-			</view>
+			</view> -->
 			<view class="checkClass" @click="checkClick">
 				<text class="fontClass">{{checkVersion}}</text>
-				<text class="textCLass">{{version}}</text>
-				<image src="../../static/GRZX/btnRight.png" class="imgClass2"></image>
+				<!-- <text class="textCLass">{{version}}</text> -->
+				<image src="../../static/GRZX/btnRight.png" class="imgClass1"></image>
 			</view>
 		</view>
 		<view class="boxClass2">
-			<text class="agreementClass" @click="agreementClick">{{agreement}}</text>
-			<text class="privacyClass" @click="privacyClick">{{privacy}}</text>
+			<!-- <text class="agreementClass" @click="agreementClick">{{agreement}}</text>
+			<text class="privacyClass" @click="privacyClick">{{privacy}}</text> -->
 			<text class="copyrightClass">{{copyright1}}</text>
 			<text class="copyrightClass">{{copyright2}}</text>
 			<text class="copyrightClass">{{copyright3}}</text>
@@ -28,8 +28,9 @@
 	export default{
 		data(){
 			return{
+				systemName:'大武夷智慧游',
 				title:'大武夷智慧游',
-				versionNum:'Version 1.0.0',
+				versionNum:'Version',
 				functionIntroduction:'功能介绍',
 				checkVersion:'检查新版本',
 				agreement:'《软件许可及服务协议》',
@@ -51,9 +52,27 @@
 				})
 			},
 			checkClick(){
-				uni.showToast({
-					icon:'none',
-					title:'检查新版本'
+				var that=this;
+				uni.request({
+					url:'http://27.148.155.9:9055/CTKY/getAppVersion?systemName='+that.systemName,
+					method:'POST',
+					success(res) {
+						if(that.version!=res.data.VersionCode){
+							uni.showModal({
+							    content: '是否下载新版本',
+							    success: (e)=>{
+							    	if(e.confirm){
+										plus.runtime.openURL(res.data.DownLoadUrl);
+							    	}
+							    }
+							});
+						}else{
+							uni.showToast({
+								icon:'none',
+								title:'当前版本为最新版本'
+							})
+						}
+					}
 				})
 			},
 			agreementClick(){
@@ -171,7 +190,8 @@
 	.textCLass{
 		font-size: 30upx;
 		position: absolute;
-		top:116upx;
+		top:2upx;
+		//top:116upx;
 		right: 6%;
 	}
 </style>

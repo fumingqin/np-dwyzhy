@@ -1003,11 +1003,13 @@
 					},
 					fail() {
 						uni.showToast({
-							title:'暂无订单数据，请先登录后查看订单',
-							icon:'none'
-						})
-						uni.navigateTo({
-							url:'../GRZX/userLogin?loginType=1'
+						       title:'暂无订单数据，请先登录后查看订单',
+						       icon:'none',
+						       success:function(){
+						        uni.redirectTo({
+						         url:'../GRZX/userLogin?loginType=3'
+						        })
+						       }
 						})
 					}
 				})

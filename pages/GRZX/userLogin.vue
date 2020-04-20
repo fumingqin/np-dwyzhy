@@ -82,13 +82,15 @@
 				captchaCode:'',
 				imgHeight:'',
 				loginType:'',
-				urlData:'',
+				urlData:'', 
 			}
 		},
 		onLoad(options) {
 			this.urlData=options.urlData;
 			this.load(options.loginType);
 		},
+		
+		
 		methods: {
 			...mapMutations(['login']),
 			async load(e){
