@@ -975,7 +975,7 @@
 							url:'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' +that.userInfo.unid,
 							method:'POST',
 							success:(res)=>{
-								console.log(res)
+								// console.log(res)
 								// console.log(that.info)
 								
 								that.info = res.data.data;
@@ -1003,11 +1003,13 @@
 					},
 					fail() {
 						uni.showToast({
-							title:'暂无订单数据，请先登录后查看订单',
-							icon:'none'
-						})
-						uni.navigateTo({
-							url:'../GRZX/userLogin?loginType=1'
+						       title:'暂无订单数据，请先登录后查看订单',
+						       icon:'none',
+						       success:function(){
+						        uni.redirectTo({
+						         url:'../GRZX/userLogin?loginType=3'
+						        })
+						       }
 						})
 					}
 				})

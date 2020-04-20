@@ -93,7 +93,7 @@
 				</view>
 			</view>
 
-			<view class="MP_information3" @click="payment">
+			<view class="MP_information3" @click="paymentSatas">
 				支付{{orderInfo.orderActualPayment}}元
 			</view>
 
@@ -115,6 +115,7 @@
 					name: '支付宝'
 				}],
 				channeIndex: 0, //选择支付方式
+				paymentValue:false,//默认未拉起状态
 				orderInfo: [{
 					orderNumber: '',
 					orderType: '',
@@ -183,7 +184,7 @@
 				url: 'http://218.67.107.93:9210/api/app/getScenicspotOrderDetail?orderNumber=' + options.orderNumber,
 				method: 'POST',
 				success: (res) => {
-					console.log(res)
+					// console.log(res)
 					this.orderInfo = res.data.data;
 					this.screenUser();
 					this.getDate();
@@ -336,7 +337,19 @@
 				})
 
 			},
-
+			
+			//禁止重复提交操作
+			paymentSatas:function(){
+				if(this.paymentValue == false){
+					this.paymentValue == true
+					this.payment()
+				}else if(this.paymentValue == true){
+					uni.showToast({
+						title:'请勿重复点击支付'
+					})
+				}
+			},
+			
 			//调起支付
 			payment: function() {
 				var that = this;
