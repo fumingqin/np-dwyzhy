@@ -139,6 +139,9 @@
 				this[key] = e.detail.value;
 			},
 			loginClick(){	 //登录按钮
+				uni.showLoading({
+					title:'登录中...'
+				})
 				this.logining=true;
 				var that=this;
 				const {phoneNumber, captchaCode} = this;		
@@ -164,7 +167,7 @@
 										url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+phone,
 										method:"POST",
 										success(res) {
-											console.log(res)
+											uni.hideLoading();
 											uni.showToast({
 												title:res.data.msg,
 												icon:"none"
@@ -197,13 +200,13 @@
 													}else{
 														that.login(user.data);
 													}
-													  if(that.urlData==1){
-													  	uni.switchTab({  //返回首页
-													  		url:'/pages/Home/indexZhly',
-													  	}) 
-													  }else{
-													  	uni.navigateBack();//返回上一页
-													  }
+													if(that.urlData==1){
+														uni.switchTab({  //返回首页
+															url:'/pages/Home/indexZhly',
+														}) 
+													}else{
+														uni.navigateBack();//返回上一页
+													}
 												}
 											})
 										}
