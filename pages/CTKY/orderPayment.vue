@@ -119,7 +119,7 @@
 				totalPrice: '', //总价格
 				paymentData: [], //保存支付参数
 				timer: '', //定时器数据
-				orderID:'',//订单id
+				orderID: '', //订单id
 			}
 		},
 		onLoad: function(param) {
@@ -139,7 +139,7 @@
 				this.insurance = '';
 				this.isInsurance = false;
 			}
-			
+
 			//--------------------------计时器--------------------------
 			// uni.getStorage({
 			// 	key: 'keYunCountDown',
@@ -267,22 +267,24 @@
 				this.childrenTotalPrice = children.length * this.orderInfo[0].ticketChildPrice;
 			},
 			//--------------------------退票-----------------------
-			refundTticket:function() {
-				if(that.orderID) {
+			refundTticket: function() {
+				if (that.orderID) {
 					console.log('开始退票');
 					//当页面返回的时候取消订单
 					uni.request({
-						url:'http://218.67.107.93:9210/api/app/returnCpxsOrder',
-						method:'POST',
-						header:{'content-type':'application/x-www-form-urlencoded'},
-						data:{
-							id : that.orderID
+						url: 'http://218.67.107.93:9210/api/app/returnCpxsOrder',
+						method: 'POST',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						data: {
+							id: that.orderID
 						},
 						success: (res) => {
-							console.log('成功',res);
+							console.log('成功', res);
 						},
 						fail(res) {
-							console.log('错误',res);
+							console.log('错误', res);
 						}
 					})
 				}
@@ -305,7 +307,7 @@
 						clientID: that.userInfo.unid, //用户ID
 						clientName: that.userInfo.username, //用户名
 						phoneNumber: that.userInfo.phoneNumber, //手机号码
-				
+
 						scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
 						executeScheduleID: that.orderInfo.executeScheduleID,
 						startSiteID: that.orderInfo.startSiteID, //上车点ID
@@ -316,7 +318,7 @@
 						setOutTime: that.orderInfo.setTime, //订单时间
 						insuredPrice: that.orderInfo.insurePrice, //保险价格
 						carType: that.orderInfo.shuttleType, //班车类型
-				
+
 						fullTicket: that.adultNum, //全票人数
 						halfTicket: that.childrenNum, //半票人数
 						carryChild: that.childrenNum, //携童人数
@@ -360,7 +362,7 @@
 					}
 				})
 			},
-			
+
 			//--------------------------获取车票支付参数--------------------------
 			getTicketPaymentInfo: function(res) {
 				console.log(res);
@@ -405,7 +407,7 @@
 									})
 									clearInterval(timer);
 								}
-							}else {
+							} else {
 								uni.showToast({
 									title: '请求错误，请重新选择班次',
 									icon: 'none'
@@ -447,96 +449,85 @@
 				})
 				that.refundTticket();
 			},
+
 			//--------------------------调起支付--------------------------
 			payment: function() {
-				console.log('点击了支付');
 				var that = this;
-				if (that.isPayEnable == 0) {
-					uni.showToast({
-						title: '正在获取支付,请稍等...',
-						icon: 'none'
-					})
-				} else {
-					console.log('点击了支付', that.paymentData);
-					WeixinJSBridge.invoke('getBrandWCPayRequest', {
-						"appId": that.paymentData.AppId, //公众号名称，由商户传入
-						"timeStamp": that.paymentData.TimeStamp, //时间戳
-						"nonceStr": that.paymentData.NonceStr, //随机串
-						"package": that.paymentData.Package, //扩展包
-						"signType": that.paymentData.SignType, //微信签名方式:MD5
-						"paySign": that.paymentData.PaySign //微信签名
-					}, function(res) {
-						if (res.err_msg == "get_brand_wcpay_request:ok") {
-							//支付成功再进计时器查询状态
-							// location.href = "/Order/BaseCallback/" + flowID;
-							// alert("支付成功");
-							uni.showToast({
-								title: '支付成功',
-								icon: 'none'
-							})
-							uni.redirectTo({
-								url: '/pages/CTKY/paySuccess',
-							})
-						} else if (res.err_msg == "get_brand_wcpay_request:cancel") {
-							// alert("您取消了支付，请重新支付");
-							uni.showToast({
-								title: '您取消了支付，请重新支付',
-								icon: 'none'
-							})
-						} else if (res.err_msg == "get_brand_wcpay_request:faile") {
-							// alert("支付失败，请重新支付");
-							uni.showToast({
-								title: '支付失败，请重新支付',
-								icon: 'none'
-							})
-							uni.redirectTo({
-								url: '/pages/CTKY/payFail'
-							})
-						} else {
-							// location.href = "/Coach/GetCoach";
-						}
-					});
-				}
-				//威富通
-				// 	if (res.jsapi.TokenID != null) {
-				// 		window.location.href = "https://pay.swiftpass.cn/pay/jspay?showwxtitle=1&token_id=" + result.jsapi.TokenID;
-				// 	} else {
-
-				// }
-				// 	uni.requestPayment({
-				// 		provider: 'alipay',
-				// 		orderInfo: {
-				// 			"orderNumber": res.data.data.orderNumber,
-				// 			"ticket": this.ticket,
-				// 			"date": this.date,
-				// 			"dateReminder": this.dateReminder,
-				// 			"addressData": this.addressData,
-				// 			"actualPayment": this.actualPayment,
-				// 			"coupon": this.coupon,
-				// 			"channe": this.channel[this.channeIndex],
-				// 		},
-				// 		success: function(res) {
-				// 			console.log('success:' + JSON.stringify(res));
-				// 		},
-				// 		fail: function(err) {
-				// 			console.log('fail:' + JSON.stringify(err));
-				// 		}
-				// 	})
-
-				// 	uni.redirectTo({
-				// 		url: '/pages/LYFW/scenicSpotTickets/successfulPayment?orderNumber='+JSON.stringify(this.orderInfo[0].orderNumber)
-				// 	})
+				// #ifdef H5
+				console.log('点击了支付', that.paymentData);
+				WeixinJSBridge.invoke('getBrandWCPayRequest', {
+					"appId": that.paymentData.AppId, //公众号名称，由商户传入
+					"timeStamp": that.paymentData.TimeStamp, //时间戳
+					"nonceStr": that.paymentData.NonceStr, //随机串
+					"package": that.paymentData.Package, //扩展包
+					"signType": that.paymentData.SignType, //微信签名方式:MD5
+					"paySign": that.paymentData.PaySign //微信签名
+				}, function(res) {
+					if (res.err_msg == "get_brand_wcpay_request:ok") {
+						//支付成功再进计时器查询状态
+						// location.href = "/Order/BaseCallback/" + flowID;
+						// alert("支付成功");
+						uni.showToast({
+							title: '支付成功',
+							icon: 'none'
+						})
+						uni.redirectTo({
+							url: '/pages/CTKY/paySuccess',
+						})
+					} else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+						// alert("您取消了支付，请重新支付");
+						uni.showToast({
+							title: '您取消了支付，请重新支付',
+							icon: 'none'
+						})
+					} else if (res.err_msg == "get_brand_wcpay_request:faile") {
+						// alert("支付失败，请重新支付");
+						uni.showToast({
+							title: '支付失败，请重新支付',
+							icon: 'none'
+						})
+						uni.redirectTo({
+							url: '/pages/CTKY/payFail'
+						})
+					} else {
+						// location.href = "/Coach/GetCoach";
+					}
+				});
+				// #endif
+				
+				// #ifdef APP-PLUS
+				uni.requestPayment({
+					provider: 'wxpay',
+					orderInfo: that.testOrderInfo,
+					success: function(res) {
+						uni.showToast({
+							title: '支付成功',
+						})
+						uni.redirectTo({
+							url: '/pages/CTKY/paySuccess'
+						})
+					},
+					fail: function(ee) {
+						// console.log(ee)
+						uni.showToast({
+							title: '支付失败，请检查手机网络是否正常，如若无问题请联系客服',
+							icon: 'none',
+							duration: 3000
+						})
+					}
+				})
+				// #endif
 
 			},
 			//获取当前时间并格式化
 			getDate: function(res) {
 				var that = this;
-				console.log('1111',res);
+				console.log('1111', res);
 				//先提取订单下单时间把空格转换成T
 				var a = res.data.data.createdTime.replace(' ', 'T')
 				//把时间转换成时间戳---订单时间
 				var orderDate = new Date(a).getTime();
-			
+
 				//获取当前时间（为什么要先把当前时间戳格式化？）是因为直接获取当前时间戳存在时间误差
 				var date = new Date(),
 					year = date.getFullYear(),
@@ -550,13 +541,13 @@
 				var timer = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
 				//把转换后的时间，转换成时间戳
 				var c = new Date(timer).getTime();
-			
+
 				//用当前时间-下单时间再除于1000就是秒
 				var d = (c - orderDate) / 1000;
-			
+
 				//这里的214秒就是支付倒计时
 				var e = 214 - d;
-			
+
 				that.countDownDate = e;
 				that.countDown();
 			},
