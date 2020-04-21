@@ -306,7 +306,7 @@
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
 					uni.showToast({
-						title:"code是"+JSON.stringify(code),
+						title:"code是"+code,
 						icon:'success',
 					})
 				}

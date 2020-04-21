@@ -86,9 +86,6 @@
 			...mapState(['hasLogin','userInfo'])
 		},
 		onLoad(){
-			// #ifdef  H5
-			this.load();
-			//#endif
 		},
 		onShow(){
 			//this.loadData();
@@ -126,18 +123,6 @@
 			
 		},
 		methods:{
-			// #ifdef  H5
-			load(){
-				uni.getStorage({
-					key:'opCode',
-					success(res1){
-						uni.showToast({
-							title:res1.data,
-						})
-					}
-				})
-			},
-			//#endif
 			// async loadData(){
 			// 	var that=this;
 			// 	uni.getStorage({
