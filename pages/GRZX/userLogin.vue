@@ -367,6 +367,10 @@
 										code:res.data.code,
 									}
 								})
+								uni.showToast({
+									title:"验证码已发送，仅在5分钟内有效!",
+									icon:"none"
+								})
 								//定时删除手机验证码（用于登录使用）
 								setTimeout(function(){
 									uni.removeStorage({
@@ -374,14 +378,6 @@
 									})
 									console.log('删除成功！')
 								},300000);
-						 		// if(res.data){
-						 			
-						 		// }else{
-						 		// 	uni.showToast({
-						 		// 		title : '手机号码有误',
-						 		// 		icon : 'none',
-						 		// 	})
-						 		// }
 						    }
 						 }) 
 					  }
