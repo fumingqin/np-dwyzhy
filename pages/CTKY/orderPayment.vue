@@ -294,6 +294,16 @@
 				// console.log('用户信息',that.userInfo);
 				// console.log('订单信息',that.orderInfo);
 				// console.log('idNameType',that.idNameType);
+				
+				var companyCode = '';
+				// #ifdef H5
+				companyCode = '南平旅游H5';
+				// #endif
+				// #ifdef APP-PLUS
+				companyCode = '南平旅游APP';
+				// #endif
+				console.log(companyCode);
+				
 				var that = this;
 				uni.showLoading();
 				uni.request({
@@ -303,7 +313,7 @@
 						'content-type': 'application/json'
 					},
 					data: {
-						companyCode: '南平旅游H5',
+						companyCode: companyCode,
 						clientID: that.userInfo.unid, //用户ID
 						clientName: that.userInfo.username, //用户名
 						phoneNumber: that.userInfo.phoneNumber, //手机号码
@@ -382,7 +392,7 @@
 							id: res.data.data.id
 						},
 						success: (payData) => {
-							// console.log(res.data);
+							console.log('支付参数',payData);
 							if (payData.data != null) {
 								if (payData.data.data != null) {
 									uni.hideLoading();
@@ -452,7 +462,10 @@
 
 			//--------------------------调起支付--------------------------
 			payment: function() {
+				
 				var that = this;
+				console.log('点击了支付', that.paymentData);
+				
 				// #ifdef H5
 				console.log('点击了支付', that.paymentData);
 				WeixinJSBridge.invoke('getBrandWCPayRequest', {
@@ -477,7 +490,7 @@
 					} else if (res.err_msg == "get_brand_wcpay_request:cancel") {
 						// alert("您取消了支付，请重新支付");
 						uni.showToast({
-							title: '您取消了支付，请重新支付',
+							title: '您取消了支付',
 							icon: 'none'
 						})
 					} else if (res.err_msg == "get_brand_wcpay_request:faile") {
@@ -495,22 +508,50 @@
 				});
 				// #endif
 				
+				
 				// #ifdef APP-PLUS
+				uni.hideLoading()
 				uni.requestPayment({
 					provider: 'wxpay',
-					orderInfo: that.testOrderInfo,
-					success: function(res) {
-						uni.showToast({
-							title: '支付成功',
-						})
-						uni.redirectTo({
-							url: '/pages/CTKY/paySuccess'
-						})
+					orderInfo: {
+						appid: that.paymentData.AppId,
+						timestamp: that.paymentData.TimeStamp,
+						noncestr: that.paymentData.NonceStr,
+						package: 'Sign=WXPay',
+						sign: that.paymentData.PaySign,
+						partnerid: that.paymentData.PartnerId, 
+						prepayid: that.paymentData.PrepayId,
 					},
+					success:function(res){
+						console.log(response)
+						if(response.errCode == 0) {//成功
+							uni.showToast({
+								title: '支付成功',
+								icon: 'none'
+							})
+							uni.redirectTo({
+								url: '/pages/CTKY/paySuccess',
+							})
+						}else if(response.errCode == -1) {//错误
+							uni.showToast({
+								title: '支付失败，请重新支付',
+								icon: 'none'
+							})
+							uni.redirectTo({
+								url: '/pages/CTKY/payFail'
+							})
+						}else if(response.errCode == -2) {//用户取消
+							uni.showToast({
+								title: '您取消了支付',
+								icon: 'none'
+							})
+						}
+					},
+										
 					fail: function(ee) {
-						// console.log(ee)
+						console.log(ee)
 						uni.showToast({
-							title: '支付失败，请检查手机网络是否正常，如若无问题请联系客服',
+							title: '拉起支付失败，请检查网络后重试',
 							icon: 'none',
 							duration: 3000
 						})
