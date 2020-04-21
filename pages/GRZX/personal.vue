@@ -69,6 +69,7 @@
 				openId_qq:'',
 				openId_wx:'',
 				username:'',
+				port:'',
 			};
 		},
 		onLoad:function(){
@@ -91,6 +92,9 @@
 		methods:{
 			...mapMutations(['login']),
 			async loadUserInfo(){
+				uni.showLoading({
+					title:'加载中...'
+				})
 				var theself=this;
 				uni.getStorage({
 					key:'backUrl',
@@ -110,6 +114,7 @@
 									data:res1.data.data,
 								})
 								var base64=res1.data.data.portrait;
+								theself.port=res1.data.data.portrait;
 								if(theself.isBase64(base64)){
 									base64ToPath(base64)
 									  .then(path => {
@@ -149,6 +154,7 @@
 								theself.username=res1.data.data.username;
 							}
 						})
+						uni.hideLoading();
 					}
 				})	
 			},
@@ -210,15 +216,11 @@
 							})
 						  }
 						});
-						// pathToBase64(res.tempFilePaths[0])
-						// .then(base64 => {
-						// 	
-						// })
-						 
 					}
 				})
 			},
 			formSubmit: function(e) {
+				uni.showLoading({					title:'保存中...'				})
 				console.log(this.portrait)
 				console.log(this.port)
 				console.log(this.unid)
@@ -231,70 +233,35 @@
 				console.log(this.backImg)
 				console.log(this.phoneNumber)
 				console.log(this.username)
-				var that=this;
-				var port=this.portrait;
-				if(this.isBase64(port)){
-					pathToBase64(this.portrait)
-					.then(base64 => {
-						that.portrait=JSON.stringify(base64);
-						console.log(that.portrait)
-						uni.request({
-							url:'http://218.67.107.93:9210/api/app/changeInfo',
-							data:{
-								portrait:this.portrait,
-								unid:this.unid,
-								openId_qq:this.openId_qq,
-								openId_wx:this.openId_wx,
-								// openId_qq:'',
-								// openId_wx:'',
-								gender:this.selector,
-								address:this.address,
-								nickname:this.nickname,
-								birthday:this.birthday,
-								backImg:this.backImg,
-								phoneNumber:this.phoneNumber,
-								username:this.username,
-							},
-							method:'POST',
-							success(res) {
-								console.log(res)
-							}
-						})
-					})//结束
-				}else{
-					uni.request({
-						url:'http://218.67.107.93:9210/api/app/changeInfo',
-						data:{
-							portrait:this.portrait,
-							unid:this.unid,
-							openId_qq:this.openId_qq,
-							openId_wx:this.openId_wx,
-							gender:this.selector,
-							address:this.address,
-							nickname:this.nickname,
-							birthday:this.birthday,
-							backImg:this.backImg,
-							phoneNumber:this.phoneNumber,
-							username:this.username,
-						},
-						method:'POST',
-						success(res) {
-							console.log(res)
-						}
-					})
-				}
-				var list={
-						portrait:port,
+				uni.request({
+					url:'http://218.67.107.93:9210/api/app/changeInfo',
+					data:{
+						portrait:this.port,
 						unid:this.unid,
 						openId_qq:this.openId_qq,
 						openId_wx:this.openId_wx,
-						// openId_qq:'12',
-						// openId_wx:'12',
+						gender:this.selector,
+						address:this.address,
+						nickname:this.nickname,
+						birthday:this.birthday,
+						backImg:this.backImg,
+						phoneNumber:this.phoneNumber,
+						username:this.username,
+					},
+					method:'POST',
+					success(res) {
+						console.log(res)
+					}
+				})
+				var list={
+						portrait:this.portrait,
+						unid:this.unid,
+						openId_qq:this.openId_qq,
+						openId_wx:this.openId_wx,
 						gender:this.gender,
 						address:this.address,
 						nickname:this.nickname,
 						birthday:this.birthday,
-						//autograph:'123',
 						backImg:this.backImg,
 						phoneNumber:this.phoneNumber,
 						username:this.username,
@@ -304,6 +271,7 @@
 					data:list,
 				})
 				 this.login(list);
+				 uni.hideLoading();
 				 uni.navigateBack();
 			},
 			getPhoto(){
@@ -313,18 +281,18 @@
 					//sourceType:['album'],
 					success(res) {
 						var tempFilePaths = res.tempFilePaths;
-						that.port=res.tempFiles;
 						uni.saveFile({
 						  tempFilePath: tempFilePaths[0],
 						  success: function (res1) {
-							var savedFilePath = res1.savedFilePath;
 							 that.portrait=res1.savedFilePath;
+							 pathToBase64(res1.savedFilePath)
+							 .then(base64 => {
+								 that.port=base64;
+							 })
 						  }
 						}); 
 					}
-				})
-				
-				
+				})	
 			},
 			//------------判断是否为base64格式-----------
 			isBase64:function(str) {
@@ -408,6 +376,7 @@
 		.an{
 			width: 90%;
 			height: 104upx;
+			line-height: 104upx;
 			padding-top: 12upx;
 			font-size: 40upx;
 			margin-top: 48upx; 

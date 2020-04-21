@@ -608,14 +608,14 @@
 			</view>
 
 			<!-- 二维码弹框 -->
-			<uni-popup2 ref="popup" type="bottom">
+			<uni-popup2 ref="popup5" type="bottom">
 				<view class="box_Vlew">
 					<view class="box_titleView">
 						<text class="box_title">扫码入园</text>
 						<text class="box_icon jdticon icon-fork " @click="close"></text>
 					</view>
 					<view class="box_qrCodeView">
-						<image class="box_qrCodeImage" :src="orderIndexData.orderQrCode" mode="aspectFill"></image>
+						<canvas canvas-id="qrcode2" style="width: 160px; height: 160px; left: 156upx; margin-top: 24upx;"  />
 						<view class="box_qrCodeTextView">
 							<text class="box_qrCodeText">取票码：{{orderIndexData.orderTicketNumber}}</text>
 							<text class="box_qrCodeText">预订人数：{{orderIndexData.orderUserIndex}}人</text>
@@ -760,6 +760,7 @@
 	import uniPopup from "@/components/Order/uni-popup/uni-popup.vue";
 	import uniIcons from "@/components/Order/uni-icons/uni-icons.vue";
 	import uniPopup2 from "@/components/Order/uni-popup/uni-popup2.vue";
+	import uQRCode from "@/common/uqrcode.js"
 	export default {
 		components: {
 			uniSegmentedControl,
@@ -924,10 +925,10 @@
 					data: {
 						unid : that.userInfo.unid
 					},
-					success: (res) => {
+					success:function(res){
 						// console.log('返回数据',res);
 						var ticketArray = []; 
-						if (res.data.data.length > 0){
+						if (res.data.data){
 							for(var i = 0; i < res.data.data.length; i++) {
 								that.info.push(res.data.data[i]);
 							}
@@ -1015,7 +1016,6 @@
 							success:(res)=>{
 								// console.log(res)
 								// console.log(that.info)
-								
 								that.info = res.data.data;
 								that.info = this.info.sort((a, b) => b.orderNumber - a.orderNumber)
 								that.finishArr = [];
@@ -1045,7 +1045,7 @@
 						       icon:'none',
 						       success:function(){
 						        uni.redirectTo({
-						         url:'../GRZX/userLogin?loginType=3'
+						         url:'../GRZX/userLogin?loginType=4'
 						        })
 						       }
 						})
@@ -1057,13 +1057,16 @@
 			},
 			
 			//-------------------------景区门票-打开二维码弹框-------------------------
-			open(e) {
+			open:function (e) {
+					// uni.showLoading({
+					// 	title:'正在查询二维码...'
+					// })
 					this.orderIndexData = e;
-					this.$refs.popup.open()
+					this.make(e);
 			},
 			//-------------------------景区门票-关闭二维码弹框-------------------------
 			close() {
-				this.$refs.popup.close()
+				this.$refs.popup5.close()
 			},
 			//-------------------------景区门票-打开退票弹框-------------------------
 			open2(e) {
@@ -1179,7 +1182,23 @@
 					})
 				}
 			})
-			}
+			},
+			
+			//生成二维码
+			make:function(e) {
+			      uQRCode.make({
+			        canvasId: 'qrcode2',
+			        componentInstance: this,
+			        text: this.orderIndexData.orderTicketNumber,
+			        size: 160,
+			        margin: 10,
+			        backgroundColor: '#ffffff',
+			        foregroundColor: '#000000',
+			        fileType: 'jpg',
+			        correctLevel: uQRCode.defaults.correctLevel,
+			      })
+				  this.$refs.popup5.open()
+			    }
 
 
 		}
@@ -1463,7 +1482,7 @@
 			text-align: center;
 
 			.box_qrCodeImage {
-				margin-top: 24upx;
+				
 				width: 320upx;
 				height: 320upx;
 			}
