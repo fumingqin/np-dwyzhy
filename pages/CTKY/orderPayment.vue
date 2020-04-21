@@ -347,6 +347,8 @@
 								title: res.data.message,
 								icon: 'none'
 							})
+						} else {
+							console.log('出错了');
 						}
 					},
 					fail(res) {
