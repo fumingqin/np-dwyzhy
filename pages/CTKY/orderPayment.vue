@@ -119,6 +119,7 @@
 				totalPrice: '', //总价格
 				paymentData: [], //保存支付参数
 				timer: '', //定时器数据
+				orderID:'',//订单id
 			}
 		},
 		onLoad: function(param) {
@@ -138,16 +139,16 @@
 				this.insurance = '';
 				this.isInsurance = false;
 			}
-			console.log('是否有保险', this.isInsurance)
+			
 			//--------------------------计时器--------------------------
 			uni.getStorage({
 				key: 'keYunCountDown',
 				success: (res) => {
 					this.countDownDate = res.data;
-					this.countDown();
+					// this.countDown();
 				},
 				fail: () => {
-					this.countDown();
+					// this.countDown();
 				}
 			})
 
@@ -157,9 +158,28 @@
 		},
 		//--------------------------监听页面返回--------------------------
 		onBackPress(options) {
-			if (options.from === 'backbutton | navigateBack') {  
-				//当页面返回的时候取消订单
-				
+			var that = this;
+			console.log('返回',that.orderID);
+			if (options.from === 'backbutton') {
+				console.log('返回',options.from);
+				if(that.orderID) {
+					console.log('开始退票');
+					//当页面返回的时候取消订单
+					uni.request({
+						url:'http://218.67.107.93:9210/api/app/returnCpxsOrder',
+						method:'POST',
+						header:{'content-type':'application/x-www-form-urlencoded'},
+						data:{
+							id : that.orderID
+						},
+						success: (res) => {
+							console.log('成功',res);
+						},
+						fail(res) {
+							console.log('错误',res);
+						}
+					})
+				}
 			}
 		},
 		methods: {
@@ -213,17 +233,16 @@
 								userType: data.data[i].userType,
 							}
 							that.idNameType.push(array);
-							// console.log('idNameType', that.idNameType);
 							that.ticketNum++;
 							//把儿童票筛选出来
 							if (that.passengerInfo.userType == '儿童') {
 								that.childrenNum++;
-								// console.log('idNameType', that.childrenNum);
 							} else {
 								that.adultNum++;
-								// console.log('idNameType', that.adultNum);
 							}
 						}
+						//等待读取用户缓存成功之后再请求接口数据
+						that.countDown();
 					},
 					fail() {
 						uni.showToast({
@@ -268,6 +287,7 @@
 			},
 			//--------------------------计时器--------------------------
 			countDown: function() {
+				console.log('订单信息');
 				// var interval = setInterval(() => {
 				// 	--this.countDownDate;
 				// 	uni.setStorage({
@@ -281,9 +301,9 @@
 					key: 'keYunCountDown',
 					data: this.countDownDate,
 				})
-				// console.log('用户信息',that.userInfo);
-				// console.log('订单信息',that.orderInfo);
-				// console.log('idNameType',that.idNameType);
+				console.log('用户信息',that.userInfo);
+				console.log('订单信息',that.orderInfo);
+				console.log('idNameType',that.idNameType);
 				//--------------------------发起下单请求-----------------------
 				uni.showLoading();
 				uni.request({
@@ -331,6 +351,7 @@
 									console.log('success');
 								}
 							})
+							that.orderID = res.data.data.id;
 							//获取车票支付参数
 							that.getTicketPaymentInfo(res);
 						} else if (res.data.code == 'FAILED') {

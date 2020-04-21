@@ -166,7 +166,7 @@
 							//loginType=1,泉运登录界面
 							//loginType=2,今点通登录界面
 							//loginType=3,南平综合出行界面
-							//loginType=4,武夷股份登录界面
+							//loginType=4,武夷股份登录界面(大武夷智慧游)
 							url  : '/pages/GRZX/userLogin?loginType=4&&urlData=1'
 						}) 
 					},500);
@@ -282,12 +282,12 @@
 		height: 29upx;
 		position: absolute;
 		left:82%;
-		top:-1upx;
+		top:-3upx;
 	}
 	.typeBox{  //普通用户
 		width: 126upx;
 		height: 42upx;
-		background-color: #C25E4E;
+		background-color: #3480B8;
 		position: absolute;
 		top: 245upx;
 		left: 24%;
@@ -373,7 +373,7 @@
 	}
 	.advertClass{		//广告
 		width: 91.47%;
-		height: 142upx;
+		height: 160upx;
 		margin-top: 42upx;
 		margin-left: 4.27%;
 	}
