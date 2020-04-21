@@ -141,16 +141,14 @@
 			}
 			
 			//--------------------------计时器--------------------------
-			uni.getStorage({
-				key: 'keYunCountDown',
-				success: (res) => {
-					this.countDownDate = res.data;
-					// this.countDown();
-				},
-				fail: () => {
-					// this.countDown();
-				}
-			})
+			// uni.getStorage({
+			// 	key: 'keYunCountDown',
+			// 	success: (res) => {
+			// 		this.countDownDate = res.data;
+			// 	},
+			// 	fail: () => {
+			// 	}
+			// })
 
 		},
 		onUnload() {
@@ -162,24 +160,7 @@
 			// console.log('返回',that.orderID);
 			if (options.from === 'backbutton') {
 				// console.log('返回',options.from);
-				if(that.orderID) {
-					console.log('开始退票');
-					//当页面返回的时候取消订单
-					uni.request({
-						url:'http://218.67.107.93:9210/api/app/returnCpxsOrder',
-						method:'POST',
-						header:{'content-type':'application/x-www-form-urlencoded'},
-						data:{
-							id : that.orderID
-						},
-						success: (res) => {
-							console.log('成功',res);
-						},
-						fail(res) {
-							console.log('错误',res);
-						}
-					})
-				}
+				that.refundTticket();
 			}
 		},
 		methods: {
@@ -285,7 +266,27 @@
 				this.adultTotalPrice = adult.length * this.orderInfo[0].ticketAdultPrice;
 				this.childrenTotalPrice = children.length * this.orderInfo[0].ticketChildPrice;
 			},
-			
+			//--------------------------退票-----------------------
+			refundTticket:function() {
+				if(that.orderID) {
+					console.log('开始退票');
+					//当页面返回的时候取消订单
+					uni.request({
+						url:'http://218.67.107.93:9210/api/app/returnCpxsOrder',
+						method:'POST',
+						header:{'content-type':'application/x-www-form-urlencoded'},
+						data:{
+							id : that.orderID
+						},
+						success: (res) => {
+							console.log('成功',res);
+						},
+						fail(res) {
+							console.log('错误',res);
+						}
+					})
+				}
+			},
 			//--------------------------发起下单请求-----------------------
 			getOrder: function() {
 				// console.log('用户信息',that.userInfo);
@@ -376,27 +377,28 @@
 							resultStr: res.data.data.resultStr,
 							id: res.data.data.id
 						},
-						success: (res) => {
+						success: (payData) => {
 							// console.log(res.data);
-							if (res.data != null) {
-								if (res.data.data != null) {
+							if (payData.data != null) {
+								if (payData.data.data != null) {
 									uni.hideLoading();
-									that.paymentData = JSON.parse(res.data.data);
+									that.paymentData = JSON.parse(payData.data.data);
 									that.isPayEnable = 1;
+									that.totalPrice = res.data.data.orderPrice;
 									clearInterval(timer);
 								}
-								if (res.data.msg == '获取支付参数成功！') {
+								if (payData.data.msg == '获取支付参数成功！') {
 									uni.hideLoading();
 									uni.showToast({
 										title: '请在2分钟内完成支付',
 										icon: 'none'
 									})
 									clearInterval(timer);
-									//开启计时器
-									// that.countDown();
-								} else if (res.data.msg != null) {
+									//--------------------------------开启计时器--------------------------------
+									that.getDate(res);
+								} else if (payData.data.msg != null) {
 									uni.showToast({
-										title: res.data.msg,
+										title: payData.data.msg,
 										icon: 'none'
 									})
 									clearInterval(timer);
@@ -433,6 +435,15 @@
 						})
 					}
 				}, 1000)
+			},
+			//--------------------------倒计时结束--------------------------
+			countDownEnd: function() {
+				uni.showToast({
+					title: '支付超时，已自动取消订单',
+					icon: 'none',
+					duration: 2000
+				})
+				that.refundTticket();
 			},
 			//--------------------------调起支付--------------------------
 			payment: function() {
@@ -516,9 +527,11 @@
 
 			},
 			//获取当前时间并格式化
-			getDate: function() {
+			getDate: function(res) {
+				var that = this;
+				console.log('1111',res);
 				//先提取订单下单时间把空格转换成T
-				var a = this.orderInfo.setOrderTime.replace(' ', 'T')
+				var a = res.data.data.createdTime.replace(' ', 'T')
 				//把时间转换成时间戳---订单时间
 				var orderDate = new Date(a).getTime();
 			
@@ -539,11 +552,11 @@
 				//用当前时间-下单时间再除于1000就是秒
 				var d = (c - orderDate) / 1000;
 			
-				//这里的300秒就是支付倒计时
+				//这里的214秒就是支付倒计时
 				var e = 214 - d;
 			
-				this.countDownDate = e;
-				this.countDown();
+				that.countDownDate = e;
+				that.countDown();
 			},
 		}
 	}
