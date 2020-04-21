@@ -107,11 +107,22 @@
 				
 			},
 			clearStorage(){
+				// var list;
+				// uni.getStorage({
+				// 	key:'userInfo',
+				// 	success(res) {
+				// 		list=res.data;
+				// 	}
+				// })
 				uni.showModal({
 				    content: '是否清除数据',
 				    success: (e)=>{
 				    	if(e.confirm){
 							uni.clearStorage();
+							// uni.setStorage({
+							// 	key:'userInfo',
+							// 	data:list
+							// })
 							uni.redirectTo({
 								url:'/pages/GRZX/set'
 							})

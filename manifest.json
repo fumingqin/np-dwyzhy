@@ -135,5 +135,8 @@
     },
     "mp-toutiao" : {
         "usingComponents" : true
+    },
+    "h5" : {
+        "title" : "大武夷智慧游"
     }
 }

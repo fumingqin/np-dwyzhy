@@ -209,6 +209,12 @@
 													}
 												}
 											})
+										},
+										fail(err) {
+											uni.showToast({
+												title:err,
+												icon:"none"
+											})
 										}
 									})
 								}else{

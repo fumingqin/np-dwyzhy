@@ -98,6 +98,14 @@
 				})
 			}
 			if(index === 1){
+				// #ifdef APP-PLUS
+				const pages = getCurrentPages();
+				const page = pages[pages.length - 1];
+				const currentWebview = page.$getAppWebview();
+				currentWebview.hideTitleNViewButtonRedDot({
+					index
+				});
+				// #endif
 				uni.navigateTo({
 					url:'/pages/GRZX/myNews'
 				})
@@ -282,7 +290,10 @@
 		height: 29upx;
 		position: absolute;
 		left:82%;
+		/* #ifdef APP-PLUS */
 		top:-3upx;
+		/* #endif */
+		top:0upx;
 	}
 	.typeBox{  //普通用户
 		width: 126upx;
