@@ -45,6 +45,9 @@
 		},
 		onLoad(){
 			this.load();
+			// #ifdef  H5
+			this.load1();
+			//#endif
 		},
 		methods:{
 			...mapMutations(['logout']),
@@ -54,6 +57,18 @@
 					url:url
 				})
 			},
+			// #ifdef  H5
+			load1(){
+				uni.getStorage({
+					key:'opCode',
+					success(res1){
+						uni.showToast({
+							title:res1.data,
+						})
+					}
+				})
+			},
+			//#endif
 			async load(){
 				var that=this;
 				uni.getStorage({
@@ -107,11 +122,22 @@
 				
 			},
 			clearStorage(){
+				// var list;
+				// uni.getStorage({
+				// 	key:'userInfo',
+				// 	success(res) {
+				// 		list=res.data;
+				// 	}
+				// })
 				uni.showModal({
 				    content: '是否清除数据',
 				    success: (e)=>{
 				    	if(e.confirm){
 							uni.clearStorage();
+							// uni.setStorage({
+							// 	key:'userInfo',
+							// 	data:list
+							// })
 							uni.redirectTo({
 								url:'/pages/GRZX/set'
 							})
