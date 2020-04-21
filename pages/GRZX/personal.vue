@@ -91,7 +91,7 @@
 		},
 		methods:{
 			...mapMutations(['login']),
-			async loadUserInfo(){
+			loadUserInfo(){
 				uni.showLoading({
 					title:'加载中...'
 				})
@@ -109,13 +109,14 @@
 							url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
 							method:"POST",
 							success(res1) {
+								console.log(res1,'res1')
 								uni.setStorage({
 									key:'userInfo',
 									data:res1.data.data,
 								})
 								var base64=res1.data.data.portrait;
 								theself.port=res1.data.data.portrait;
-								if(theself.isBase64(base64)){
+								if(base64!=""&&base64!=null&&theself.isBase64(base64)){
 									base64ToPath(base64)
 									  .then(path => {
 										theself.portrait=path;

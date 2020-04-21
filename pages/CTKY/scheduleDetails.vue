@@ -12,7 +12,8 @@
 							{{utils.timeTodate('Y-m-d H:i',ticketDetail.setTime)}}出发</view>
 						<view class="textCLass" style="font-size: 32upx;color: #333333;margin-top:21upx ;display: block;padding: 0;">{{ticketDetail.startStaion}}
 							→ {{ticketDetail.endStation}}</view>
-						<view class="textCLass" style="font-size: 24upx;color: #999999; margin-top:18upx ;display: block;padding: 0;">{{ticketDetail.carType}}  儿童半票</view>
+						<view class="textCLass" style="font-size: 24upx;color: #999999; margin-top:18upx ;display: block;padding: 0;">{{ticketDetail.carType}}
+							儿童半票</view>
 					</view>
 					<view style="display: flex; flex-direction: column;">
 						<view class="textCLass" style="font-size: 34upx;color: #FC4646;">￥{{ticketDetail.fare}}</view>
@@ -21,7 +22,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<!-- 地图标点 -->
 			<view class="orderCommonClass">
 				<view style="margin-left: 41upx;margin-top: 35upx;margin-bottom: 35upx;font-size:SourceHanSansSC-Regular ;color: #2C2D2D;font-size: 30upx;">地图标点</view>
@@ -30,7 +31,7 @@
 					<image src="../../static/CTKY/right.png" style="width: 11upx;height: 21upx;margin-left: 10upx;"></image>
 				</view>
 			</view>
-			
+
 			<!-- 上下车点选择,0是普通购票不显示上下车点选择 -->
 			<view class="stationContentView" v-if="ticketDetail.shuttleType == '定制班车'">
 				<view class="boarding" style="border-bottom:#EAEAEA solid 1px;" @tap="startStationTap">
@@ -48,7 +49,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<!-- 乘车人信息 -->
 			<view class="orderCommonClass" style="flex-direction: column;padding-bottom: 25upx;">
 				<view style="margin-top: 35upx;margin-bottom: 35upx;margin-left: 41upx;font-size:SourceHanSansSC-Regular ;color: #2C2D2D;font-size: 30upx;">乘车人信息</view>
@@ -56,7 +57,8 @@
 					<button @tap="addPassenger" style="width: 150upx;height: 66upx;align-items: center;font-size: 28upx; color:#2C2D2D ;text-align: center;background: #FFFFFF;">添加</button>
 					<button @tap="pickPassenger" style="width: 150upx;height: 66upx;align-items: center;font-size: 28upx; color:#2C2D2D ;text-align: center;background: #FFFFFF;">选择</button>
 				</view>
-				<view style="flex-direction: column;background: #FFFFFF; " v-for="(items,index) in passengerInfo" :key=index v-model="passengerInfo">
+				<view style="flex-direction: column;background: #FFFFFF; " v-for="(items,index) in passengerInfo" :key=index
+				 v-model="passengerInfo">
 					<view class="passengerInfoDetail">
 						<view style="display: flex;text-align: center;align-items: center;">
 							<view style="width: 73upx;">
@@ -78,7 +80,7 @@
 					</view>
 				</view>
 			</view>
-			
+
 			<!-- 优惠券 -->
 			<view class="orderCommonClass" @click="toggleMask" v-if="false">
 				<view style="margin-left: 41upx;margin-top: 35upx;margin-bottom: 35upx;font-size:SourceHanSansSC-Regular ;color: #2C2D2D;font-size: 30upx;">优惠券</view>
@@ -87,7 +89,7 @@
 					<image src="../../static/CTKY/right.png" style="width: 11upx;height: 21upx;margin-left: 10upx;"></image>
 				</view>
 			</view>
-			
+
 			<!-- 呼出优惠券面板 -->
 			<popup type="bottom" ref="popup">
 				<view class="discountView">
@@ -96,33 +98,33 @@
 						<text class="Co_text1">优惠券</text>
 						<text class="Co_text2" @click="couponReset">不使用优惠券</text>
 					</view>
-					
+
 					<!-- 优惠券列表 -->
 					<scroll-view scroll-y="true" class="discountScroll">
-						
+
 						<view class="coupon-item" v-for="(item,index) in couponList" :key="index" @tap="couponEvent">
 							<view class="con">
 								<view class="left">
 									<text class="title">{{item.title}}</text>
 									<text class="time">有效期至2019-06-30</text>
 								</view>
-								
+
 								<view class="right">
 									<text class="price">{{item.price}}</text>
 									<text>满{{couponList[index].condition}}可用</text>
 								</view>
-								
+
 								<view class="circle l"></view>
 								<view class="circle r"></view>
 							</view>
 							<text class="tips">限新用户使用</text>
 						</view>
-						
+
 					</scroll-view>
-					
+
 				</view>
 			</popup>
-			
+
 			<!-- 乘车险 -->
 			<view class="orderCommonClass" v-if="ticketDetail.insurePrice != 0">
 				<view style="display: flex; align-items: center;">
@@ -133,7 +135,7 @@
 					<radio class="Mp_box" value="1" :color="'#01aaef'" :checked="isInsurance===1 ? true : false" @click="insuranceTap"></radio>
 				</view>
 			</view>
-			
+
 			<!-- 购票须知 -->
 			<view class="orderCommonClass">
 				<view style="display: flex; align-items: center;">
@@ -152,16 +154,19 @@
 								购票
 								1. 票价说明：坐车网所代售的客运站车票票价与窗口售票保持一致，不加收任何服务费用。坐车网暂 不提供特殊旅客（包括伤病旅客、残疾旅客、军人、孕妇、婴儿和儿童等）优惠车票的购票服务，如 需购买，建议直接到客运站售票窗口购买。
 								2. 预购时间：坐车网可以为您提供当天当前时间3小时以后至未来数天内的预购票服务，最大预购天数 会根据坐车网业务调整可能有所不同，具体以坐车网售票系统为准。
-								3. 取票人信息：取票人的相关个人信息和联系方式将是您取票的重要凭证。提交订单时，请确认您输入 的取票人信息正确无误，并保持所填的手机处在通讯畅通状态，以便坐车网的服务人员能及时与您联系 。如您所留的电话号码长时间处于无人接听、忙音等状况而使我们的服务人员不能及时联系到您，由此 导致的不能及时确认、无法及时出票等问题，坐车网将不承担任何法律责任。
+								3. 取票人信息：取票人的相关个人信息和联系方式将是您取票的重要凭证。提交订单时，请确认您输入 的取票人信息正确无误，并保持所填的手机处在通讯畅通状态，以便坐车网的服务人员能及时与您联系
+								。如您所留的电话号码长时间处于无人接听、忙音等状况而使我们的服务人员不能及时联系到您，由此 导致的不能及时确认、无法及时出票等问题，坐车网将不承担任何法律责任。
 								4. 支付说明：自成功提交订单起，订单的支付入口有效时间为10分钟，订单的有效时间为30分钟。您需 要在提交订单起30分钟内完成操作，逾时则被视作支付不成功，该订单所含车票会被退回系统。
 								5. 支付安全：为了确保您的财产安全，在线支付时请务必保管好您个人银行帐号、密码、回单等资料，建 议避免在网吧等公共场所进行网银支付等操作。
 								6. 车票信息：您购票成功后，系统会自动向您填写的手机号码发送电子票号、取票密码，电子票号、取 票密码以及个人信息是您取票时的重要凭证，请妥善保管。
 								7. 特价优惠车票：坐车网不定期推出特价优惠等购票活动，如选择参与活动的车票进行购买即可享受优 惠。
 								8. 退票说明：坐车网不办理退票，如需退票，请您在发车前至乘车站按客运站规定办理。
-								9. 班次、票价变动：坐车网客运联网售票系统所提供班次信息查询及售票服务与客运站售票系统同步，但 客运站方（或承运方）在实际发车时仍可能临时取消相应班次或变动发车时间、调整票价、要求补差价或加 收燃油附加费，出现上述情况请购票乘客尽量与客运站方直接协商解决。坐车网可提供一定协助，但不承诺 解决，同时坐车网不承担相应责任。
+								9. 班次、票价变动：坐车网客运联网售票系统所提供班次信息查询及售票服务与客运站售票系统同步，但 客运站方（或承运方）在实际发车时仍可能临时取消相应班次或变动发车时间、调整票价、要求补差价或加
+								收燃油附加费，出现上述情况请购票乘客尽量与客运站方直接协商解决。坐车网可提供一定协助，但不承诺 解决，同时坐车网不承担相应责任。
 								10. 特价优惠活动：坐车网不定期会推出特价立减返现等优惠活动，如所选的线路刚好有符合优惠条件，可以 享受比窗口更优惠的价格。
 								取票
-								1. 取票方式： 旅客在坐车网成功购票后，有自助取票和人工取票两种方式，不同车票支持的取票方式不同 ： 一自助取票，车站有自助取票机的刷身份证或输入订单相关信息自动打印；二人工出票，到乘车站售票 窗口或咨询服务台出示身份凭证报订单相关信息人工出票。订票后请查看订单详情仔细阅读取票说明，按要 求取票。
+								1. 取票方式： 旅客在坐车网成功购票后，有自助取票和人工取票两种方式，不同车票支持的取票方式不同 ： 一自助取票，车站有自助取票机的刷身份证或输入订单相关信息自动打印；二人工出票，到乘车站售票
+								窗口或咨询服务台出示身份凭证报订单相关信息人工出票。订票后请查看订单详情仔细阅读取票说明，按要 求取票。
 								如订广州地区的车票（除番禺汽车站外），订票成功2小时起即可凭身份证和取票密码到发车站珠江通取票机 刷身份证或凭密码登录进行取票，建议平峰期提前30分钟，高峰期提前60分钟到站取票。
 								在珠江通操作打印车票时，如遇机器故障未能出票，请勿离开该台机子，并即刻联系96900协助处理，如无法 及时联系，我司将无法了解当时情况，对因此造成的损失本公司将不承担任何责任。
 								如订广州番禺汽车站的车票，订票成功后，可凭身份证、订单信息到发车站售票窗口报订单号进行取票，建议 平峰期提前30分钟，高峰期提前60分钟到站取票。
@@ -179,18 +184,22 @@
 								注意事项
 								1. 信息准确：您需要确保所提交的订单信息准确无误，由于用户原因（包括但不限于错误提供取票人姓名、证件号码、发车时间、 发车班次、手机号码等信息）导致购票错误，坐车网不承担任何法律责任。
 								2. 剩余票数：于售票渠道的多样性，系统所显示的剩余票数可能与实际剩余票数不一致，故系统所显示的剩余票数仅供参考。
-								3. 重复支付：当你进行支付后，系统如没有返回电子票号或显示“服务器繁忙”、“支付失败”、“购票失败”、乱码或“查 询不到你的电子票号”等信息提示时，请按以下提示操作： 请于开始订票后30分钟起通过网站登录“我的订单”查询订单状态， 在没有最终确定购票结果前，切勿重复提交订单。重复提交订单将会导致重购购票，由此所产生的损失将由购票人全部承担。
+								3. 重复支付：当你进行支付后，系统如没有返回电子票号或显示“服务器繁忙”、“支付失败”、“购票失败”、乱码或“查 询不到你的电子票号”等信息提示时，请按以下提示操作：
+								请于开始订票后30分钟起通过网站登录“我的订单”查询订单状态， 在没有最终确定购票结果前，切勿重复提交订单。重复提交订单将会导致重购购票，由此所产生的损失将由购票人全部承担。
 								如果支付完成后发现支付银行账户扣费成功，但订单显示为“等待支付”状态，是因为银行数据没有即时返回给我们，请在订单有 效期内耐心等候。 如旅客没有确定购票结果，从而没有去发车站取票乘车，由此所产生的损失将由旅客本人全部承担。
 								核实票款和订单状态请随时联系坐车网 票务服务中心 4008-802-805（8:30-20:30）
-								4. 短信下发超时或失败：用户在购票成功后，坐车网会通过短信将班次信息、电子票号、取票密码等内容发送至所填写的手机号码 中。但该短信不作为成功订票的凭证，如果购票成功后超过20分钟没有收到通知短信，可能是网络延时而导致， 请直接登录坐车网 查询订单状态。确认为已成交状态可点击“重发取票密码”重新获取短信提示。如多次发送失败，请与坐车网客服人员联系。
+								4. 短信下发超时或失败：用户在购票成功后，坐车网会通过短信将班次信息、电子票号、取票密码等内容发送至所填写的手机号码 中。但该短信不作为成功订票的凭证，如果购票成功后超过20分钟没有收到通知短信，可能是网络延时而导致，
+								请直接登录坐车网 查询订单状态。确认为已成交状态可点击“重发取票密码”重新获取短信提示。如多次发送失败，请与坐车网客服人员联系。
 								5. 取票延误或不取票：用户在坐车网购票成功，但没有到发车站取票乘车的，或误期取票导致错过乘车时间的，所造成的损失由用户 个人全部承担。
 								6. 坐车网客户服务范围：坐车网客户服务不受理在线或电话的订票退改签服务，购票成功后的订单详情请直接登录坐车网“网上售票” ->“我的订单”进行查询；其他客运站信息请直接拨打客运站联系电话进行咨询。
-								7. 关于客运实名制须知： 根据中华人民共和国交通运输部《道路旅客运输及客运站管理规定》第三十六条规定“通过网络、电话等方式实名购票的，购票人应当提供真实准确的旅客有效身份证件信息”。 根据《反恐怖主义法》第二十一条规定长途客运业务经营者、服务提供者，应当对客户身份进行查验。对身份不明或者拒绝身份查验的，不得提供服务。 请确保所填乘客证件信息准确用于客运进站安检、检票乘车进行查验，若因填写错误导致无法进站乘车责任自负。 我们将依照注册协议相关隐私条款保护您所填证件信息。
+								7. 关于客运实名制须知： 根据中华人民共和国交通运输部《道路旅客运输及客运站管理规定》第三十六条规定“通过网络、电话等方式实名购票的，购票人应当提供真实准确的旅客有效身份证件信息”。
+								根据《反恐怖主义法》第二十一条规定长途客运业务经营者、服务提供者，应当对客户身份进行查验。对身份不明或者拒绝身份查验的，不得提供服务。
+								请确保所填乘客证件信息准确用于客运进站安检、检票乘车进行查验，若因填写错误导致无法进站乘车责任自负。 我们将依照注册协议相关隐私条款保护您所填证件信息。
 							</text>
 						</scroll-view>
 					</view>
 				</popup>
-				
+
 				<view style="display: flex;margin-right: 41upx;align-items: center;">
 					<radio class="Mp_box" value="1" :color="'#01aaef'" :checked="selectedValue===1 ? true : false" @click="Selection"></radio>
 				</view>
@@ -210,52 +219,52 @@
 	import popup from "../../components/CTKY/uni-popup/uni-popup.vue";
 	import utils from "@/components/CTKY/shoyu-date/utils.filter.js";
 	export default {
-		components:{
+		components: {
 			popup
-			},
+		},
 		data() {
 			return {
 				utils: utils,
 				title: '',
-				isNormal:0,//判断是普通购票还是定制班车:1是普通0是定制
+				isNormal: 0, //判断是普通购票还是定制班车:1是普通0是定制
 				count: 1,
-				startStation:'',//上车点
-				endStation:'',//下车点
-				indexArray:[],//下标数组
-				startStaionIndex:'',
-				endStationIndex:'',
-				passengerInfo: [],//乘车人数组
+				startStation: '', //上车点
+				endStation: '', //下车点
+				indexArray: [], //下标数组
+				startStaionIndex: '',
+				endStationIndex: '',
+				passengerInfo: [], //乘车人数组
 				couponList: [{
-						couponID: '0',
-						title: '新用户专享优惠券',
-						price: 5,
-						condition: 10,
-					}],
+					couponID: '0',
+					title: '新用户专享优惠券',
+					price: 5,
+					condition: 10,
+				}],
 				couponIndex: '请选择优惠券', //优惠券默认内容
 				couponColor: '', //优惠券couponID，大于等于0触发价格判断事件
 				selectedValue: 0, //同意须知的选中值
 				couponCondition: '', //优惠券的满足条件值
-				isInsurance:1,//默认选择乘车险
+				isInsurance: 1, //默认选择乘车险
 				maskState: 0, //优惠券面板显示状态
-				ticketDate:'',
-				ticketDetail: [],
-				totalPrice:'',//车票总价格
-				passengerNum:0,//乘车人数量
+				ticketDate: '',
+				ticketDetail: [], //车票信息
+				totalPrice: '', //车票总价格
+				passengerNum: 0, //乘车人数量
 			}
 		},
-		
+
 		onLoad(e) {
 			var that = this;
 			//给车票类型赋值，0：普通购票，不显示上下车点选择 1:定制班车，显示上下车点选择
 			this.isNormal = e.isNormal;
-			
+
 			uni.setNavigationBarTitle({
 				title: '填写订单'
 			});
 			//读取订单数据
 			uni.getStorage({
 				key: 'ticketDate',
-				success:function(data){
+				success: function(data) {
 					that.ticketDetail = data.data
 					that.totalPrice = data.data.fare
 					console.log(that.ticketDetail)
@@ -271,36 +280,36 @@
 		},
 		onUnload() {
 			uni.removeStorage({
-			    key: 'ticketDate',
-			    success: function (res) {
-			        console.log('success');
-			    }
+				key: 'ticketDate',
+				success: function(res) {
+					console.log('success');
+				}
 			});
 		},
 		methods: {
 			//乘客数据读取
-			userData(){ 
+			userData() {
 				var that = this;
 				uni.getStorage({
-				    key: 'passengerList',
-				    success: (res) => {
-				        that.passengerInfo = res.data;
+					key: 'passengerList',
+					success: (res) => {
+						that.passengerInfo = res.data;
 						//计算价格
 						that.calculateTotalPrice();
-				    }
+					}
 				});
 				//读取上下车点缓存
 				uni.getStorage({
-					key:'CTKYStationList',
-					success: (res) =>{
+					key: 'CTKYStationList',
+					success: (res) => {
 						that.startStation = res.data.startStation;
 						that.startStaionIndex = res.data.startStationIndex;
 						that.endStation = res.data.endStation;
 						that.endStationIndex = res.data.endStationIndex;
-						if(that.startStation == '') {
+						if (that.startStation == '') {
 							that.startStation = "请选择上车点"
 						}
-						if(that.endStation == '') {
+						if (that.endStation == '') {
 							that.endStation = "请选择下车点"
 						}
 					}
@@ -311,7 +320,7 @@
 				var that = this;
 				//跳转到选择上车点页面
 				uni.navigateTo({
-					url:'/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
+					url: '/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
 				})
 			},
 			//-------------------------------点击下车点-----------------------------
@@ -319,7 +328,7 @@
 				var that = this;
 				//跳转到选择下车点页面
 				uni.navigateTo({
-					url:'/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
+					url: '/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
 				})
 			},
 			//-------------------------------删除乘车人-----------------------------
@@ -327,8 +336,8 @@
 				console.log(e)
 				this.passengerInfo.splice(e, 1)
 				uni.setStorage({
-					key:"passengerList",
-					data:this.passengerInfo,
+					key: "passengerList",
+					data: this.passengerInfo,
 				})
 			},
 			//-------------------------------显示优惠券面板-----------------------------
@@ -336,7 +345,7 @@
 				this.$refs.popup.open();
 			},
 			//-------------------------------优惠券赋值-----------------------------
-			couponEvent(){
+			couponEvent() {
 				console.log('1111111')
 			},
 			//-------------------------------取消优惠券-----------------------------
@@ -375,11 +384,11 @@
 			checkLocation() {
 				if (this.ticketDetail.shuttleType == '普通班车') {
 					uni.navigateTo({
-						url:'/pages/CTKY/traditionCarMark'
+						url: '/pages/CTKY/traditionCarMark'
 					})
-				}else if (this.ticketDetail.shuttleType == '定制班车') {
+				} else if (this.ticketDetail.shuttleType == '定制班车') {
 					uni.navigateTo({
-						url:'/pages/CTKY/specialMark'
+						url: '/pages/CTKY/specialMark'
 					})
 				}
 			},
@@ -391,7 +400,7 @@
 				})
 			},
 			//点击添加乘客
-			addPassenger(){
+			addPassenger() {
 				uni.navigateTo({
 					url: '/pages/GRZX/addPassenger',
 				})
@@ -414,60 +423,61 @@
 				//半价票单价
 				let halfPrice = that.ticketDetail.halfTicket;
 				let insurePrice = that.ticketDetail.insurePrice;
-				if (that.isInsurance == 0) {//不选择保险
+				if (that.isInsurance == 0) { //不选择保险
 					insurePrice = 0;
 				}
 				//查看乘车人个数
-				if(that.passengerInfo.length > 0) {
-					for(var i = 0; i < that.passengerInfo.length; i ++){
-						that.passengerNum ++;
+				if (that.passengerInfo.length > 0) {
+					for (var i = 0; i < that.passengerInfo.length; i++) {
+						that.passengerNum++;
 						//把儿童票筛选出来
-						if(that.passengerInfo.userType == '儿童'){
+						if (that.passengerInfo.userType == '儿童') {
 							//将儿童票加入数组
 							childArray.push(that.passengerInfo[i]);
-							childNum ++;
-						}else {
+							childNum++;
+						} else {
 							//将成人票加入数组
 							adultArray.push(that.passengerInfo[i]);
-							adultNum ++;
+							adultNum++;
 						}
 					}
 					//计算总价
 					that.totalPrice = Number(price) * adultNum + Number(halfPrice) * childNum + insurePrice
-			     }else {
-					 //计算总价
+				} else {
+					//计算总价
 					that.totalPrice = Number(price) * adultNum + Number(halfPrice) * childNum + insurePrice
-				 }
+				}
 			},
-			
+
 			//-------------------------------点击订单预定-----------------------------
 			reserveTap() {
+				
 				var that = this;
 				//当选中用户须知且选择了上下车点和乘客之后发送请求
 				if (that.ticketDetail.shuttleType == '定制班车') {
-					if(that.startStation.length == 0 || that.endStation.length == 0) {
+					if (that.startStation.length == 0 || that.endStation.length == 0) {
 						uni.showToast({
 							title: '请选择上下车点',
 							icon: 'none'
 						})
 					}
-				}else if(that.passengerInfo.length==0) {
+				} else if (that.passengerInfo.length == 0) {
 					uni.showToast({
 						title: '请选择乘车人',
 						icon: 'none'
 					})
-				}else if(that.selectedValue == 0) {
+				} else if (that.selectedValue == 0) {
 					uni.showToast({
 						title: '请同意购买须知',
 						icon: 'none'
 					})
-				}else {
+				} else {
 					//计算价格
 					that.calculateTotalPrice();
-					
+
 					//请求成功之后跳转到支付页面,传是否选择保险1:选择 0:未选择
 					uni.navigateTo({
-						url:'/pages/CTKY/orderPayment?isInsurance=' + that.isInsurance + '&totalPrice=' + that.totalPrice,
+						url: '/pages/CTKY/orderPayment?isInsurance=' + that.isInsurance + '&totalPrice=' + that.totalPrice,
 					})
 				}
 
@@ -477,7 +487,8 @@
 </script>
 
 <style lang="scss">
-	page,.myView {
+	page,
+	.myView {
 		flex-direction: column;
 		width: 100%;
 		height: 100%;
@@ -489,6 +500,7 @@
 		height: 140upx;
 		background: #FC4646;
 	}
+
 	//订单提交通用块
 	.orderCommonClass {
 		background: #FFFFFF;
@@ -498,15 +510,16 @@
 		display: flex;
 		justify-content: space-between;
 	}
+
 	// 上下车点选择
 	.stationContentView {
 		flex-direction: column;
 		background: #FFFFFF;
-		margin: 0 26upx; 
+		margin: 0 26upx;
 		margin-bottom: 20upx;
 		border-radius: 14upx;
 	}
-	
+
 	/* 优惠券面板 */
 	.discountView {
 		min-height: 30vh;
@@ -515,20 +528,24 @@
 		background: #f3f3f3;
 		margin-bottom: 100rpx;
 	}
+
 	//优惠券
 	.discountScroll {
 		min-height: 30vh;
 		max-height: 60vh;
 		width: 100%;
 	}
+
 	//下弹框标题
 	.couponTitle {
 		padding: 40upx;
 		padding-bottom: 16upx;
+
 		.Co_text1 {
 			font-size: 38upx;
 			font-weight: bold;
 		}
+
 		.Co_text2 {
 			margin-top: 8upx;
 			float: right;
@@ -536,14 +553,17 @@
 			font-size: 28upx;
 		}
 	}
-//须知弹框
+
+	//须知弹框
 	.boxView {
 		width: 90%;
 		padding: 16upx 40upx;
 		padding-bottom: 92upx;
 		background: #FFFFFF;
-		.titleView{
+
+		.titleView {
 			margin: 24upx 0;
+
 			//弹框标题
 			.Nb_text1 {
 				position: relative;
@@ -552,6 +572,7 @@
 				top: 8upx;
 				margin-bottom: 16upx;
 			}
+
 			//弹框关闭按钮
 			.Nb_text2 {
 				margin-top: 8upx;
@@ -560,10 +581,12 @@
 				font-size: 32upx;
 			}
 		}
+
 		.noticeBox {
 			min-height: 30vh;
 			max-height: 70vh;
 			line-height: 32upx;
+
 			.Nb_text3 {
 				display: block;
 				margin-top: 32upx;
@@ -579,19 +602,21 @@
 			}
 		}
 	}
+
 	.coupon-item {
 		display: flex;
 		flex-direction: column;
 		margin: 20upx 24upx;
 		background: #fff;
 		bottom: 100rpx;
+
 		.con {
 			display: flex;
 			align-items: center;
 			position: relative;
 			height: 120upx;
 			padding: 0 30upx;
-	
+
 			&:after {
 				position: absolute;
 				left: 0;
@@ -603,7 +628,7 @@
 				transform: scaleY(50%);
 			}
 		}
-	
+
 		.left {
 			display: flex;
 			flex-direction: column;
@@ -612,18 +637,18 @@
 			overflow: hidden;
 			height: 100upx;
 		}
-	
+
 		.title {
 			font-size: 32upx;
 			color: #f85e52;
 			margin-bottom: 10upx;
 		}
-	
+
 		.time {
 			font-size: 24upx;
 			color: #999999;
 		}
-	
+
 		.right {
 			display: flex;
 			flex-direction: column;
@@ -633,24 +658,24 @@
 			color: #999999;
 			height: 100upx;
 		}
-	
+
 		.price {
 			font-size: 44upx;
 			color: #f85e52;
-	
+
 			&:before {
 				content: '￥';
 				font-size: 34upx;
 			}
 		}
-	
+
 		.tips {
 			font-size: 24upx;
 			color: #999999;
 			line-height: 60upx;
 			padding-left: 30upx;
 		}
-	
+
 		.circle {
 			position: absolute;
 			left: -6upx;
@@ -660,13 +685,14 @@
 			height: 20upx;
 			background: #f3f3f3;
 			border-radius: 100px;
-	
+
 			&.r {
 				left: auto;
 				right: -6upx;
 			}
 		}
 	}
+
 	.ticketInfoClass {
 		height: 181upx;
 		width: 652upx;
@@ -721,7 +747,7 @@
 		justify-content: space-between;
 	}
 
-	
+
 
 	//上下车点
 	.boarding {
@@ -732,24 +758,26 @@
 		margin-left: 41upx;
 		margin-right: 41upx;
 	}
+
 	.Mp_box {
 		float: right;
 		position: relative;
 		bottom: 6upx;
 		right: -12upx;
 	}
+
 	//预定
 	.orderReserve {
 		width: 45%;
 		height: 112upx;
 		color: #FFFFFF;
-		background:#aaa;
+		background: #aaa;
 		font-size: 32upx;
 		line-height: 112upx;
 		text-align: center;
-			
+
 		&.tapColor {
-			background:#FC4646;
+			background: #FC4646;
 		}
 	}
 </style>

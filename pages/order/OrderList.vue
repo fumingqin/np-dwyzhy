@@ -139,11 +139,11 @@
 						</view>
 				
 						<view class="CTKYBtnView">
-							<button class="allBtn" @click="detail(item.titleIndex)">详情</button>
-							<button class="allBtn" v-if="item.orderType=='已完成'" >投诉</button>
-							<button class="allBtn payBtn" @tap="keYunPay" v-if="item.orderType=='未支付'">去支付</button>
-							<button class="allBtn" @tap="del(index)" v-if="item.orderType=='已取消'" >删除</button>
-							<button class="allBtn" @tap="QRCodeTap" v-if="item.orderType=='进行中'">二维码</button>
+							<button class="allBtn" @click="keyunDetail(item)">详情</button>
+							<!-- <button class="allBtn" v-if="item.orderState=='已完成'" >投诉</button> -->
+							<button class="allBtn payBtn" @tap="keYunPay" v-if="item.orderState=='待支付'">去支付</button>
+							<button class="allBtn" @tap="del(index)" v-if="item.orderState=='已取消'" >删除</button>
+							<button class="allBtn" @tap="QRCodeTap" v-if="item.orderState=='待使用'">二维码</button>
 						</view>
 					</view>
 				</view>
@@ -253,8 +253,9 @@
 							</view>
 					
 							<view class="CTKYBtnView">
-								<button class="allBtn" @click="detail(item.titleIndex)">详情</button>
-								<button class="allBtn" v-if="item.orderType=='已完成'">投诉</button>
+								<button class="allBtn" @click="detail(item)">详情</button>
+								<!-- <button class="allBtn" v-if="item.orderType=='已完成'">投诉</button> -->
+								
 							</view>
 						</view>
 					</view>
@@ -334,7 +335,7 @@
 						</view>
 					</view>
 					
-					<!-- (取消)客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车 -->
+					<!-- (进行中)客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车客车 -->
 					<view v-if="item.carType=='普通班车'">
 						<!-- 预定日期 -->
 						<view style="display: flex; margin-bottom: 40rpx; margin-left: 28rpx;" v-if="item.appointment">
@@ -363,8 +364,13 @@
 								<view style="width: 480rpx; height: 44rpx;color: #AAAAAA; font-size: 28rpx;margin: -14rpx -80rpx;">{{item.endAddress}}</view>
 							</view>
 								
-							<view class="CTKYBtnView">
-								<button class="allBtn" @click="detail(item.titleIndex)">详情</button>
+							<view class="CTKYBtnView" v-if="item.orderState=='待使用'">
+								<button class="allBtn" @click="detail(item)">详情</button>
+								<button class="allBtn">车辆位置</button>
+								<!-- <button class="allBtn QRCode">二维码</button> -->
+								<button class="allBtn">选座</button>
+								<button class="allBtn" @click="refundTicket(item.titleIndex)" v-if="item.orderType=='已完成'">退票</button>
+								<button class="allBtn">联系司机</button>
 							</view>
 						</view>
 					</view>
@@ -475,10 +481,9 @@
 								<view style="width: 480rpx; height: 44rpx;color: #AAAAAA; font-size: 28rpx;margin: -14rpx -80rpx;">{{item.endStation}}</view>
 							</view>
 								
-							<view class="CTKYBtnView">
-								<button class="allBtn" @click="detail(item.titleIndex)">详情</button>
+							<view class="CTKYBtnView" v-if="item.orderState=='待支付'">
+								<button class="allBtn" @click="detail(item)">详情</button>
 								<button class="allBtn payBtn" @tap="keYunPay">去支付</button>
-								
 							</view>
 						</view>
 					</view>
@@ -597,9 +602,8 @@
 							</view>
 								
 							<view class="CTKYBtnView">
-								<button class="allBtn" @tap="detail(item.titleIndex)">详情</button>
+								<button class="allBtn" @tap="detail(item)">详情</button>
 								<button class="allBtn" @tap="del(index)">删除</button>
-								<!-- <button class="allBtn" @tap="keYunPay">去支付</button> -->
 							</view>
 						</view>
 					</view>
@@ -784,13 +788,14 @@
 						carNum:'闽C12345'
 					}
 				],
-				info : '',//请求服务器订单列表
+				info : [],//请求服务器订单列表
 				userInfo : '',//个人信息
 				finishArr: [],
 				goingArr: [],
 				unfinishArr: [],
 				cancelArr: [],
 				keYunTicketArray:[],//客运订单
+				keYunOrderID:'',//客运订单ID
 				keYunTicket:[],//客运订单
 				driverName:'张师傅',//司机姓名
 				totalPrice: 32.5,
@@ -813,18 +818,37 @@
 		},
 		onLoad() {
 			var that = this;
-			//读取用户信息
-			that.getUserInfo();
+			
 			//请求景区门票数据
 			that.toFinished();
-			//-------------------------请求客运订单数据-------------------------
+			
+			//请求客运订单数据
+			// this.getKeYunOrderInfo();
 			
 		},
 		onShow:function(){
-			this.toFinished();
+			var that = this;
+			
+			
+			// this.toFinished();
+			//-------------------------客运退票-------------------------
+			// uni.getStorage({
+			// 	key:'payInfo',
+			// 	success:function(res) {
+			// 		console.log('客运订单ID',res)
+			// 		if(res){
+			// 			that.keYunOrderID = res.data.orderID;
+			// 		}
+			// 	},
+			// 	fail(res) {
+			// 		console.log('错误',res);
+			// 	}
+			// })
 		},
+		//-------------------------下拉刷新-------------------------
 		onPullDownRefresh:function(){
 			this.toFinished(); //请求接口数据
+			// this.getKeYunOrderInfo();//请求客运接口
 		},
 		methods: {
 			//-------------------------支付页面-------------------------
@@ -882,8 +906,7 @@
 					url: '/pages/Home/Index',
 				});
 			},
-			//客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运
-			//-------------------------客运详情-------------------------
+			//--------------------------------------------------客运开始--------------------------------------------------
 			getUserInfo() {
 				var that = this;
 				//读取用户ID
@@ -901,7 +924,7 @@
 			},
 			getKeYunOrderInfo:function() {
 				var that = this;
-				console.log('返回数据',that.userInfo.unid);
+				console.log('用户ID',that.userInfo.unid);
 				uni.request({
 					url:'http://218.67.107.93:9210/api/app/getcpxsOrderList',
 					method:'POST',
@@ -912,12 +935,11 @@
 					success:function(res){
 						// console.log('返回数据',res);
 						var ticketArray = []; 
-						if (res.data.data){
+						if(res.data.msg == '获取订单列表成功！') {
+							// console.log('进来了',res.data.data);
 							for(var i = 0; i < res.data.data.length; i++) {
 								that.info.push(res.data.data[i]);
 							}
-							// console.log('返回数据',that.info);
-							// that.info = res.data.data;
 							for (var i = 0; i < res.data.data.length; i++) {
 								if (res.data.data[i].orderState == '已完成' || res.data.data[i].orderState == '已使用') {
 									that.finishArr.push(res.data.data[i]);
@@ -937,28 +959,49 @@
 					}
 				})
 			},
-			detail: function(item) {
-				if (item == 1) {
-					uni.navigateTo({
-						url: '/pages/order/OrderDetail',
-					})
-				}else if (item == 2) {
-					uni.navigateTo({
-						url: '/pages/CTKY/orderDetail',
-					})
-				}
+			// -------------------------客运详情-------------------------
+			keyunDetail: function(item) {
+				uni.navigateTo({
+					url: '/pages/CTKY/orderDetail?&orderInfo=' + JSON.stringify(item),
+				})
+			},
+			// -------------------------客运退票-------------------------
+			refundTicket:function(item){
+				uni.showModal({
+					title:'是否确定退票',
+					success(res) {
+						if(res.confirm) {
+							uni.request({
+								url:'http://218.67.107.93:9210/api/app/remindCpxsTicket',
+								method:'POST',
+								header:{'content-type':'application/x-www-form-urlencoded'},
+								data: {
+									unid : that.userInfo.unid
+								},
+								success: (res) => {
+									console.log('成功',res)
+								},
+								fail: (res) => {
+									console.log('失败',res)
+								}
+							})
+						}
+					}
+				})
 			},
 			// -------------------------客运支付-------------------------
 			keYunPay: function(){
 				uni.navigateTo({
-					url:"../CTKY/orderPayment"
+					url:"../CTKY/orderPayment",
+					
 				}) 
 			},
 			//-------------------------客运二维码弹框-------------------------
 			QRCodeTap: function(){
 				this.$refs.popup.open()
+				
 			},
-			//客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运
+			//--------------------------------------------------客运结束--------------------------------------------------
 			onClickItem(e) { //tab点击事件
 				if (this.current !== e.currentIndex) {
 					this.current = e.currentIndex
@@ -969,15 +1012,17 @@
 				var that = this;
 				uni.getStorage({
 					key:'userInfo',
-					success:function(res){
+					success:(res) =>{
 						this.userInfo = res.data;
 						// console.log(res)
 						uni.request({
 							url:'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' +that.userInfo.unid,
 							method:'POST',
-							success:function(res){
+							success:(res)=>{
+								console.log(res)
 								if(res.data.msg == '获取订单列表成功！'){
 									that.info = res.data.data;
+									console.log(res.data)
 									that.finishArr = [];
 									that.goingArr = [];
 									that.unfinishArr = [];
@@ -995,13 +1040,17 @@
 											}
 										}
 									}
+									//客运
+									//获取用户信息
+									that.getUserInfo();
+								}else {
+									that.info = [];
+									that.finishArr = [];
+									that.goingArr = [];
+									that.unfinishArr = [];
+									that.cancelArr = [];
+									that.getUserInfo();
 								}
-							},
-							fail: (ee) => {
-								uni.showToast({
-									title:'请求订单失败，请检查网络状态',
-									icon:'none'
-								})
 							}
 						})
 					},

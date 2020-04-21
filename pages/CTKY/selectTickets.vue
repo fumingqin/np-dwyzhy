@@ -25,7 +25,7 @@
 				<view style="display: flex;align-items: center;margin:20upx 25upx;">
 					<view class="markType" style="border:#1EA2FF solid 1px;color:#1EA2FF;" v-if="item.shuttleType=='普通班车'">传统</view>
 					<view class="markType" style="border:#FF5A00 solid 1px;color:#FF5A00;" v-if="item.shuttleType=='定制班车'">定制</view>
-					<view style="margin-left:19upx ;font-family: SourceHanSansSC-Bold;font-weight: bold;">{{utils.timeTodate('Y-m-d H:i',item.setTime)}}</view>
+					<view style="margin-left:19upx ;font-family: SourceHanSansSC-Bold;font-weight: bold;">{{turnDate(item.setTime)}}</view>
 				</view>
 				<view style="margin-left: 25upx;display: flex;align-items: center;margin-bottom: 16upx;">
 					<image src="../../static/CTKY/startDot.png" style="width: 10upx ;height: 10upx;"></image>
@@ -74,20 +74,22 @@
 				endStation:'',//终点站
 				departureData:[],//班次数据
 				stationArray:[],
+				isNormal:'',//普通班车 0||定制班车 1
 			}
 		},
 		onLoad(param) {
-			// console.log(param);
 			this.date = param.date;
-			this.startStation=param.startStation;
-			this.endStation=param.endStation;
-			
+			this.startStation = param.startStation;
+			this.endStation = param.endStation;
+			this.isNormal = param.isNormal;
 			
 			// this.date = this.getTime(0, new Date());
-			// this.startStation=param.StartStation;
-			// this.endStartion=param.EndStation;
 			console.log(this.date,this.startStation,this.endStation)
+			
+			//初始化时间轴
 			this.loadDate();
+			
+			//点击顶部时间，请求该时间的班次列表
             this.getDeparture();
 			
 			//加载班次列表数据
@@ -113,10 +115,19 @@
 					method:"POST",
 					header:{'content-type':'application/x-www-form-urlencoded'},
 					success: (res) => {
-						console.log(res)
+						// console.log(res)
 						uni.hideLoading();
 						let that = this;
-						that.departureData = res.data.data;
+						//非空判断
+						if(res.data.data.length != 0) {
+							that.departureData = res.data.data;
+						}else {
+							that.departureData = res.data.data;
+							uni.showToast({
+								title:'暂无班次信息',
+								icon:'none'
+							})
+						}
 					},
 					fail(res) {
 						uni.hideLoading();
@@ -127,6 +138,12 @@
 				this.selectIndex = e;
 				this.date = item.longDate;
 				this.getDeparture();
+			},
+			//-------------------------------时间转换-------------------------------
+			turnDate(date) {
+				var setTime = date.replace('T',' ');
+				return setTime;
+				// return utils.timeTodate('Y-m-d H:i:s',new Date(date).getTime());
 			},
 			//----------------------------显示日期----------------------------
 			onShowDatePicker(type) { //显示
