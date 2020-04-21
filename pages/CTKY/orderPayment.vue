@@ -159,9 +159,9 @@
 		//--------------------------监听页面返回--------------------------
 		onBackPress(options) {
 			var that = this;
-			console.log('返回',that.orderID);
+			// console.log('返回',that.orderID);
 			if (options.from === 'backbutton') {
-				console.log('返回',options.from);
+				// console.log('返回',options.from);
 				if(that.orderID) {
 					console.log('开始退票');
 					//当页面返回的时候取消订单
@@ -191,7 +191,7 @@
 					key: 'ticketDate',
 					success: function(data) {
 						that.orderInfo = data.data;
-						console.log('订单数据', that.orderInfo)
+						// console.log('订单数据', that.orderInfo)
 					},
 					fail() {
 						uni.showToast({
@@ -209,7 +209,7 @@
 					key: 'userInfo',
 					success: function(data) {
 						that.userInfo = data.data;
-						console.log('用户信息', that.userInfo);
+						// console.log('用户信息', that.userInfo);
 					}
 				})
 			},
@@ -242,7 +242,7 @@
 							}
 						}
 						//等待读取用户缓存成功之后再请求接口数据
-						that.countDown();
+						that.getOrder();
 					},
 					fail() {
 						uni.showToast({
@@ -285,26 +285,13 @@
 				this.adultTotalPrice = adult.length * this.orderInfo[0].ticketAdultPrice;
 				this.childrenTotalPrice = children.length * this.orderInfo[0].ticketChildPrice;
 			},
-			//--------------------------计时器--------------------------
-			countDown: function() {
-				console.log('订单信息');
-				// var interval = setInterval(() => {
-				// 	--this.countDownDate;
-				// 	uni.setStorage({
-				// 		key: 'keYunCountDown',
-				// 		data: this.countDownDate,
-				// 	})
-				// }, 1000)
+			
+			//--------------------------发起下单请求-----------------------
+			getOrder: function() {
+				// console.log('用户信息',that.userInfo);
+				// console.log('订单信息',that.orderInfo);
+				// console.log('idNameType',that.idNameType);
 				var that = this;
-				// clearInterval(interval)
-				uni.removeStorage({
-					key: 'keYunCountDown',
-					data: this.countDownDate,
-				})
-				console.log('用户信息',that.userInfo);
-				console.log('订单信息',that.orderInfo);
-				console.log('idNameType',that.idNameType);
-				//--------------------------发起下单请求-----------------------
 				uni.showLoading();
 				uni.request({
 					url: 'http://218.67.107.93:9210/api/app/addOrder',
@@ -317,7 +304,7 @@
 						clientID: that.userInfo.unid, //用户ID
 						clientName: that.userInfo.username, //用户名
 						phoneNumber: that.userInfo.phoneNumber, //手机号码
-
+				
 						scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
 						executeScheduleID: that.orderInfo.executeScheduleID,
 						startSiteID: that.orderInfo.startSiteID, //上车点ID
@@ -328,7 +315,7 @@
 						setOutTime: that.orderInfo.setTime, //订单时间
 						insuredPrice: that.orderInfo.insurePrice, //保险价格
 						carType: that.orderInfo.shuttleType, //班车类型
-
+				
 						fullTicket: that.adultNum, //全票人数
 						halfTicket: that.childrenNum, //半票人数
 						carryChild: that.childrenNum, //携童人数
@@ -370,6 +357,7 @@
 					}
 				})
 			},
+			
 			//--------------------------获取车票支付参数--------------------------
 			getTicketPaymentInfo: function(res) {
 				console.log(res);
@@ -404,6 +392,8 @@
 										icon: 'none'
 									})
 									clearInterval(timer);
+									//开启计时器
+									// that.countDown();
 								} else if (res.data.msg != null) {
 									uni.showToast({
 										title: res.data.msg,
@@ -425,7 +415,24 @@
 							clearInterval(timer);
 						}
 					})
-				}, 3000)
+				}, 1000)
+			},
+			//--------------------------计时器--------------------------
+			countDown: function() {
+				var interval = setInterval(() => {
+					--this.countDownDate;
+					uni.setStorage({
+						key: 'countDown',
+						data: this.countDownDate,
+					})
+					if (this.countDownDate <= 0) {
+						clearInterval(interval)
+						this.countDownEnd();
+						uni.removeStorage({
+							key: 'countDown'
+						})
+					}
+				}, 1000)
 			},
 			//--------------------------调起支付--------------------------
 			payment: function() {
@@ -507,6 +514,36 @@
 				// 		url: '/pages/LYFW/scenicSpotTickets/successfulPayment?orderNumber='+JSON.stringify(this.orderInfo[0].orderNumber)
 				// 	})
 
+			},
+			//获取当前时间并格式化
+			getDate: function() {
+				//先提取订单下单时间把空格转换成T
+				var a = this.orderInfo.setOrderTime.replace(' ', 'T')
+				//把时间转换成时间戳---订单时间
+				var orderDate = new Date(a).getTime();
+			
+				//获取当前时间（为什么要先把当前时间戳格式化？）是因为直接获取当前时间戳存在时间误差
+				var date = new Date(),
+					year = date.getFullYear(),
+					month = date.getMonth() + 1,
+					day = date.getDate(),
+					hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours(),
+					minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes(),
+					second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				month >= 1 && month <= 9 ? (month = "0" + month) : "";
+				day >= 0 && day <= 9 ? (day = "0" + day) : "";
+				var timer = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
+				//把转换后的时间，转换成时间戳
+				var c = new Date(timer).getTime();
+			
+				//用当前时间-下单时间再除于1000就是秒
+				var d = (c - orderDate) / 1000;
+			
+				//这里的300秒就是支付倒计时
+				var e = 214 - d;
+			
+				this.countDownDate = e;
+				this.countDown();
 			},
 		}
 	}

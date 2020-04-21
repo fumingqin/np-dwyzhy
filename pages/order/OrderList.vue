@@ -255,6 +255,7 @@
 							<view class="CTKYBtnView">
 								<button class="allBtn" @click="detail(item.titleIndex)">详情</button>
 								<button class="allBtn" v-if="item.orderType=='已完成'">投诉</button>
+								<button class="allBtn" @click="refundTicket(item.titleIndex)" v-if="item.orderType=='已完成'">退票</button>
 							</view>
 						</view>
 					</view>
@@ -790,6 +791,7 @@
 				unfinishArr: [],
 				cancelArr: [],
 				keYunTicketArray:[],//客运订单
+				keYunOrderID:'',//客运订单ID
 				keYunTicket:[],//客运订单
 				driverName:'张师傅',//司机姓名
 				totalPrice: 32.5,
@@ -820,7 +822,21 @@
 			
 		},
 		onShow:function(){
+			var that = this;
 			this.toFinished();
+			//-------------------------客运退票-------------------------
+			uni.getStorage({
+				key:'payInfo',
+				success:function(res) {
+					console.log('客运订单ID',res)
+					if(res){
+						that.keYunOrderID = res.data.orderID;
+					}
+				},
+				fail(res) {
+					console.log('错误',res);
+				}
+			})
 		},
 		onPullDownRefresh:function(){
 			this.toFinished(); //请求接口数据
@@ -947,6 +963,27 @@
 					})
 				}
 			},
+			// -------------------------客运退票-------------------------
+			refundTicket:function(item){
+				uni.showToast({
+					title:'是否确定退票',
+					
+				})
+				uni.request({
+					url:'http://218.67.107.93:9210/api/app/remindCpxsTicket',
+					method:'POST',
+					header:{'content-type':'application/x-www-form-urlencoded'},
+					data: {
+						unid : that.userInfo.unid
+					},
+					success: (res) => {
+						console.log('成功',res)
+					},
+					fail: (res) => {
+						console.log('失败',res)
+					}
+				})
+			},
 			// -------------------------客运支付-------------------------
 			keYunPay: function(){
 				uni.navigateTo({
@@ -956,6 +993,7 @@
 			//-------------------------客运二维码弹框-------------------------
 			QRCodeTap: function(){
 				this.$refs.popup.open()
+				
 			},
 			//客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运客运
 			onClickItem(e) { //tab点击事件
