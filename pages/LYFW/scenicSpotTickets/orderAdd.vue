@@ -388,6 +388,7 @@
 					url: 'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' + this.userInfo.unid,
 					method: 'POST',
 					success: (res) => {
+						console.log(res)
 						var a = '';
 						a = res.data.data.filter(item => {
 							return item.orderType == '待支付';
@@ -510,6 +511,9 @@
 								url: '../../order/OrderList'
 							})
 						}
+					},
+					fail:function(ee){
+						console.log(ee)
 					}
 				})
 
