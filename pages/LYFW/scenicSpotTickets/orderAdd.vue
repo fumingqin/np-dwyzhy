@@ -388,11 +388,13 @@
 					url: 'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' + this.userInfo.unid,
 					method: 'POST',
 					success: (res) => {
-						console.log(res)
+						// console.log(res)
 						var a = '';
-						a = res.data.data.filter(item => {
-							return item.orderType == '待支付';
-						})
+						if(res.data.msg =='获取订单列表成功！'){
+							a = res.data.data.filter(item => {
+								return item.orderType == '待支付';
+							})
+						}
 						if (a == '') {
 							// #ifdef H5
 							uni.request({

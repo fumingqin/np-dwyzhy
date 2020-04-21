@@ -969,35 +969,39 @@
 				var that = this;
 				uni.getStorage({
 					key:'userInfo',
-					success:(res) =>{
+					success:function(res){
 						this.userInfo = res.data;
 						// console.log(res)
 						uni.request({
 							url:'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' +that.userInfo.unid,
 							method:'POST',
-							success:(res)=>{
-								// console.log(res)
-								// console.log(that.info)
-								that.info = res.data.data;
-								that.info = this.info.sort((a, b) => b.orderNumber - a.orderNumber)
-								that.finishArr = [];
-								that.goingArr = [];
-								that.unfinishArr = [];
-								that.cancelArr = [];
-								if(that.info !== ''){ 
-									for (var i = 0; i < that.info.length; i++) {
-										if (that.info[i].orderType == '已完成' || that.info[i].orderType == '已使用') {
-											that.finishArr.push(that.info[i]);
-										} else if (that.info[i].orderType == '进行中' || that.info[i].orderType == '待使用') {
-											that.goingArr.push(that.info[i]);
-										} else if (that.info[i].orderType == '未支付' || that.info[i].orderType == '待支付') {
-											that.unfinishArr.push(that.info[i]);
-										} else if (that.info[i].orderType == '已取消' || that.info[i].orderType == '已退票') {
-											that.cancelArr.push(that.info[i]);
+							success:function(res){
+								if(res.data.msg == '获取订单列表成功！'){
+									that.info = res.data.data;
+									that.finishArr = [];
+									that.goingArr = [];
+									that.unfinishArr = [];
+									that.cancelArr = [];
+									if(that.info){
+										for (var i = 0; i < that.info.length; i++) {
+											if (that.info[i].orderType == '已完成' || that.info[i].orderType == '已使用') {
+												that.finishArr.push(that.info[i]);
+											} else if (that.info[i].orderType == '进行中' || that.info[i].orderType == '待使用') {
+												that.goingArr.push(that.info[i]);
+											} else if (that.info[i].orderType == '未支付' || that.info[i].orderType == '待支付') {
+												that.unfinishArr.push(that.info[i]);
+											} else if (that.info[i].orderType == '已取消' || that.info[i].orderType == '已退票') {
+												that.cancelArr.push(that.info[i]);
+											}
 										}
 									}
 								}
-							
+							},
+							fail: (ee) => {
+								uni.showToast({
+									title:'请求订单失败，请检查网络状态',
+									icon:'none'
+								})
 							}
 						})
 					},
