@@ -470,7 +470,7 @@
 						},
 						method: 'POST',
 						success:function(e){
-							// console.log(e)
+							console.log(e)
 							let wxData = {
 								appid: e.data.data.appId,
 								partnerid: e.data.data.partnerId, 
@@ -512,13 +512,22 @@
 									})
 								},
 						
-								fail: function(ee) {
-									console.log(ee)
-									uni.showToast({
-										title: '拉起支付失败，请检查网络后重试',
-										icon: 'none',
-										duration: 3000
-									})
+								fail: function(e) {
+									console.log(e)
+									if(e.errMsg=='requestPayment:fail canceled'){
+										uni.showToast({
+											title: '您放弃了支付',
+											icon: 'none',
+											duration: 3000
+										})
+									}else{
+										uni.showToast({
+											title: '拉起支付失败，请检查网络后重试',
+											icon: 'none',
+											duration: 3000
+										})
+									}
+									
 								}
 							})
 						},
@@ -533,7 +542,6 @@
 						}
 					})
 				} else if (this.channeIndex == 1) {
-					// console.log(this.orderInfo.orderNumber)
 					var payTypeIndex = 2;
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getScenicSpotPayParam',
@@ -544,7 +552,7 @@
 						},
 						method: 'POST',
 						success:function(e){
-							// console.log(e)
+							console.log(e)
 							uni.hideLoading()
 							uni.requestPayment({
 								provider: 'alipay',
