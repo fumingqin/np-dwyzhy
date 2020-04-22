@@ -49,8 +49,10 @@
 				<text>车票订购</text>
 			</view>
 		</view>
-
-
+		<!-- #ifdef H5 -->
+		<!-- <view style="margin-top: 24upx;width: 90%;border: 1upx solid #007AFF;height: 500upx;word-break:break-all;">测试url：{{cod}}</view> -->
+		<!-- #endif -->
+		
 		<!-- 南平景区 -->
 		<view class="titNp">南平景区</view>
 		<view class="npjc-section">
@@ -114,6 +116,7 @@
 					ticketName: '',
 					ticketImage: '',
 				}],
+				cod:'',//测试公众号获取code使用123456789101112131415161718192021222324252627282930
 			}
 		},
 		onLoad() {
@@ -123,9 +126,7 @@
 			//#endif
 		},
 		onShow() {
-			// #ifdef  H5
-			this.getCode();
-			//#endif
+			this.getOpenID();
 		},
 		onPullDownRefresh:function(){
 			this.loadData(); //请求接口数据
@@ -289,6 +290,7 @@
 			// #ifdef  H5
 			//获取code
 			getCode() {
+				var that=this;
 			    let Appid = "wx4f666a59748ab68f";//售票appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
@@ -296,7 +298,6 @@
 				let local = "http://nply.fjmtcy.com/#/";
 				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
-				 // window.location.href ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4f666a59748ab68f&redirect_uri=http://nply.fjmtcy.com/pages/Home/indexZhly&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
 					window.location.href =
 						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
 						Appid +
@@ -305,22 +306,66 @@
 						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
-					uni.showToast({
-						title:"code是"+code,
-						icon:'success',
+					// uni.showToast({
+					// 	title:"code是"+code,
+					// 	icon:'success',
+					// })
+					// that.cod='http://zzgj.145u.net/Coach/getWxUserinfo?code='+code;
+					// that.cod+='&Appid='+Appid;
+					// that.cod+='&Appsecret = 788709805b9c0cbd3ccd3c7d0318c7bb';
+					uni.request({
+						//url:that.cod,
+						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						method:'POST',
+						success(res) {
+							uni.setStorage({
+								key:'scenicSpotOpenId',
+								data:res.data.openid,
+							})
+						},
+						fail(err){
+							//that.cod+=err.errMsg;
+							uni.showToast({
+								title:"err是"+err.errMsg,
+							})
+						}
 					})
 				}
 			},
 			   //判断code信息是否存在
 			getUrlParam(name) {
-				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-				var r = window.location.search.substr(1).match(reg);
-				if (r != null) {
-				  return unescape(r[2]);
-				}
-				return null;
-			}
+				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
+				  let url = window.location.href.split('#')[0]   
+				  let search = url.split('?')[1]  
+				  if (search) {  
+				    var r = search.substr(0).match(reg)  
+				    if (r !== null) return unescape(r[2])  
+				    return null  
+				  } else {  
+				    return null  
+				  }  
+			},
 			 //#endif  
+			getOpenID(){
+				let pCode='021veNDb29hgAL0bi6Eb2k2RDb2veNDr';
+				let appid='wx4f666a59748ab68f';
+				let appsecret='788709805b9c0cbd3ccd3c7d0318c7bb';
+				let postUrl='http://zzgj.145u.net/Coach/getWxUserinfo?code='+pCode+'&Appid='+appid+'&Appsecret='+appsecret;
+				uni.request({
+					url:postUrl,
+					//url:'http://zzgj.145u.net/Coach/getWxUserinfo?code=021jnHmC03RNzk2kA1nC0sRLmC0jnHmq&Appid=wx4f666a59748ab68f&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
+					method:'POST',
+					success(res) {
+						console.log(res,"res")
+					},
+					fail(err){
+						console.log(err,"err")
+					}
+				})
+			}
 		},
 		
 		// #ifndef MP
