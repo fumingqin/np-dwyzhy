@@ -82,7 +82,8 @@
 					<radio class="Mp_box" :checked="channeIndex===0" :color="'#36cb59'" @click="Selection"></radio>
 				</view>
 			</view>
-
+			
+			<!-- #ifndef H5 -->
 			<view class="MP_information2">
 				<view class="MP_optionBar">
 					<text class="Mp-icon jdticon icon-alipay"></text>
@@ -90,6 +91,8 @@
 					<radio class="Mp_box" :checked="channeIndex===1" :color="'#01aaef'" @click="Selection"></radio>
 				</view>
 			</view>
+			<!-- #endif -->
+			
 
 			<view class="MP_information3" @click="paymentSatas">
 				支付{{orderInfo.orderActualPayment}}元
