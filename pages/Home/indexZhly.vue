@@ -251,26 +251,21 @@
 				// #endif
 			},
 			route5:function() {
+				console.log('点击了');
 				uni.getStorage({
 					key:'userInfo',
 					success:function(res){
 						console.log(res)
 						if(res.data.unid){
-							// #ifdef MP-WEIXIN
-							uni.redirectTo({
-								url: '/pages/CTKY/ctkyIndex'
-							})
-							// #endif
-							// #ifndef MP-WEIXIN
 							uni.navigateTo({
 								url: '/pages/CTKY/ctkyIndex'
 							})
-							// #endif
 						}
 					},
 					fail:function(){
+						console.log('失败了');
 						uni.showModal({
-							title:'暂未登录，请问是否登录？',
+							content:'暂未登录，请问是否登录？',
 							success: (res) => {
 								if(res.confirm){
 									uni.navigateTo({
