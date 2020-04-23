@@ -89,6 +89,10 @@
 </template>
 
 <script>
+	import {
+		mapState,
+	    mapMutations  
+	} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -116,7 +120,6 @@
 					ticketName: '',
 					ticketImage: '',
 				}],
-				cod:'',//测试公众号获取code使用123456789101112131415161718192021222324252627282930
 			}
 		},
 		onLoad() {
@@ -126,12 +129,12 @@
 			//#endif
 		},
 		onShow() {
-			this.getOpenID();
 		},
 		onPullDownRefresh:function(){
 			this.loadData(); //请求接口数据
 		},
 		methods: {
+			...mapMutations(['login']),
 			loadData: function() {
 				// 轮播图
 				uni.request({
@@ -271,7 +274,7 @@
 							success: (res) => {
 								if(res.confirm){
 									uni.navigateTo({
-										url:'../GRZX/userLogin'
+										url:'../GRZX/userLogin?loginType=4'
 									})
 								}
 							}
@@ -306,13 +309,6 @@
 						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
-					// uni.showToast({
-					// 	title:"code是"+code,
-					// 	icon:'success',
-					// })
-					// that.cod='http://zzgj.145u.net/Coach/getWxUserinfo?code='+code;
-					// that.cod+='&Appid='+Appid;
-					// that.cod+='&Appsecret = 788709805b9c0cbd3ccd3c7d0318c7bb';
 					uni.request({
 						//url:that.cod,
 						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
@@ -325,6 +321,17 @@
 								key:'scenicSpotOpenId',
 								data:res.data.openid,
 							})
+							that.logining=true;
+							var list={
+								nickname:res.data.nickname,
+								portrait:res.data.headimgurl,
+								address:res.data.province+res.data.city,
+							}
+							uni.setStorage({
+								key:'userInfo',
+								data:list,
+							})
+							that.login(list);
 						},
 						fail(err){
 							//that.cod+=err.errMsg;
@@ -349,23 +356,6 @@
 				  }  
 			},
 			 //#endif  
-			getOpenID(){
-				let pCode='021veNDb29hgAL0bi6Eb2k2RDb2veNDr';
-				let appid='wx4f666a59748ab68f';
-				let appsecret='788709805b9c0cbd3ccd3c7d0318c7bb';
-				let postUrl='http://zzgj.145u.net/Coach/getWxUserinfo?code='+pCode+'&Appid='+appid+'&Appsecret='+appsecret;
-				uni.request({
-					url:postUrl,
-					//url:'http://zzgj.145u.net/Coach/getWxUserinfo?code=021jnHmC03RNzk2kA1nC0sRLmC0jnHmq&Appid=wx4f666a59748ab68f&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
-					method:'POST',
-					success(res) {
-						console.log(res,"res")
-					},
-					fail(err){
-						console.log(err,"err")
-					}
-				})
-			}
 		},
 		
 		// #ifndef MP

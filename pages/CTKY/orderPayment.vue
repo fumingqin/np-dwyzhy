@@ -123,15 +123,14 @@
 			}
 		},
 		onLoad: function(param) {
-
-			this.totalPrice = param.totalPrice;
+			var that = this;
 			//读取车票信息
 			this.getTickerInfo();
 			//读取用户信息
 			this.getUserInfo();
 			//读取乘车人信息
 			this.getPassengerInfo();
-
+			this.totalPrice = param.totalPrice;
 			if (param.isInsurance == 1) {
 				this.insurance = '保险';
 				this.isInsurance = true;
@@ -139,7 +138,7 @@
 				this.insurance = '';
 				this.isInsurance = false;
 			}
-
+			
 			//--------------------------计时器--------------------------
 			// uni.getStorage({
 			// 	key: 'keYunCountDown',
@@ -233,7 +232,16 @@
 					}
 				})
 			},
-
+			//--------------------------读取支付参数信息--------------------------
+			getPaymentData(){
+				var that = this;
+				uni.getStorage({
+					key:'paymentData',
+					success:function(data){
+						
+					}
+				})
+			},
 			//--------------------------隐藏操作--------------------------
 			hide(e) {
 				if (e == 0) {
@@ -268,6 +276,7 @@
 			},
 			//--------------------------退票-----------------------
 			refundTticket: function() {
+				var that = this;
 				if (that.orderID) {
 					console.log('开始退票');
 					//当页面返回的时候取消订单
@@ -295,7 +304,7 @@
 				// console.log('订单信息',that.orderInfo);
 				// console.log('idNameType',that.idNameType);
 				
-				var companyCode = '';
+				var companyCode = '南平旅游APP';
 				// #ifdef H5
 				companyCode = '南平旅游H5';
 				// #endif
@@ -411,11 +420,19 @@
 									//--------------------------------开启计时器--------------------------------
 									that.getDate(res);
 								} else if (payData.data.msg != null) {
-									uni.showToast({
-										title: payData.data.msg,
-										icon: 'none'
+									uni.hideLoading();
+									uni.showModal({
+										content:payData.data.msg,
+										success(res) {
+											if(res.confirm){
+												clearInterval(timer);
+												clearInterval(interval);
+												uni.switchTab({
+													url:'../order/OrderList'
+												})
+											}
+										}
 									})
-									clearInterval(timer);
 								}
 							} else {
 								uni.showToast({
@@ -443,6 +460,7 @@
 					})
 					if (this.countDownDate <= 0) {
 						clearInterval(interval)
+						
 						this.countDownEnd();
 						uni.removeStorage({
 							key: 'countDown'
@@ -452,6 +470,7 @@
 			},
 			//--------------------------倒计时结束--------------------------
 			countDownEnd: function() {
+				var that = this;
 				uni.showToast({
 					title: '支付超时，已自动取消订单',
 					icon: 'none',
