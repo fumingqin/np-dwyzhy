@@ -94,6 +94,10 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			})
 			//获取当前日期
 			that.getTodayDate();
+			//公众号获取车票的openid
+			// #ifdef  H5
+			this.getOpenid();
+			//#endif
 		},
 		methods: {
 			
@@ -236,6 +240,59 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 						break;
 				}
 			},
+			// #ifdef  H5
+			//获取code
+			getOpenid() {
+				var that=this;
+			    let Appid = "wxef946aa6ab5788a3";//售票appid
+				let code = this.getUrlParam('code'); //是否存在code
+				console.log(code);
+				//let local = window.location.href;
+				let local = "http://nply.fjmtcy.com/#/";
+				if (code == null || code === "") {
+				  //不存在就打开上面的地址进行授权
+					window.location.href =
+						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
+						Appid +
+						"&redirect_uri=" +
+						encodeURIComponent(local) +
+						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+				} else {
+				  //存在则通过code传向后台调用接口返回微信的个人信息
+					uni.request({
+						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=aad4e4dce4efd030376fc194627b68fd',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						method:'POST',
+						success(res) {
+							uni.setStorage({
+								key:'ctkyOpenId',
+								data:res.data.openid,
+							})
+						},
+						fail(err){
+							uni.showToast({
+								title:"err是"+err.errMsg,
+							})
+						}
+					})
+				}
+			},
+			   //判断code信息是否存在
+			getUrlParam(name) {
+				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
+				  let url = window.location.href.split('#')[0]   
+				  let search = url.split('?')[1]  
+				  if (search) {  
+				    var r = search.substr(0).match(reg)  
+				    if (r !== null) return unescape(r[2])  
+				    return null  
+				  } else {  
+				    return null  
+				  }  
+			},
+			 //#endif
 		}
 	}
 </script>
