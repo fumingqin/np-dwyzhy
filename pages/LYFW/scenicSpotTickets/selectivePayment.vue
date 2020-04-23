@@ -253,6 +253,9 @@
 				var a = this.orderInfo.setOrderTime.replace(' ', 'T')
 				//把时间转换成时间戳
 				var b = new Date(a).getTime();
+				uni.showToast({
+					title:a
+				})
 
 				//获取当前时间（为什么要先把当前时间戳格式化？）是因为直接获取当前时间戳存在时间误差
 				var date = new Date(),
@@ -266,8 +269,12 @@
 				day >= 0 && day <= 9 ? (day = "0" + day) : "";
 				var timer = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
 				//把转换后的时间，转换成时间戳
+				uni.showToast({
+					title:timer
+				})
 				var c = new Date(timer).getTime();
-
+				
+				
 				//用当前时间-下单时间再除于1000就是秒
 				var d = (c - b) / 1000;
 
@@ -377,6 +384,7 @@
 				// })
 				
 				// #ifdef H5
+				if(that.channeIndex==0){
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getScenicSpotPayParam',
 						data: {
@@ -453,9 +461,12 @@
 							})
 						}
 					})
-				
-				
-					
+				}else{
+					uni.showToast({
+						title:'请选择微信支付',
+						icon:'none'
+					})
+				}
 				// #endif
 
 

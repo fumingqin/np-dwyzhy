@@ -81,7 +81,7 @@
 						<view class="at_buttonView" v-if="item.orderType=='待使用'">
 							<view class="at_button at_btDelete" @click="open2(item.orderNumber)">退票</view>
 							<view class="at_button at_btDetails" @click="details(item.orderNumber)">详情</view>
-							<view class="at_button at_btQrCode" @click="open(item)">二维码</view>
+							<!-- <view class="at_button at_btQrCode" @click="open(item)">二维码</view> -->
 						</view>
 
 						<!-- 待支付 -->
@@ -329,7 +329,7 @@
 							<view class="at_buttonView" v-if="item.orderType=='待使用'">
 								<view class="at_button at_btDelete" @click="open2(item.orderNumber)">退票</view>
 								<view class="at_button at_btDetails" @click="details(item.orderNumber)">详情</view>
-								<view class="at_button at_btQrCode" @click="open(item)">二维码</view>
+								<!-- <view class="at_button at_btQrCode" @click="open(item)">二维码</view> -->
 							</view>
 					
 						</view>
