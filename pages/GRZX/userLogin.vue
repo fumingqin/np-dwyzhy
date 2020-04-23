@@ -212,7 +212,7 @@
 										},
 										fail(err) {
 											uni.showToast({
-												title:err,
+												title:"登录失败，请重试",
 												icon:"none"
 											})
 										}
