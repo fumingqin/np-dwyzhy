@@ -378,7 +378,7 @@
 					})
 				}
 			},
-
+			
 			//提交表单
 			submit: function() {
 				var that = this;
@@ -396,7 +396,9 @@
 								return item.orderType == '待支付';
 							})
 						}
+						console.log(a)
 						if (a == '') {
+							
 							// #ifdef H5
 							uni.getStorage({
 								key:'scenicSpotOpenId',
@@ -404,22 +406,22 @@
 									uni.request({
 										url: 'http://218.67.107.93:9210/api/app/scenicSpotSetOrder',
 										data: {
-											unid: this.userInfo.unid,
-											ticketProductId: this.admissionTicket.admissionTicketID,
+											unid: that.userInfo.unid,
+											ticketProductId: that.admissionTicket.admissionTicketID,
 											ticketId: 0,
-											ticketContain: this.admissionTicket.ticketContain,
+											ticketContain: that.admissionTicket.ticketContain,
 									
-											companyId: this.admissionTicket.companyId,
-											executeScheduleId: this.admissionTicket.executeScheduleId,
+											companyId: that.admissionTicket.companyId,
+											executeScheduleId: that.admissionTicket.executeScheduleId,
 									
-											addressData: this.addressData,
-											couponID: this.couponColor,
+											addressData: that.addressData,
+											couponID: that.couponColor,
 									
-											orderDateReminder: this.dateReminder,
-											orderDate: this.date,
+											orderDateReminder: that.dateReminder,
+											orderDate: that.date,
 											orderInsure: '',
 											orderInsurePrice: '',
-											orderActualPayment: this.actualPayment,
+											orderActualPayment: that.actualPayment,
 											sellerCompanyCode: '南平旅游H5',
 											tppId: res.data,
 										},
@@ -438,6 +440,12 @@
 											} else if (res.data.msg == '下单失败，联系管理员！') {
 												uni.showToast({
 													title: '下单失败，联系管理员！',
+													icon: 'none',
+												})
+												that.submissionState = false;
+											} else if (res.data.message == '账号ID不能为空') {
+												uni.showToast({
+													title: '账号ID不能为空，请重新登录账户',
 													icon: 'none',
 												})
 												that.submissionState = false;

@@ -830,7 +830,7 @@
 			var that = this;
 			
 			
-			// this.toFinished();
+			this.toFinished();
 			//-------------------------客运退票-------------------------
 			// uni.getStorage({
 			// 	key:'payInfo',
@@ -1096,6 +1096,9 @@
 				}
 			},
 			
+			
+			
+			//景区模块请求
 			toFinished: function() {
 				var that = this;
 				uni.getStorage({
