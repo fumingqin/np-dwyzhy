@@ -223,7 +223,7 @@
 					}
 				})
 			},
-			//--------------------------读取openid--------------------------
+			//--------------------------读取公众号openid--------------------------
 			getOpenID() {
 				var that = this;
 				uni.getStorage({
@@ -236,10 +236,10 @@
 					},
 					fail:function(fail){
 						console.log(fail);
-						uni.showModal({
-							content:'未授权',
-							
-						})
+						// uni.showModal({
+						// 	content:'用户未授权',
+						// })
+						that.getOrder();
 					}
 				})
 			},
@@ -312,7 +312,6 @@
 				// #ifdef APP-PLUS
 				companyCode = '南平旅游APP';
 				// #endif
-				console.log(companyCode);
 				
 				var that = this;
 				uni.showLoading();
@@ -344,7 +343,7 @@
 						carryChild: that.childrenNum, //携童人数
 						idNameType: that.idNameType,
 						insured: that.isInsurance, //是否选择了保险
-						openId: 'oer8S1YCUPVxV_ceq0xL_bZkcKjo',
+						openId: that.ctkyOpenID,
 						totalPrice: that.totalPrice, //总价格
 					},
 					success: (res) => {
