@@ -120,6 +120,7 @@
 				paymentData: [], //保存支付参数
 				timer: '', //定时器数据
 				orderID: '', //订单id
+				ctkyOpenID:'',
 			}
 		},
 		onLoad: function(param) {
@@ -138,16 +139,6 @@
 				this.insurance = '';
 				this.isInsurance = false;
 			}
-			
-			//--------------------------计时器--------------------------
-			// uni.getStorage({
-			// 	key: 'keYunCountDown',
-			// 	success: (res) => {
-			// 		this.countDownDate = res.data;
-			// 	},
-			// 	fail: () => {
-			// 	}
-			// })
 
 		},
 		onUnload() {
@@ -221,8 +212,8 @@
 								that.adultNum++;
 							}
 						}
-						//等待读取用户缓存成功之后再请求接口数据
-						that.getOrder();
+						//读取用户openID
+						that.getOpenID();
 					},
 					fail() {
 						uni.showToast({
@@ -232,13 +223,23 @@
 					}
 				})
 			},
-			//--------------------------读取支付参数信息--------------------------
-			getPaymentData(){
+			//--------------------------读取openid--------------------------
+			getOpenID() {
 				var that = this;
 				uni.getStorage({
-					key:'paymentData',
-					success:function(data){
-						
+					key:'ctkyOpenId',
+					success:function(response){
+						console.log(response);
+						that.ctkyOpenID = response.data
+						//等待读取用户缓存成功之后再请求接口数据
+						that.getOrder();
+					},
+					fail:function(fail){
+						console.log(fail);
+						uni.showModal({
+							content:'未授权',
+							
+						})
 					}
 				})
 			},
