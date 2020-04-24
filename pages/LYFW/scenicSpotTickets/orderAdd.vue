@@ -434,11 +434,13 @@
 													title: '该景区无可售门票！',
 													icon: 'none',
 												})
+												that.submissionState = false;
 											} else if (res.data.msg == '下单失败，联系管理员！') {
 												uni.showToast({
 													title: '下单失败，联系管理员！',
 													icon: 'none',
 												})
+												that.submissionState = false;
 											} else if (res.data.msg == '下单成功') {
 												uni.setStorage({
 													key: 'submitH5Data',
@@ -459,6 +461,7 @@
 									uni.showToast({
 										title:'请授权微信公众号！'
 									})
+									that.submissionState = false;
 								}
 							})
 							
@@ -498,11 +501,13 @@
 											title: '该景区无可售门票！',
 											icon: 'none',
 										})
+										that.submissionState = false;
 									} else if (res.data.msg == '下单失败，联系管理员！') {
 										uni.showToast({
 											title: '下单失败，联系管理员！',
 											icon: 'none',
 										})
+										that.submissionState = false;
 									} else if (res.data.msg == '下单成功') {
 										uni.redirectTo({
 											url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
@@ -528,6 +533,7 @@
 					},
 					fail:function(ee){
 						console.log(ee)
+						that.submissionState = false;
 					}
 				})
 

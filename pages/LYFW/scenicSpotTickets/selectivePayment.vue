@@ -253,10 +253,8 @@
 				var a = this.orderInfo.setOrderTime.replace(' ', 'T')
 				//把时间转换成时间戳
 				var b = new Date(a).getTime();
-				uni.showToast({
-					title:a
-				})
-
+				// console.log(a)
+				// console.log(b)
 				//获取当前时间（为什么要先把当前时间戳格式化？）是因为直接获取当前时间戳存在时间误差
 				var date = new Date(),
 					year = date.getFullYear(),
@@ -269,17 +267,16 @@
 				day >= 0 && day <= 9 ? (day = "0" + day) : "";
 				var timer = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
 				//把转换后的时间，转换成时间戳
-				uni.showToast({
-					title:timer
-				})
+				// console.log(timer)
 				var c = new Date(timer).getTime();
 				
+				// console.log(c)
 				
 				//用当前时间-下单时间再除于1000就是秒
 				var d = (c - b) / 1000;
-
+				// console.log(d)
 				//这里的300秒就是支付倒计时，门票是5分钟
-				var e = 394 - d;
+				var e = 322 - d;
 
 				this.countDownDate = e;
 				this.countDown();
@@ -473,8 +470,6 @@
 				// #ifdef APP-PLUS
 				if (this.channeIndex == 0) {
 					var payTypeIndex = 3;
-					uni.hideLoading()
-					
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getScenicSpotPayParam',
 						data: {
