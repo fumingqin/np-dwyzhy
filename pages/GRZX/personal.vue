@@ -222,8 +222,8 @@
 			},
 			formSubmit: function(e) {
 				uni.showLoading({					title:'保存中...'				})
-				console.log(this.portrait)
-				console.log(this.port)
+				// console.log(this.portrait)
+				// console.log(this.port)
 				console.log(this.unid)
 				console.log(this.openId_qq)
 				console.log(this.openId_wx)
@@ -251,7 +251,10 @@
 					},
 					method:'POST',
 					success(res) {
-						console.log(res)
+						console.log(res,'res')
+					},
+					fail(err) {
+						console.log(err,"err")
 					}
 				})
 				var list={

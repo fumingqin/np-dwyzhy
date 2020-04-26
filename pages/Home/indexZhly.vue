@@ -291,13 +291,12 @@
 				})
 			},
 			// #ifdef  H5
-			//获取code
+			//获取openid
 			getCode() {
 				var that=this;
-			    let Appid = "wx4f666a59748ab68f";//售票appid
+			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				//let local = window.location.href;
 				let local = "http://nply.fjmtcy.com/#/";
 				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
@@ -310,39 +309,65 @@
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
 					uni.request({
-						//url:that.cod,
 						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
 						header: {
 							'content-type': 'application/x-www-form-urlencoded'
 						},
 						method:'POST',
 						success(res) {
-							uni.setStorage({
-								key:'scenicSpotOpenId',
-								data:res.data.openid,
-							})
-							that.logining=true;
-							var list={
-								nickname:res.data.nickname,
-								portrait:res.data.headimgurl,
-								address:res.data.province+res.data.city,
-							}
-							uni.setStorage({
-								key:'userInfo',
-								data:list,
-							})
-							that.login(list);
+							console.log(res,"res")
+							uni.setStorageSync('scenicSpotOpenId',res.data.openid)
+							uni.setStorageSync('res',res.data)
 						},
 						fail(err){
-							//that.cod+=err.errMsg;
 							uni.showToast({
 								title:"err是"+err.errMsg,
+								icon:'none'
 							})
 						}
 					})
+					var user=uni.getStorageSync('res');
+					console.log(user,"user")
+					if(user!=null&&user!=""){
+						uni.request({
+							url:'http://218.67.107.93:9210/api/app/changeInfo',
+							data:{
+								nickname:user.nickname,
+								openId_wx:user.openid,
+								portrait:user.headimgurl,
+								unid:'',
+								openId_qq:'',
+								gender:'',
+								address:user.province+user.city,
+								birthday:'',
+								phoneNumber:'',
+								username:user.nickname,
+							},
+							method:'POST',
+							success(res1) {
+								if(res1.data.msg=="信息保存成功！"){
+									uni.setStorageSync('userInfo',res1.data.data)
+									if(res1.data.data.phoneNumber==null){
+										uni.navigateTo({
+											url:'/pages/GRZX/wxLogin',
+										})
+									}else{
+										that.logining=true;
+										that.login(res1.data.data)
+									}
+								}
+								console.log(res1,'res1')
+							}
+						})		
+					}else{
+						uni.showToast({
+							title:"用户信息获取失败",
+							icon:'none'
+						})
+					}
 				}
 			},
-			   //判断code信息是否存在
+			//判断code信息是否存在
 			getUrlParam(name) {
 				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
 				  let url = window.location.href.split('#')[0]   

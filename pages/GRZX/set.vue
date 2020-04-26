@@ -1,14 +1,14 @@
 <template>
 	<view class="container">
 		
-		<view class="list-cell m-t b-b">
+		<!-- <view class="list-cell m-t b-b">
 			<text class="cell-tit">推送设置</text>
 			<switch :checked="statu.check1" color="#fa436a" @change="switchChange" />
 		</view>
 		<view class="list-cell b-b b-l">
 			<text class="cell-tit">视频自动播放</text>
 			<switch :checked="statu.check2"  color="#fa436a" @change="playChange" />
-		</view>
+		</view> -->
 		
 		<view class="list-cell m-t b-b" @click="clearStorage" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">清除缓存</text>
@@ -19,9 +19,11 @@
 			<text class="cell-tit">关于APP</text>
 			<text class="cell-more jdticon icon-you"></text>
 		</view>
+		<!-- #ifndef H5 -->
 		<view class="list-cell log-out-btn" @click="toLogout">
 			<text class="cell-tit">退出登录</text>
 		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -107,22 +109,15 @@
 				
 			},
 			clearStorage(){
-				// var list;
-				// uni.getStorage({
-				// 	key:'userInfo',
-				// 	success(res) {
-				// 		list=res.data;
-				// 	}
-				// })
+				var user=uni.getStorageSync('userInfo');
+				var vehicle=uni.getStorageSync('vehicleInfo');
 				uni.showModal({
 				    content: '是否清除数据',
 				    success: (e)=>{
 				    	if(e.confirm){
 							uni.clearStorage();
-							// uni.setStorage({
-							// 	key:'userInfo',
-							// 	data:list
-							// })
+							uni.setStorageSync('userInfo',user);
+							uni.setStorageSync('vehicleInfo',vehicle);
 							uni.redirectTo({
 								url:'/pages/GRZX/set'
 							})
