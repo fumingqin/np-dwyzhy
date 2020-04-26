@@ -136,7 +136,7 @@
 				
 				scrollHeight:'500px',
 				leftIndex:0, //左边列表值
-				stationArray:['南平','泉州','石狮','顺昌'], //左边数据内容
+				stationArray:['南平'], //左边数据内容
 			}
 		},
 		components: {
