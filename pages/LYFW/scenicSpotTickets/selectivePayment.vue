@@ -270,7 +270,7 @@
 				var d = (c - b) / 1000;
 				// console.log(d)
 				//这里的300秒就是支付倒计时，门票是5分钟
-				var e = 86 - d;
+				var e = 350 - d;
 				// 46
 
 				this.countDownDate = e;
