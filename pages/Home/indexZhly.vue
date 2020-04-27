@@ -70,8 +70,8 @@
 			</view>
 		</view>
 
-		<!-- 新闻资讯 -->
-		<view class="titNp">新闻资讯</view>
+		<!-- 资讯信息 -->
+		<view class="titNp">资讯信息</view>
 		<view class="guess-section">
 			<view v-for="(item, index) in goodsList" :key="index" class="guess-item" @click="informationTo(item.id)">
 				<view class="image-wrapper">
@@ -163,7 +163,7 @@
 						method: 'POST',
 						success: (e) => {
 							this.goodsList = e.data.data;
-							// console.log(e)
+							console.log(e)
 						}
 					})
 					setTimeout(()=>{
