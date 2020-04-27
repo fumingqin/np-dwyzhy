@@ -89,6 +89,16 @@
 		},
 		onShow(){
 			//this.loadData();
+			uni.request({
+				url:'http://218.67.107.93:9210/api/app/bindTel?phoneNumber=15280846565',
+				data:{
+					wxOpenid:'oMluguKtIHQ2Qcomm4By98am4J-0',
+				},
+				method:'POST',
+				success(res) {
+					console.log(res,"res")
+				}
+			})
 		},
 		onNavigationBarButtonTap(e) {
 			const index = e.index;

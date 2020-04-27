@@ -57,7 +57,7 @@
 			<image src="../../static/GRZX/logo3.png" class="logoClass"></image>	
 		</view>
 		<view v-if="loginType==4">
-			<image src="../../static/GRZX/logo4.png" class="logoClass"></image>	
+			<image src="../../static/GRZX/logo6.png" class="logoClass"></image>	
 		</view>
 		
 		<!-- <view class="loginMode">第三方登录</view>

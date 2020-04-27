@@ -100,46 +100,29 @@
 				}else if(phone==list.phone&&code==list.code){
 					//调用绑定手机号接口
 					uni.request({
-						url:'http://218.67.107.93:9210/api/app/bindTel?phoneNumber='+phone,
+						url:'http://218.67.107.93:9210/api/app/bindTel',
 						data:{
+							phoneNumber:phone,
 							wxOpenid:openid,
+							qqOpenid:'',
 						},
 						method:'POST',
 						success(res) {
 							console.log(res,"res")
+							uni.showToast({
+								title:res.data.msg,
+								icon:'success',
+							})
+							uni.setStorageSync('userInfo',res.data.data)
+							that.logining=true;
+							that.login(res.data.data)
+							setTimeout(function(){
+								uni.switchTab({
+									url:'/pages/Home/indexZhly'
+								})
+							},500);
 						}
-					})
-					// uni.request({
-					// 	url:'http://218.67.107.93:9210/api/app/changeInfo',
-					// 	data:{
-					// 		nickname:userInfo.username,
-					// 		portrait:userInfo.headimgurl,
-					// 		address:userInfo.address,
-					// 		openId_wx:userInfo.openId_wx,
-					// 		birthday:userInfo.birthday,
-					// 		gender:userInfo.gender,
-					// 		openId_qq:userInfo.openId_qq,
-					// 		phoneNumber:phone,
-					// 		unid:userInfo.unid,
-					// 		username:userInfo.username,
-					// 	},
-					// 	method:'POST',
-					// 	success(res){
-					// 		uni.showToast({
-					// 			title:'手机号绑定成功！',
-					// 			icon:"none"
-					// 		})
-					// 		if(res.data.msg=="信息保存成功！"){
-					// 			uni.setStorageSync('userInfo',res.data.data)
-					// 			that.logining=true;
-					// 			that.login(res.data.data);
-					// 			uni.switchTab({
-					// 				url:'/pages/Home/indexZhly'
-					// 			})
-					// 		}
-					// 		console.log(res,"res")
-					// 	}
-					// })	
+					})	
 				}else{
 					uni.showToast({
 						title:"验证码输入错误，请重新输入",

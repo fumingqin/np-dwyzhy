@@ -287,7 +287,7 @@
 			// #ifdef  H5
 			//获取openid
 			getCode() {
-				var that=this;
+				let that=this;
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
@@ -312,6 +312,37 @@
 							console.log(res,"res")
 							uni.setStorageSync('scenicSpotOpenId',res.data.openid)
 							uni.setStorageSync('res',res.data)
+							let user=res.data;
+							uni.request({
+								url:'http://218.67.107.93:9210/api/app/changeInfo',
+								data:{
+									nickname:user.nickname,
+									openId_wx:user.openid,
+									portrait:user.headimgurl,
+									unid:'',
+									openId_qq:'',
+									gender:'',
+									address:user.province+user.city,
+									birthday:'',
+									phoneNumber:'',
+									username:user.nickname,
+								},
+								method:'POST',
+								success(res1) {
+									if(res1.data.msg=="信息保存成功！"){
+										uni.setStorageSync('userInfo',res1.data.data)
+										if(res1.data.data.phoneNumber==null){
+											uni.navigateTo({
+												url:'/pages/GRZX/wxLogin',
+											})
+										}else{
+											that.logining=true;
+											that.login(res1.data.data)
+										}
+									}
+									console.log(res1,'res1')
+								}
+							})
 						},
 						fail(err){
 							uni.showToast({
@@ -320,45 +351,6 @@
 							})
 						}
 					})
-					var user=uni.getStorageSync('res');
-					console.log(user,"user")
-					if(user!=null&&user!=""){
-						uni.request({
-							url:'http://218.67.107.93:9210/api/app/changeInfo',
-							data:{
-								nickname:user.nickname,
-								openId_wx:user.openid,
-								portrait:user.headimgurl,
-								unid:'',
-								openId_qq:'',
-								gender:'',
-								address:user.province+user.city,
-								birthday:'',
-								phoneNumber:'',
-								username:user.nickname,
-							},
-							method:'POST',
-							success(res1) {
-								if(res1.data.msg=="信息保存成功！"){
-									uni.setStorageSync('userInfo',res1.data.data)
-									if(res1.data.data.phoneNumber==null){
-										uni.navigateTo({
-											url:'/pages/GRZX/wxLogin',
-										})
-									}else{
-										that.logining=true;
-										that.login(res1.data.data)
-									}
-								}
-								console.log(res1,'res1')
-							}
-						})		
-					}else{
-						uni.showToast({
-							title:"用户信息获取失败",
-							icon:'none'
-						})
-					}
 				}
 			},
 			//判断code信息是否存在

@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image src="../../static/GRZX/logo_wuyi.png" class="logoClass"></image>
+		<image src="../../static/GRZX/logo5.png" class="logoClass"></image>
 		<text class="titleClass">{{title}}</text>
 		<text class="versionClass">{{versionNum}}  {{version}}</text>
 		<view class="boxClass1">
@@ -102,8 +102,8 @@
 		position: absolute;
 		top:100upx;
 		left: 39%;
-		width: 160upx;
-		height: 160upx;
+		width: 200upx;
+		height: 200upx;
 	}
 	.titleClass{	//大武夷智慧游
 		position: absolute;
