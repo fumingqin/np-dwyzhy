@@ -179,9 +179,37 @@
 						}) 
 					},500);
 				}else{
+					var user=uni.getStorageSync('userInfo')
+					console.log(user,"183")
+					// #ifdef  H5
+					uni.getStorage({
+						key:'userInfo',
+						success(res) {
+							console.log(res,"188")
+							if(res.data.phoneNumber==null||res.data.phoneNumber==""){
+								uni.showToast({
+									title:'未绑定手机号，请绑定手机号',
+									icon:'none',
+								})
+							  setTimeout(function(){
+								uni.navigateTo({
+									url :'/pages/GRZX/wxLogin',
+								})
+							  },1000);
+							}else{
+								uni.navigateTo({
+									url :'/pages/GRZX/personal',
+								})  
+							}
+						}
+					})	
+					// #endif
+					
+					// #ifndef  H5
 					uni.navigateTo({
 						url :'/pages/GRZX/personal',
-					})  
+					})
+					// #endif
 				}
 			},
 			collectionClick(){

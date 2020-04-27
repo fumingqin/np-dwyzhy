@@ -73,55 +73,78 @@
 				this[key] = e.detail.value;
 			},
 			bindPhone(){	 //绑定手机
-				this.logining=true;
 				var that=this;
-				const {phoneNumber, captchaCode} = this;		
+				var list=uni.getStorageSync('captchaCode')	//验证码和手机号
+				console.log(list,"list")
+				var openid=uni.getStorageSync('scenicSpotOpenId')	//openid
+				console.log(openid,"list")
+				var userInfo=uni.getStorageSync('userInfo') //微信授权获取到的微信的个人信息
+				console.log(userInfo,"list")
 				var phone=this.phoneNumber;
-				var captcha=this.captchaCode;
+				var code=this.captchaCode;
 				if(phone==null||phone==""){
 					uni.showToast({
 						title:"请输入手机号码",
 						icon:"none"
 					})
+				}else if(code==null||code==""){
+					uni.showToast({
+						title:"请输入验证码",
+						icon:"none"
+					})
+				}else if(list==null||list==""){
+					uni.showToast({
+						title:"验证码已过期，请重新获取",
+						icon:"none"
+					})
+				}else if(phone==list.phone&&code==list.code){
+					//调用绑定手机号接口
+					uni.request({
+						url:'http://218.67.107.93:9210/api/app/bindTel?phoneNumber='+phone,
+						data:{
+							wxOpenid:openid,
+						},
+						method:'POST',
+						success(res) {
+							console.log(res,"res")
+						}
+					})
+					// uni.request({
+					// 	url:'http://218.67.107.93:9210/api/app/changeInfo',
+					// 	data:{
+					// 		nickname:userInfo.username,
+					// 		portrait:userInfo.headimgurl,
+					// 		address:userInfo.address,
+					// 		openId_wx:userInfo.openId_wx,
+					// 		birthday:userInfo.birthday,
+					// 		gender:userInfo.gender,
+					// 		openId_qq:userInfo.openId_qq,
+					// 		phoneNumber:phone,
+					// 		unid:userInfo.unid,
+					// 		username:userInfo.username,
+					// 	},
+					// 	method:'POST',
+					// 	success(res){
+					// 		uni.showToast({
+					// 			title:'手机号绑定成功！',
+					// 			icon:"none"
+					// 		})
+					// 		if(res.data.msg=="信息保存成功！"){
+					// 			uni.setStorageSync('userInfo',res.data.data)
+					// 			that.logining=true;
+					// 			that.login(res.data.data);
+					// 			uni.switchTab({
+					// 				url:'/pages/Home/indexZhly'
+					// 			})
+					// 		}
+					// 		console.log(res,"res")
+					// 	}
+					// })	
 				}else{
-					if(captcha==null||captcha==""){
-						uni.showToast({
-							title:"请输入验证码",
-							icon:"none"
-						})
-					}else{
-						uni.getStorage({
-							key:'captchaCode',
-							success(res) {
-								if(captcha==res.data){
-								var randomNum = ('000000' + Math.floor(Math.random() * 999999)).slice(-6);
-									uni.getStorage({
-										key:'userInfo',
-										success:function(res1){
-											res1.data.phoneNumber=phone;
-											console.log(res1.data,"...res1")
-											uni.setStorage({
-												key:'userInfo',
-												data:res1.data
-											})
-											uni.setStorage({
-												key:'Grxx',
-												data:res1.data
-											})
-										}
-									})
-									 uni.switchTab({
-										url:'/pages/Home/Index',
-									}) 
-								}else{
-									uni.showToast({
-										title:"验证码错误",
-										icon:"none"
-									})
-								}
-							}
-						})
-					}
+					uni.showToast({
+						title:"验证码输入错误，请重新输入",
+						icon:"none"
+					})
 				}
 			},
 			getCodeClick(e){	//获取验证码
@@ -130,45 +153,43 @@
 				if(self.judgeNum(self.phoneNumber)){
 					var timer=null,second=59; //倒计时的时间
 					if(self.textCode == "获取验证码"){
-					  //获取6位随机数
-					  var randomNum = ('000000' + Math.floor(Math.random() * 999999)).slice(-6);
-					  //短信接口
-					  uni.setStorage({
-							key:'captchaCode',
-							data:randomNum
-					  })
 					  self.textCode = second+"秒后重发";
 					  if(self.textCode == "59秒后重发"){
-						uni.request({
-						   url: 'http://111.231.109.113:8000/api/MyTest/SendMessage',
-						   data:{
-							  phoneNumber:self.phoneNumber,
-							  text:'动态验证码：'+randomNum+',如果不是本人请忽略此短信。'
-						   },
-						   method:"GET",
-						   success: function (res) {
-								console.log(res);
-								if(res.data){
-									timer=setInterval(function(){
-									second--;
-									if(second<=0){	
-										self.textCode = "获取验证码";
-										clearInterval(timer);
-										second=59;	
-									}
-									else{			
-										//self.disabled = true;
-										self.textCode = second+"秒后重发";
-									}},1000)
-								}else{
-									uni.showToast({
-										title : '手机号码有误',
-										icon : 'none',
+						  timer=setInterval(function(){
+						  second--;
+						  if(second<=0){	
+						  	self.textCode = "获取验证码";
+						  	clearInterval(timer);
+						  	second=59;	
+						  }
+						  else{			
+						  	self.textCode = second+"秒后重发";
+						  }},1000)
+						 uni.request({
+							url:'http://218.67.107.93:9210/api/app/getLoginCode?phoneNumber='+self.phoneNumber,
+						    method:"POST",
+							success:(res)=>{
+						 		console.log(res.data.code);
+								var listCode={
+										phone:self.phoneNumber,
+										code:res.data.code,
+									};
+								uni.setStorageSync('captchaCode',listCode)
+								uni.showToast({
+									title:"验证码已发送，仅在5分钟内有效!",
+									icon:"none"
+								})
+								//定时删除手机验证码（用于登录使用）
+								setTimeout(function(){
+									uni.removeStorage({
+										key:'captchaCode',
 									})
-								}
-						   }
-						})	  
+									console.log('删除成功！')
+								},300000);
+						    }
+						 }) 
 					  }
+							
 					}
 				}else{
 					uni.showToast({

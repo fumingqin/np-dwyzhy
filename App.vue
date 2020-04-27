@@ -15,7 +15,13 @@
 					key: 'userInfo',
 					success: (res) => {
 						if(res.data.nickname==""||res.data.nickname==null){
+							// #ifndef  H5
 							res.data.nickname="用户"+res.data.username;
+							// #endif
+														
+							// #ifdef  H5
+							res.data.nickname=res.data.username;
+							// #endif
 						}
 						this.login(res.data);
 					}
