@@ -300,6 +300,8 @@
 				var that=this;
 				uni.request({
 					url: gjcx.InterfaceAddress[7],      //获取所有线路
+					method:'POST',
+					header:{'content-type':'application/x-www-form-urlencoded'},
 					data: {
 						Encryption: that.Encryption,
 					},
@@ -498,6 +500,8 @@
 					success: function(res) {
 						uni.request({
 							url: gjcx.InterfaceAddress[1], //调用最近站点方法
+							method:'POST',
+							header:{'content-type':'application/x-www-form-urlencoded'},
 							data: {
 								lon: res.longitude,
 								lat: res.latitude,
@@ -518,6 +522,8 @@
 				var that = this;
 				uni.request({
 					url: gjcx.InterfaceAddress[0], //用站点调用站点线路方法
+					method:'POST',
+					header:{'content-type':'application/x-www-form-urlencoded'},
 					data: {
 						stationName: nearstaion1,
 						Encryption: that.Encryption,
@@ -549,6 +555,8 @@
 						for (let i in that.carList) { //循环线路信息
 							uni.request({
 								url: gjcx.InterfaceAddress[4], //根据线路请求距离当前车站最近的车辆
+								method:'POST',
+								header:{'content-type':'application/x-www-form-urlencoded'},
 								data: {
 									lineID: that.carList[i].lineID,
 									direction: 0,
@@ -616,6 +624,8 @@
 				// that.carList[i].distance=dis;
 				uni.request({
 					url: gjcx.InterfaceAddress[5],           //根据经纬度获取距离
+					method:'POST',
+					header:{'content-type':'application/x-www-form-urlencoded'},
 							data: {
 								startLonLat: that.nearLonLat,
 								endLonLat: dis

@@ -482,6 +482,10 @@
 				"navigationBarTitleText": "支付结果"
 			}
         }
+        ,{
+            "path" : "pages/GJCX/selectRoute",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
