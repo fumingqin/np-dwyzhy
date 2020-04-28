@@ -422,7 +422,7 @@
 				var that=this;
 				uni.request({
 					url:gjcx.InterfaceAddress[3],           //车辆实时到站信息
-					method:'POST',
+					// method:'POST',
 					header:{'content-type':'application/x-www-form-urlencoded'},
 					data:{
 						lineID:that.nList1.lineID,
@@ -443,7 +443,7 @@
 				});
 				uni.request({
 					url:gjcx.InterfaceAddress[3],           //车辆实时到站信息
-					method:'POST',
+					// method:'POST',
 					header:{'content-type':'application/x-www-form-urlencoded'},
 					data:{
 						lineID:that.nList1.lineID,
@@ -462,7 +462,7 @@
 				var that=this;
 				uni.request({
 					url:gjcx.InterfaceAddress[6],             //获取线路轨迹
-					method:'POST',
+					// method:'POST',
 					header:{'content-type':'application/x-www-form-urlencoded'},
 					data:{
 						lineID:that.nList1.lineID,
@@ -502,7 +502,7 @@
 
 				uni.request({
 					url:gjcx.InterfaceAddress[2],             //获取线路详细信息
-					method:'POST',
+					// method:'POST',
 					header:{'content-type':'application/x-www-form-urlencoded'},
 					data:{
 						lineID:that.nList1.lineID,
@@ -523,7 +523,7 @@
 				});
 				uni.request({
 					url:gjcx.InterfaceAddress[2],      //获取线路详细信息
-					method:'POST',
+					// method:'POST',
 					header:{'content-type':'application/x-www-form-urlencoded'},
 					data:{
 						lineID:that.nList1.lineID,
