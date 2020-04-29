@@ -59,7 +59,8 @@
 					'top': 75,
 					'left': 0,
 					'right': 0,
-					'backgroundColor': '#F5F5F5'
+					'backgroundColor': '#F5F5F5',
+					'z-index':99,
 				},
 				transClass: {
 					'position': 'fixed',
@@ -86,7 +87,7 @@
 								'position': 'fixed',
 								'left': 0,
 								'right': 0,
-								'bottom': 0
+								'bottom': 140
 							}
 							break
 						case 'center':
