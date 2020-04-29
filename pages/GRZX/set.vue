@@ -12,7 +12,7 @@
 		
 		<view class="list-cell m-t b-b" @click="clearStorage" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">清除缓存</text>
-			<text style="font-size: 28upx;">{{currentSize}}kb</text>
+			<text style="font-size: 28upx;">{{currentSize}}</text>
 			<text class="cell-more jdticon icon-you"></text>
 		</view>
 		<view class="list-cell b-b b-l" @click="navTo('aboutApp')">
@@ -70,13 +70,16 @@
 						that.statu.check2=res2.data;
 					}
 				})
-				uni.getStorageInfo({
-					success: function (res3) {
-						console.log(res3,"res3");
-						console.log(res3.currentSize,"currentSize");
-						that.currentSize=res3.currentSize;
-					}
-				});
+				const res = uni.getStorageInfoSync();
+				console.log(res,"res3");
+				console.log(res.currentSize,"currentSize");
+				var size=res.currentSize;
+				if(size>=1024){
+					var size=(size/1024).toFixed(2);
+					that.currentSize=size+" M";
+				}else{
+					that.currentSize=size+" KB";
+				}
 			},
 			//退出登录
 			toLogout(){
@@ -110,14 +113,12 @@
 			},
 			clearStorage(){
 				var user=uni.getStorageSync('userInfo');
-				var vehicle=uni.getStorageSync('vehicleInfo');
 				uni.showModal({
 				    content: '是否清除数据',
 				    success: (e)=>{
 				    	if(e.confirm){
 							uni.clearStorage();
 							uni.setStorageSync('userInfo',user);
-							uni.setStorageSync('vehicleInfo',vehicle);
 							uni.redirectTo({
 								url:'/pages/GRZX/set'
 							})

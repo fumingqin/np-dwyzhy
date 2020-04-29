@@ -247,25 +247,26 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			    let Appid = "wxef946aa6ab5788a3";//售票appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				//let local = window.location.href;
-				let local = "http://nply.fjmtcy.com/#/";
-				if (code == null || code === "") {
+				let local = "http://nply.fjmtcy.com/#/pages/CTKY/ctkyIndex";
+				 var indexCode=uni.getStorageSync('indexCode');
+				if (code == indexCode) {
 				  //不存在就打开上面的地址进行授权
-					window.location.href =
-						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
-						Appid +
-						"&redirect_uri=" +
-						encodeURIComponent(local) +
-						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+				  window.location.href =
+				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
+				  	Appid +
+				  	"&redirect_uri=" +
+				  	encodeURIComponent(local) +
+				  	"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
 					uni.request({
-						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=aad4e4dce4efd030376fc194627b68fd',
+						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=6db2b79e1669f727c246d9c8ae928ecf',
 						header: {
 							'content-type': 'application/x-www-form-urlencoded'
 						},
 						method:'POST',
 						success(res) {
+							console.log(res,"ctkyOpenId")
 							uni.setStorage({
 								key:'ctkyOpenId',
 								data:res.data.openid,

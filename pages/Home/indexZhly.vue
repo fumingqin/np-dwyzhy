@@ -302,6 +302,7 @@
 						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
+					uni.setStorageSync('indexCode',code);
 					uni.request({
 						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
 						header: {
