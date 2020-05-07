@@ -1,15 +1,6 @@
 <template>
 	<view class="content" v-bind:style="{height:imgHeight+'px'}">
 		<!-- 背景图 -->
-		<view v-if="loginType==1">
-			<image src="../../static/GRZX/login1.png" class="backClass"></image>
-		</view>
-		<view v-if="loginType==2">
-			<image src="../../static/GRZX/login2.png" class="backClass"></image>	
-		</view>
-		<view v-if="loginType==3">
-			<image src="../../static/GRZX/login3.png" class="backClass"></image>			
-		</view>
 		<view v-if="loginType==4">
 			<image src="../../static/GRZX/login4.png" class="backClass"></image>			
 		</view>
@@ -26,18 +17,6 @@
 			</view>
 			
 			<!-- 按钮颜色和发送验证码的样式 -->
-			<view v-if="loginType==1">
-				<view class="getCode style1" @click="getCodeClick" id="Code">{{textCode}}</view>
-				<image src="../../static/GRZX/btnLogin1.png" class="btnLogin" ></image>
-			</view>
-			<view v-if="loginType==2">
-				<view class="getCode style2" @click="getCodeClick" id="Code">{{textCode}}</view>
-				<image src="../../static/GRZX/btnLogin2.png" class="btnLogin"></image>
-			</view>
-			<view v-if="loginType==3">
-				<view class="getCode style3" @click="getCodeClick" id="Code">{{textCode}}</view>
-				<image src="../../static/GRZX/btnLogin3.png" class="btnLogin"></image>
-			</view>
 			<view v-if="loginType==4">
 				<view class="getCode style4" @click="getCodeClick" id="Code">{{textCode}}</view>
 				<image src="../../static/GRZX/btnLogin4.png" class="btnLogin"></image>
@@ -47,15 +26,6 @@
 		</view>
 		
 		<!-- logo -->
-		<view v-if="loginType==1">
-			<image src="../../static/GRZX/logo1.png" class="logoClass"></image>
-		</view>
-		<view v-if="loginType==2">
-			<image src="../../static/GRZX/logo2.png" class="logoClass"></image>
-		</view>
-		<view v-if="loginType==3">
-			<image src="../../static/GRZX/logo3.png" class="logoClass"></image>	
-		</view>
 		<view v-if="loginType==4">
 			<image src="../../static/GRZX/logo6.png" class="logoClass"></image>	
 		</view>
@@ -224,11 +194,11 @@
 									})
 								}
 							},
-							fail() {
+							fail(){
 								uni.showToast({
-									title:'验证码已过期，请重新获取',
-									icon:'none',
-								})
+									title:"验证码已过期，请重新获取",
+									icon:"none"
+								})	
 							}
 						})
 					}
