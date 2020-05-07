@@ -40,12 +40,12 @@
 			<QSTabs :current="current" :tabs="tabs" minWidth="80" @change="change($event)" />
 		</view>
 
-		<view :hidden="current==1">
+		<!-- <view :hidden="current==1"> -->
 			
 			<!-- 注视区 -->
 			<view class="fa_MainView">
 				<view class="fa_TitleView">
-					<text class="fa_DiscoveryTitle">{{stationArray[leftIndex]}}</text>
+					<text class="fa_DiscoveryTitle">{{screenDate}}</text>
 				</view>
 			</view>
 			<swiper style="height: 560upx; padding: 0 8rpx;" circular="circular" autoplay="autoplay">
@@ -87,46 +87,22 @@
 					<text class="newDiscoveryConentText2">{{item.synopsis}}</text>
 				</view>
 			</view>
-		</view>
+		<!-- </view> -->
 
-		<view :hidden="current==0">
-			<!-- 联动列表 -->
-			<view class="list_box">
-				<!-- 左边的列表 -->
-				<view class="left">
-					<scroll-view scroll-y="true" :style="{ 'height':scrollHeight }">
-						<view class="item" v-for="(item,index) in stationArray" :key="index" :class="{ 'active':index==leftIndex }"
-						 :data-index="index" @click="leftTap(item,index)">
-							<view class="itemView" :style="{background:index==leftIndex? '#4EB3F7' : ''}"></view>
-							<text class="itemText">{{item}}</text>
-						</view>
-					</scroll-view>
-				</view>
-				<!-- 右边的列表 -->
-				<view class="main">
-					<scroll-view class="mainScView" scroll-y="true">
-						<!-- 大图样式，命名：big -->
-						<view @click="natTo(ifyFirst.productID)">
-							<image class="big_image" :src="ifyFirst.imageUrl[0]"></image>
-							<view style="margin: 0upx 32upx;">
-								<text class="big_title">{{ifyFirst.title}}</text>
-								<text class="big_text">{{ifyFirst.synopsis}}</text>
-							</view>
-						</view>
 
-						<!-- 小图样式，命名:sma -->
-						<view class="sma_view">
-							<view style="float: left;" v-for="(item,index) in ifyList" :key="index" @click="natTo(item.productID)">
-								<image class="sma_image" :src="item.imageUrl[0]"></image>
-								<text class="sma_title">{{item.title}}</text>
-								<text class="sma_text">{{item.synopsis}}</text>
-							</view>
+		<!-- 分类面板 -->
+		<view class="cate-mask" :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''" @click="toggleCateMask('none')">
+			<view class="cate-content">
+				<scroll-view scroll-y class="cate-list">
+					<view v-for="(item,index) in regionList" :key="index">
+						<view class="cate-item b-b" :class="{active: item.regionId==screenIndex}" @click="changeCate(item)">
+							{{item.regionName}}
 						</view>
-
-					</scroll-view>
-				</view>
+					</view>
+				</scroll-view>
 			</view>
 		</view>
+
 
 
 	</view>
@@ -147,6 +123,9 @@
 				regionApp: '请选择', //APP地区数值
 
 				current: 0, //标题下标
+				cateMaskState: 0, //分类面板展开状态
+				screenIndex : '',//点击默认值
+				screenDate: '泉州市',//地区默认值
 				tabs: ['推荐', '全部'], //选项标题
 
 				itText: '', //六宫格
@@ -156,11 +135,43 @@
 					imageUrl: ['']
 				}, //分类产品首个
 				ifyList: '', //分类产品列表
-
+				
+				regionList : [{
+					regionId:0,
+					regionName : '泉州市'
+				},{
+					regionId:1,
+					regionName : '光泽县'
+				},{
+					regionId:2,
+					regionName : '建瓯市'
+				},{
+					regionId:3,
+					regionName : '建阳区'
+				},{
+					regionId:4,
+					regionName : '浦城县'
+				},{
+					regionId:5,
+					regionName : '邵武市'
+				},{
+					regionId:6,
+					regionName : '松溪县'
+				},{
+					regionId:7,
+					regionName : '武夷山市'
+				},{
+					regionId:8,
+					regionName : '延平区'
+				},{
+					regionId:9,
+					regionName : '政和县'
+				},{
+					regionId:10,
+					regionName : '市本级'
+				}], //地区
 
 				scrollHeight: '500px',
-				leftIndex: 0, //左边列表值
-				stationArray: ['南平市', '泉州市', '龙岩市', '厦门市'], //左边数据内容
 			}
 		},
 		components: {
@@ -170,7 +181,7 @@
 		},
 		onLoad: function() {
 			uni.showLoading({
-				title: '加载历史中...',
+				title: '加载文化中...',
 				icon: 'loading'
 			})
 			this.Getpostion();
@@ -186,23 +197,20 @@
 					url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.value,
 					method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.method,
 					data: {
-						// #ifdef H5
-						regionWeixin: '南平市',
-						// #endif
-						// #ifndef H5
-						regionWeixin: this.regionWeixin,
-						// #endif
+						regionWeixin: this.screenDate,
 					},
 					success: (res) => {
 						// console.log(res)
 						if (res.data.status == true) {
 							this.itText = res.data.data;
 							uni.hideLoading()
+							uni.stopPullDownRefresh()
 						} else {
 							uni.hideLoading()
+							uni.stopPullDownRefresh()
 							this.itText = '';
 							uni.showToast({
-								title: '该地区暂无自由行数据',
+								title: '该地区暂未录入历史文化',
 								icon: 'none'
 							})
 
@@ -211,6 +219,7 @@
 					},
 					fail: function() {
 						uni.hideLoading()
+						uni.stopPullDownRefresh()
 						uni.showToast({
 							title: '网络异常，请检查网络后尝试',
 							icon: 'none'
@@ -224,12 +233,7 @@
 					url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.value,
 					method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.method,
 					data: {
-						// #ifdef H5
-						regionWeixin: '南平市',
-						// #endif
-						// #ifndef H5
-						regionWeixin: this.regionWeixin,
-						// #endif
+						regionWeixin: this.screenDate,
 					},
 					success: (res) => {
 						if (res.data.status == true) {
@@ -237,11 +241,13 @@
 							sc.sort((a, b) => a.id - b.id)
 							this.newDiscovery = sc;
 							uni.hideLoading()
+							uni.stopPullDownRefresh()
 						} else {
 							uni.hideLoading()
+							uni.stopPullDownRefresh()
 							this.newDiscovery = '';
 							uni.showToast({
-								title: '该地区暂无自由行数据',
+								title: '该地区暂未录入历史文化',
 								icon: 'none'
 							})
 						}
@@ -249,6 +255,7 @@
 					},
 					fail: function() {
 						uni.hideLoading()
+						uni.stopPullDownRefresh()
 						uni.showToast({
 							title: '网络异常，请检查网络后尝试',
 							icon: 'none'
@@ -256,120 +263,6 @@
 
 					}
 				})
-
-				//请求地区数据
-				uni.request({
-					url: $lyfw.Interface.zyx_GetCityInfo.value,
-					method: $lyfw.Interface.zyx_GetCityInfo.method,
-					success: (res) => {
-						if (res.data.status == true) {
-							this.stationArray = res.data.data
-							this.classifyList()
-						} else(
-							uni.hideLoading(),
-							uni.showToast({
-								title: '暂无相关地区数据',
-								icon: 'none'
-							})
-						)
-
-					},
-					fail: function() {
-						uni.hideLoading()
-						uni.showToast({
-							title: '网络异常，请检查网络后尝试',
-							icon: 'none'
-						})
-
-					}
-				})
-
-
-			},
-
-			//全部按钮，请求地区接口数据
-			classifyList: function(e) {
-				if (e) {
-					uni.request({
-						url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.value,
-						method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.method,
-						data: {
-							// #ifdef H5
-							regionWeixin: '南平市',
-							// #endif
-							// #ifndef H5
-							regionWeixin: e,
-							// #endif
-						},
-						success: (res) => {
-							console.log(res)
-							if (res.data.status == true) {
-								this.ifyFirst = res.data.data[0];
-								var sc = res.data.data;
-								sc.shift();
-								this.ifyList = sc;
-								uni.hideLoading();
-							} else if (res.data.status == false) {
-								uni.hideLoading();
-								this.ifyFirst = '';
-								this.ifyList = '';
-								uni.showToast({
-									title: '查不到该地区相关信息！',
-									icon: 'none'
-								})
-
-							}
-						},
-						fail: function() {
-							uni.hideLoading();
-							uni.showToast({
-								title: '网络异常，请检查网络后尝试',
-								icon: 'none'
-							})
-						}
-					})
-				} else {
-					uni.request({
-						url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.value,
-						method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.method,
-						data: {
-							// #ifdef H5
-							regionWeixin: '南平市',
-							// #endif
-							// #ifndef H5
-							regionWeixin: this.stationArray[this.leftIndex]
-							// #endif
-
-						},
-						success: (res) => {
-							if (res.data.data) {
-								this.ifyFirst = res.data.data[0];
-								var sc = res.data.data;
-								sc.shift();
-								this.ifyList = sc;
-								uni.hideLoading();
-							} else if (res.data.status == false) {
-								uni.hideLoading();
-								this.ifyFirst = '';
-								this.ifyList = '';
-								uni.showToast({
-									title: '查不到该地区相关信息！',
-									icon: 'none'
-								})
-
-							}
-						},
-						fail: function() {
-							uni.hideLoading();
-							uni.showToast({
-								title: '网络异常，请检查网络后尝试',
-								icon: 'none'
-							})
-
-						}
-					})
-				}
-
 			},
 
 
@@ -426,7 +319,6 @@
 					this.regionApp = e.cityName
 					this.$refs.popupRef.close();
 					this.textData();
-					this.screenIndex = 0;
 					this.searchIndex = 0;
 				} else if (e == 'yes') {
 					uni.getStorage({
@@ -504,7 +396,50 @@
 
 			//tabbar筛选点击
 			change(index) {
-				this.current = index;
+				if(index == 0){
+					this.current = index;
+				}else{
+					this.current = index;
+					this.toggleCateMask('show')
+				}
+				
+			},
+			
+			//显示分类面板
+			toggleCateMask(type) {
+				if(type=='show'){
+					let timer = type === 'show' ? 10 : 300;
+					let state = type === 'show' ? 1 : 0;
+					this.cateMaskState = 1;
+					setTimeout(() => {
+						this.cateMaskState = state;
+					}, timer)
+				}else{
+					let timer = type === 'show' ? 10 : 300;
+					let state = type === 'show' ? 1 : 0;
+					this.cateMaskState = 1;
+					this.current = 0
+					setTimeout(() => {
+						this.cateMaskState = state;
+					}, timer)
+				}
+				
+			},
+			
+			//分类点击
+			changeCate: function(item) {
+				this.screenIndex = item.regionId;
+				this.screenDate = item.regionName;
+				this.toggleCateMask('none');
+				this.current = 0
+				uni.pageScrollTo({
+					duration: 300,
+					scrollTop: 0
+				})
+				uni.showLoading({
+					title: '正在搜索',
+				})
+				this.textData()
 			},
 
 			//跳转
@@ -515,15 +450,8 @@
 				})
 			},
 
-			/* 左侧导航点击 */
-			leftTap: function(item, index) {
-				console.log(item)
-				this.leftIndex = index;
-				this.classifyList(item);
-				uni.showLoading({
-					title: '正在搜索' + item
-				});
-			},
+			
+
 		}
 	}
 </script>
@@ -635,7 +563,7 @@
 
 	//tabs点击
 	.tabsBox {
-		z-index: 999; //最外层
+		// z-index: 998; //最外层
 		position: sticky;
 		background: #fff;
 	}
@@ -898,6 +826,66 @@
 					}
 				}
 			}
+		}
+	}
+	
+	/* 分类 */
+	.cate-mask {
+		position: fixed;
+		left: 0;
+		top: var(--window-top);
+		bottom: 0;
+		width: 100%;
+		background: rgba(0, 0, 0, 0);
+		z-index: 95;
+		transition: .3s;
+	
+		.cate-content {
+			width: 630upx;
+			height: 100%;
+			background: #fff;
+			float: right;
+			transform: translateX(100%);
+			transition: .3s;
+		}
+	
+		&.none {
+			display: none;
+		}
+	
+		&.show {
+			background: rgba(0, 0, 0, .4);
+	
+			.cate-content {
+				transform: translateX(0);
+			}
+		}
+	}
+	
+	.cate-list {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	
+		.cate-item {
+			display: flex;
+			align-items: center;
+			height: 90upx;
+			padding-left: 30upx;
+			font-size: 28upx;
+			color: #555;
+			position: relative;
+		}
+	
+		.two {
+			height: 64upx;
+			color: #303133;
+			font-size: 30upx;
+			background: #f8f8f8;
+		}
+	
+		.active {
+			color: #06B4FD;
 		}
 	}
 </style>

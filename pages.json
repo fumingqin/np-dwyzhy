@@ -488,7 +488,9 @@
         }
         ,{
             "path" : "pages/FYWH/fy_index",
-            "style" : {}
+            "style" : {
+				"enablePullDownRefresh":true
+			}
         }
         ,{
             "path" : "pages/FYWH/fy_touristroute",
