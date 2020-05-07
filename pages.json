@@ -486,6 +486,29 @@
             "path" : "pages/GJCX/selectRoute",
             "style" : {}
         }
+        ,{
+            "path" : "pages/FYWH/fy_index",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/FYWH/fy_touristroute",
+            "style" : {}
+        },{
+		    "path" : "pages/FYWH/fy_imglist",
+		    "style" : {
+				"navigationBarTitleText": "全部图片"
+			}
+		},{
+		    "path" : "pages/FYWH/fy_imgPreview",
+		    "style" : {
+				"navigationBarTitleText": "查看图片"
+			}
+		},{
+		    "path" : "pages/FYWH/fy_toreply",
+		    "style" : {
+				"navigationBarTitleText": "回复评论"
+			}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -508,6 +531,10 @@
 				{
 					"pagePath": "pages/GRZX/notice",
 					"text": "通知"
+				},
+				{
+					"pagePath": "pages/FYWH/fy_index",
+					"text": "文化"
 				},
 				{
 					"pagePath": "pages/order/OrderList",
