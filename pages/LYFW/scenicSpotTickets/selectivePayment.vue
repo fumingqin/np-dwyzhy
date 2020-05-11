@@ -277,14 +277,17 @@
 				
 				
 				if(e <= 0){
-					uni.showToast({
-						title:'订单已取消',
-						icon:'none',
-						success:function(){
-							uni.navigateBack()
-						}
-					})
-					
+				uni.showToast({
+					title: '订单已超时',
+					icon: 'none',
+					success: ()=>{
+						this.countDown()
+						uni.switchTab({
+							url:'../../order/OrderList'
+						})
+					}
+				})
+				
 				}else{
 					this.countDown();
 				}

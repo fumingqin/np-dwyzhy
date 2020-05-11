@@ -104,23 +104,33 @@
 						data:{
 							phoneNumber:phone,
 							wxOpenid:openid,
+							// phoneNumber:'15297556089',
+							//wxOpenid:'oMluguKtIHQ2Qcomm4By98am4J-0',
 							qqOpenid:'',
 						},
+						header: {'content-type': 'application/x-www-form-urlencoded'},
 						method:'POST',
 						success(res) {
 							console.log(res,"res")
-							uni.showToast({
-								title:res.data.msg,
-								icon:'success',
-							})
-							uni.setStorageSync('userInfo',res.data.data)
-							that.logining=true;
-							that.login(res.data.data)
-							setTimeout(function(){
-								uni.switchTab({
-									url:'/pages/Home/indexZhly'
+							if(res.data.msg=="绑定手机号成功！"){
+								uni.showToast({
+									title:res.data.msg,
+									icon:'success',
 								})
-							},500);
+								uni.setStorageSync('userInfo',res.data.data)
+								that.logining=true;
+								that.login(res.data.data)
+								setTimeout(function(){
+									uni.switchTab({
+										url:'/pages/Home/indexZhly'
+									})
+								},500);	
+							}else{
+								uni.showToast({
+									title:'绑定失败！',
+									icon:'success',
+								})
+							}
 						}
 					})	
 				}else{
