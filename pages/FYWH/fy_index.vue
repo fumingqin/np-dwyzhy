@@ -95,8 +95,8 @@
 			<view class="cate-content">
 				<scroll-view scroll-y class="cate-list">
 					<view v-for="(item,index) in regionList" :key="index">
-						<view class="cate-item b-b" :class="{active: item.regionId==screenIndex}" @click="changeCate(item)">
-							{{item.regionName}}
+						<view class="cate-item b-b" :class="{active: index==screenIndex}" @click="changeCate(item,index)">
+							{{item}}
 						</view>
 					</view>
 				</scroll-view>
@@ -136,40 +136,7 @@
 				}, //分类产品首个
 				ifyList: '', //分类产品列表
 				
-				regionList : [{
-					regionId:0,
-					regionName : '泉州市'
-				},{
-					regionId:1,
-					regionName : '光泽县'
-				},{
-					regionId:2,
-					regionName : '建瓯市'
-				},{
-					regionId:3,
-					regionName : '建阳区'
-				},{
-					regionId:4,
-					regionName : '浦城县'
-				},{
-					regionId:5,
-					regionName : '邵武市'
-				},{
-					regionId:6,
-					regionName : '松溪县'
-				},{
-					regionId:7,
-					regionName : '武夷山市'
-				},{
-					regionId:8,
-					regionName : '延平区'
-				},{
-					regionId:9,
-					regionName : '政和县'
-				},{
-					regionId:10,
-					regionName : '市本级'
-				}], //地区
+				regionList : ['泉州市','光泽县','建瓯市','建阳区','浦城县','邵武市','松溪县','武夷山市','延平区','政和县','市本级'], //地区
 
 				scrollHeight: '500px',
 			}
@@ -427,9 +394,9 @@
 			},
 			
 			//分类点击
-			changeCate: function(item) {
-				this.screenIndex = item.regionId;
-				this.screenDate = item.regionName;
+			changeCate: function(item,index) {
+				this.screenIndex = index;
+				this.screenDate = item;
 				this.toggleCateMask('none');
 				this.current = 0
 				uni.pageScrollTo({

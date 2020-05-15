@@ -2,12 +2,7 @@
 	<view>
 		<!-- 搜索栏 -->
 		<view class="searchTopBox">
-			<!-- #ifdef MP -->
-			<text  class="locationTxt" @click="oncity">{{regionWeixin}}<text class="icon jdticon icon-xia"></text></text>
-			<!-- #endif -->
-			<!-- #ifdef APP-PLUS -->
-			<text  class="locationTxt" @click="oncity">{{regionApp}}<text class="icon jdticon icon-xia"></text></text>
-			<!-- #endif -->
+			<text class="locationTxt" @click="oncity">{{regionWeixin}}<text class="icon jdticon icon-xia"></text></text>
 			<view class="searchBoxRadius">
 				<input class="inputIocale" type="search" v-model="searchValue" @confirm="searchNow" placeholder="搜索景区名称" />
 				<image class="searchImage" src="../../../static/LYFW/currency/search.png" />
@@ -151,7 +146,6 @@
 				cateValue : '', //分类筛选值
 				
 				regionWeixin: '请选择', //微信地区数值
-				regionApp : '请选择',//APP地区数值
 			}
 		},
 		
@@ -165,6 +159,13 @@
 		},
 		
 		onLoad:function(options) {
+			// #ifdef H5
+			uni.showToast({
+				title:'公众号当前定位无法启用，已默认定位南平市',
+				icon:'none'
+			})
+			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
+			// #endif
 			this.cateId = options.tid;
 			this.loadCateList(options.fid, options.sid);
 			this.Getpostion();
@@ -187,8 +188,16 @@
 					url:'http://218.67.107.93:9210/api/app/getSixScenicspotList?requestArea=' +this.regionWeixin,
 					method:'POST',
 					success:(res) => { 
-						console.log(res)
-						this.sixPalaceList = res.data.data;
+						// console.log(res)
+						if (res.data.msg == '获取景区信息成功！') {
+							this.sixPalaceList = res.data.data;
+						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
+							this.sixPalaceList = '';
+							uni.showToast({
+								title: '该地区暂无景点信息',
+								icon: 'none'
+							})
+						}
 					}
 				})
 				
@@ -197,8 +206,17 @@
 					url:'http://218.67.107.93:9210/api/app/getScenicspotList?requestArea=' +this.regionWeixin,
 					method:'POST',
 					success:(res) => {
-						console.log(res)
-						this.scenicList = res.data.data;
+						// console.log(res)
+						if (res.data.msg == '获取景区信息成功！') {
+							this.scenicList = res.data.data;
+						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
+							this.scenicList = '';
+							uni.showToast({
+								title: '该地区暂无景点信息',
+								icon: 'none'
+							})
+						}
+						
 					}
 				})
 				setTimeout(()=>{
@@ -207,31 +225,39 @@
 			},	
 			
 			//获取定位数据
-			Getpostion:function(){
-				setTimeout(()=>{
+			Getpostion: function() {
+				setTimeout(() => {
 					uni.getStorage({
-						key:'wx_position',
-						success:(res)=>{
-							// console.log(res)
-							this.regionWeixin = res.data;
-						},
-						complete: () => {
-							this.lyfwData(); //请求接口数据
-						}
-					}),
-					
-					uni.getStorage({
-						key:'app_position',
+						key: 'wx_position',
 						success: (res) => {
 							// console.log(res)
-							if(res.data !== undefined){
-								this.regionApp = res.data.city;
+							this.regionWeixin = res.data;
+							this.lyfwData(); //请求接口数据
+						},
+						fail: (res) => {
+							uni.showToast({
+								title:'请选择地区',
+								icon:'none'
+							})
+						},
+					}),
+					uni.getStorage({
+						key: 'app_position',
+						success: (res) => {
+							// console.log(res)
+							if (res.data !== undefined) {
+								this.regionWeixin = res.data.city;
+								this.lyfwData(); //请求接口数据
 							}
-						}
+						},
+						fail: (res) => {
+							uni.showToast({
+								title:'请选择地区',
+								icon:'none'
+							})
+						},
 					})
-					
-				},500)
-				
+				}, 500)
 			},
 			
 			//打开地区选择器
@@ -244,31 +270,35 @@
 				if (e !== 'no' && e !== 'yes') {
 					// console.log(e)
 					this.regionWeixin = e.cityName
-					this.regionApp = e.cityName
 					this.$refs.popupRef.close();
 					this.lyfwData();
 					this.screenIndex = 0;
 					this.searchIndex = 0;
-				} else if(e == 'yes'){
+				} else if (e == 'yes') {
+					// #ifndef APP-PLUS
 					uni.getStorage({
-						key:'wx_position',
-						success:(res)=>{
+						key: 'wx_position',
+						success: (res) => {
 							// console.log(res)
 							this.regionWeixin = res.data;
 							this.lyfwData(); //请求接口数据
 						}
 					}),
+					// #endif
+					// #ifdef APP-PLUS
 					uni.getStorage({
-						key:'app_position',
+						key: 'app_position',
 						success: (res) => {
 							// console.log(res)
-							if(res.data !== undefined){
-								this.regionApp = res.data.city;
+							if (res.data !== undefined) {
+								this.regionWeixin = res.data.city;
+								this.lyfwData(); //请求接口数据
 							}
 						}
 					})
+					// #endif
 					this.$refs.popupRef.close();
-				}else{
+				} else {
 					this.$refs.popupRef.close();
 				}
 			},

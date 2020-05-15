@@ -186,6 +186,7 @@
 			this.lyfwData();
 		},
 		onShow() {
+			this.getUserInfo();
 			this.userData();
 		},
 		components: {
@@ -195,6 +196,17 @@
 			uniCalendar,
 		},
 		methods: {
+			//获取用户信息
+			getUserInfo:function(){
+				uni.getStorage({
+					key:'userInfo',
+					success:(res)=>{
+						console.log(res)
+						this.userInfo = res.data;
+					}
+				})
+			},
+			
 			//读取静态数据
 			async lyfwData(e) {
 				uni.getStorage({
@@ -204,14 +216,6 @@
 						// console.log(res)
 					}
 				})
-				uni.getStorage({
-					key: 'userInfo',
-					success: (res) => {
-						this.userInfo = res.data;
-						// console.log(res)
-					}
-				})
-
 				let notice = await this.$api.lyfwfmq('notice');
 				this.notice = notice.data;
 			},
@@ -280,7 +284,7 @@
 			//数组提取
 			screenUser: function() {
 				let adult = this.addressData.filter(item => {
-					return item.userType == '成人';
+					return item.userType == '成人' || item.userType == '军人' || item.userType == '教师' || item.userType == '学生' ;
 				})
 				let children = this.addressData.filter(item => {
 					return item.userType == '儿童';
@@ -330,8 +334,9 @@
 
 			// 数量+计价
 			numberChange() {
-				const a = (this.admissionTicket.ticketAdultPrice * this.adultIndex) + (this.admissionTicket.ticketChildPrice * this
+				const b = (this.admissionTicket.ticketAdultPrice * this.adultIndex) + (this.admissionTicket.ticketChildPrice * this
 					.childrenIndex);
+				const a = b.toFixed(2);
 				if (this.couponColor == '') {
 					this.actualPayment = a;
 				} else if (a >= this.couponCondition) {
@@ -466,8 +471,12 @@
 									})
 								},
 								fail:function(){
+									uni.hideLoading()
 									uni.showToast({
-										title:'请授权微信公众号！'
+										title:'请允许授权给公众号，即将为您返回主页！'
+									})
+									uni.switchTab({
+										url:'../../Home/indexZhly'
 									})
 									that.submissionState = false;
 								}
@@ -541,6 +550,7 @@
 					},
 					fail:function(ee){
 						console.log(ee)
+						uni.hideLoading()
 						that.submissionState = false;
 					}
 				})
