@@ -50,21 +50,22 @@
 							<scroll-view :show-scrollbar="false" scroll-x="true" style="height: 600upx;" >
 								<image style="width: 36upx;height: 36rpx;margin-top: 76rpx;margin-left: 43rpx;"  src="../../static/GCJX/detailedBus/star.png"></image> 
 										<!-- 循环前判断公交方向 -->
-										<view style=" flex-wrap: nowrap;flex-direction: row;position: absolute;left: 37px;height: 600upx;">  <!-- top: 88rpx; -->
+										<view style=" flex-wrap: nowrap;flex-direction: row;position: absolute;left: 37px;height: 600upx;direction:ltr">  <!-- top: 88rpx; -->
 										<block v-for="(item,index) in list1" :key="index">
 											
 												<!-- <text v-if="item1.stationIndex==index+1">{{item1.stationIndex}}{{index+1}}</text> -->
-								<!-- 公交	 -->	<image  v-for="(item1,index1) in carList" :key="index1" v-if="item1.stationIndex==index+1" style="height: 27rpx;width: 54rpx;top: 40rpx;position: absolute;flex: block;" src="../../static/GCJX/detailedBus/bus.png"></image>
-								                    
+								<!-- 公交	 -->	<image  v-for="(item1,index1) in carList" :key="index1" v-if="item1.stationIndex==index+1&&direction==0" style="height: 27rpx;width: 54rpx;top: 40rpx;position: absolute;flex: block;" src="../../static/GCJX/detailedBus/bus.png"></image>
+								                    <!-- 公交	 -->	<image  v-for="(item1,index1) in carList" :key="index1" v-if="item1.stationIndex-list1.length==index+1&&direction==1" style="height: 27rpx;width: 54rpx;top: 40rpx;position: absolute;flex: block;" src="../../static/GCJX/detailedBus/bus.png"></image>
 								            
-											<view style="flex-wrap: nowrap;flex-direction: row;top: 88rpx;">
+											<view style="flex-wrap: nowrap;flex-direction: row;top: 88rpx;direction:ltr">
 								<!-- 绿条 -->		<image style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/green.png"></image>
 								<!-- 橙条	 -->	<!-- <image v-if="item.stationStatu==1&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/orange.png"></image> -->
 								<!-- 红条 -->		<!-- <image v-if="item.stationStatu==2&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/red.png"></image> -->
 								<!-- 箭头 -->		<image v-if="index!=0" style="height: 13rpx;width: 17rpx;position: absolute;"  src="../../static/GCJX/detailedBus/arrowHead.png"></image>
 								</view>
 								<!-- 序号 -->		<text  :class="item.stationName==inStation?'xuhao2':'xuhao'">{{index+1}}</text>
-								<!-- 站点	 -->    <text  :class="item.stationName==inStation?'text5':'text4'" @click="getCarDetaile(item.stationIndex-1,item.lat,item.lon)">{{item.stationName}}</text>
+								<!-- 站点	 -->    <text  :class="item.stationName==inStation?'text5':'text4'" v-if="direction==0" @click="getCarDetaile(item.stationIndex,item.lat,item.lon)">{{item.stationName}}</text>
+								<!-- 站点	 -->    <text  :class="item.stationName==inStation?'text5':'text4'" v-if="direction==1" @click="getCarDetaile(item.stationIndex-list1.length,item.lat,item.lon)">{{item.stationName}}</text>
 										</block>
 										<block>
 											<!-- <view style=""> -->
@@ -206,19 +207,20 @@
 				}
 			});
 			// that.setMarkers();
-			that.ShowPage=true;
-			if(this.timer){
-				clearInterval(this.timer);
-			}
-			else{
-				this.timer =setInterval(()=>{
+			that.ShowPage=true
+			// if(this.timer){
+			// 	clearInterval(this.timer);
+			// }
+			// else{
+			// 	this.timer =setInterval(()=>{
 					
-					console.log('ok!!!!');
-					that.carInfo();         //车辆实时动态
-					that.getCarDetaile(that.inStationIndex,that.inStationIndexlat,that.inStationIndexlon);  //获取最近站点
-					// that.setCarmarkers()
-				},5000);
-			}
+			// 		console.log('ok!!!!');
+			// 		that.carInfo();         //车辆实时动态
+			// 		// that.getNearstation();
+			// 		that.getCarDetaile(that.inStationIndex,that.inStationIndexlat,that.inStationIndexlon);  //获取最近站点
+			// 		// that.setCarmarkers()
+			// 	},5000);
+			// }
 		},
 		onReady() {
 			var that = this;
@@ -321,14 +323,16 @@
 				if(that.direction==0){
 				that.direction =1;
 				that.list1=that.reverseDirection;
-				that.carList=JSON.stringify(that.reverseCar);
-				console.log(JSON.stringify(that.carList));
+				that.carList=that.reverseCar;
+				// console.log(JSON.stringify(that.carList));
+				that.getNearstation();
 				}
 				else{
 					that.direction =0;
 					that.list1=that.forwardDirection;
 					that.carList=that.forwardCar; 
-					console.log(JSON.stringify(that.carList));
+					// console.log(JSON.stringify(that.carList));
+					that.getNearstation();
 				}
 			},
 			getNearstation:function(){            //获取该线路最近站点
@@ -358,41 +362,59 @@
 							 lon=that.list1[i].lon;
 						 }
 					}
-					console.log(b);
+					
+					if(that.direction==0){
 					that.getCarDetaile(b,lat,lon);
+					console.log(b);
+					}
+					if(that.direction==1){
+					that.getCarDetaile(b-that.list1.length,lat,lon);
+					console.log(b-that.list1.length);
+					
+					}
 				}
 			});
 				
 			},
+			//计算车辆状态
 			getCarDetaile:function(stationIndex,lat,lon){
 				var that=this;
-				var s;
+				var s=0;
 				that.inStationIndex=stationIndex;
-				that.inStationIndexlon=that.list1[stationIndex].lon;
-				that.inStationIndexlat=that.list1[stationIndex].lat;
+				that.inStationIndexlon=that.list1[stationIndex-1].lon;
+				that.inStationIndexlat=that.list1[stationIndex-1].lat;
 				that.carSta=999;
-				// console.log(stationIndex);
-				that.inStation=that.list1[stationIndex].stationName;
+				console.log(that.carList.length);
+				that.inStation=that.list1[stationIndex-1].stationName;
 				// console.log(stationIndex,lat,lon);
 				// console.log(JSON.stringify(that.carList));
 				if(that.carList.length>0){                                //判断是否有车
 				    for(let i in that.carList){
 						// console.log(stationIndex,that.carList[i].stationIndex,stationIndex>that.carList[i].stationIndex)
 						// if(stationIndex>that.carList[i].stationIndex){
-							s=stationIndex-that.carList[i].stationIndex+1;
+							s=stationIndex-that.carList[i].stationIndex;
+							console.log(that.carList[i].stationIndex);
+							if(that.direction==1){
+								s=stationIndex-(that.carList[i].stationIndex-that.list1.length);
+							}
 							if(s<1&&s>0||s==0){
 								that.carSta='即将到站';
 								that.carDistance=that.distance(lat,lon,that.carList[i].lat,that.carList[i].lon)*1000;
 								break;
 							}
-							if(s<that.carSta){
+							if(s<that.carSta&&s>0){
 								that.carSta=s;
 								that.carDistance=that.distance(lat,lon,that.carList[i].lat,that.carList[i].lon)*1000;
 							}
 							if(s<0){
+								if(that.carSta<stationIndex){
+									break;
+								}
+								else{
 								s=-s;
 								that.carSta='已过'+ s;
 								break;
+								}
 							}
 						// }
 						// else{
@@ -407,6 +429,7 @@
 				}
 				console.log(that.carSta);
 			},
+			//计算距离公式
 			distance: function (la1, lo1, la2, lo2) {
 			    var La1 = la1 * Math.PI / 180.0;
 			    var La2 = la2 * Math.PI / 180.0;
@@ -546,46 +569,55 @@
 			
 			setCarmarkers:function(car){
 				var that=this;
-				that.markers =that.stationMarkers;
+				// that.markers =that.stationMarkers;
+				that.markers =[];
+				console.log(that.markers);
+				
 				// console.log(JSON.stringify(car));
 				// for(let i in car){
 				// console.log(Array.isArray(car));
 				// if(car.length>0){
 					
 				// 	console.log(JSON.stringify(that.markers));
-				// 	for(var i=0;i<car.length;i++){
-				// 		that.markers = [];
-				// 		console.log(car[0].lat,car[0].lon);
-				// 					 var ob={
-				// 					 	id: 0,
-				// 					 	latitude: car[i].lat,
-				// 					 	longitude: car[i].lon,
-				// 					 	// title: '在这上车',
-				// 					 	zIndex: '1',
-				// 					 	iconPath: '../../static/GCJX/detailedBus/bus2.png',
-				// 					 	rotate: 0,
-				// 					 	width: 25,
-				// 					 	height: 25,
-				// 					 	// anchor: {
-				// 					 	// 	x: 0.5,
-				// 					 	// 	y: 1
-				// 					 	// },
-				// 					 	callout: {
-				// 					 		content: '我是公交车',
-				// 					 		color: '#ff0000',
-				// 					 		fontSize: 10,
-				// 					 		borderRadius: 4,
-				// 					 		borderWidth: 1,
-				// 					 		borderColor: '#333300',
-				// 					 		bgColor: '#FFFFFF',
-				// 					 		padding: '5',
-				// 					 		display: 'ALWAYS'
-				// 					 	}
-				// 					 };
-				// 					 that.markers.push(ob);
-				// 					 // that.markers.push(that.stationMarkers);
-				// 					 }
-				// 					 // that.markers.push(that.stationMarkers);
+					for(var i=0;i<car.length;i++){
+						// that.markers = [];
+						// console.log(car[0].lat,car[0].lon);
+									 var ob={
+									 	id: that.stationMarkers.length-1+i,
+									 	latitude: car[i].lat,
+									 	longitude: car[i].lon,
+									 	// title: '在这上车',
+									 	zIndex: '1',
+									 	iconPath: '../../static/GCJX/detailedBus/bus2.png',
+									 	rotate: 0,
+									 	width: 25,
+									 	height: 25,
+									 	// anchor: {
+									 	// 	x: 0.5,
+									 	// 	y: 1
+									 	// },
+									 	// callout: {
+									 	// 	content: '我是公交车',
+									 	// 	color: '#ff0000',
+									 	// 	fontSize: 10,
+									 	// 	borderRadius: 4,
+									 	// 	borderWidth: 1,
+									 	// 	borderColor: '#333300',
+									 	// 	bgColor: '#FFFFFF',
+									 	// 	padding: '5',
+									 	// 	display: 'ALWAYS'
+									 	// }
+									 };
+									 that.markers.push(ob);
+									 
+									 // that.markers.push(that.stationMarkers);
+									 }
+									 // console.log(JSON.stringify(that.markers));
+									 for(let j in that.stationMarkers){
+										 that.markers.push(that.stationMarkers[j]);
+									 }
+									 
+									 // console.log(that.markers);
 				// }
 				// }
 			},
@@ -595,7 +627,7 @@
 				uni.createMapContext("map").getScale({
 				    success: (e) => {  
 						that.scale1=JSON.stringify(e.scale);
-				        console.log(JSON.stringify(that.scale1));
+				        // console.log(JSON.stringify(that.scale1));
 				    }  
 				}) 
 				// console.log(lis);
@@ -684,6 +716,7 @@
 					};
 					that.stationMarkers.push(obj);
 				};
+				// console.log(that.stationMarkers);
 
 			},
 		}

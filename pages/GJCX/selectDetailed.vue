@@ -346,7 +346,7 @@
 						key:'app_position',
 						success: (res) => {
 							// console.log(res)
-							this.regionApp = res.data.city;
+							// this.regionApp = res.data.city;
 						},
 					})
 				},500)

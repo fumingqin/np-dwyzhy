@@ -484,6 +484,12 @@
         }
         ,{
             "path" : "pages/GJCX/selectRoute",
+            "style" : {
+				"navigationBarTitleText": "线路方案"
+			}
+        }
+        ,{
+            "path" : "pages/GJCX/selectDetailed",
             "style" : {}
         }
         ,{

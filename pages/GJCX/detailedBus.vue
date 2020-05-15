@@ -1,43 +1,63 @@
 <template>
 	<view>
+		<view class="bgColor"></view>
+		<view class="box">
+			<view  class="line1" v-for="(item,index) in lineInfo.segments" :key="index">
+			<text v-if="item.bus.buslines.length>0">{{item.bus.buslines[0].esayname}}</text>
+			<text v-if="lineInfo.segments.length>2&&item.bus.buslines.length>0&&index!==lineInfo.segments.length-1" class="icon jdticon icon-you" style="font-size: 30upx;color: #06B4FD;"></text>
+			</view>
+			<view  class="line2">
+			<text>共{{lineInfo.segments[0].bus.buslines[0].via_num}}站</text>
+			<text>{{lineInfo.duration}}  </text>
+			<text>{{lineInfo.walking_distance}}</text>
+			</view>
+			<view  class="line2" v-for="(item,index) in lineInfo.segments" :key="index" v-if="item.bus.buslines.length>0">
+			<text v-if="item.bus.buslines.length>0">{{item.bus.buslines[0].esayname}} ></text>
+			<text v-if="item.bus.buslines.length>0">{{item.bus.buslines[0].departure_stop.name}} 上车 ></text>
+			<text v-if="item.bus.buslines.length>0">{{item.bus.buslines[0].arrival_stop.name}} 下车</text>
+			</view>
+			
+		</view>
+		
 		<!-- 顶部基本信息 -->
 		<view class="box1">
-			<view class="text1">方向:   {{nList.lineDirection}}</view>
+			<view class="text1">方向:   {{selectList[0].startName}}-{{selectList[0].endName}}</view>
+			
 			<view class="butter">首末时间</view>
-			<view class="text2">{{nList.firstLastTime}}</view>
-			<view class="butter2">票价</view>
-			<view class="text3">{{price}}  ></view>
+			<view class="text2">{{selectList[0].firstLastTime}}</view>
+			<view class="butter2">总票价</view>
+			<view class="text3">{{lineInfo.cost}}  ></view>
+			
 		</view>
 		<!-- 地图 -->
-		<view style="position: relative;z-index: -999;">
-		<map id='map' ref="map" class="map" :style="{height:mapHeight,width:mapWidth}" :scale="scale" :longitude="longitude" :latitude="latitude" 
-		 :show-location="true" :controls="controls" @controltap="controltap">
-		</map>
-		</view>
+		
 		<view>
 		<!-- 嵌套弹窗 -->
-		<uni-popup ref="popup" type="bottom">
+		
 			<!-- 线路信息 -->
 			<view class="box2">
 				<!-- 时间信息左 -->
 				<view class="area1">
 					<view class="text4">
-			            <text >预计到达</text>
+			            <text v-if="carSta!=='等待发车'">预计到达</text>
 						</view>
 					<view class="text4">
-						<text>下一站/{{arriveTime}}分  {{distance}}{{unit}}</text>
+						<text>{{carSta}}</text>
+						<text v-if="carSta!=='等待发车'&&carSta!=='即将到站'">站 </text>
+						<text v-if="carSta!=='等待发车'">{{arriveTime}}分/</text>
+						<text  v-if="carSta!=='等待发车'">{{carDistance}}米</text>
 					</view>
 			    </view> 
 				
 				<!-- 时间信息右 -->
-				<view class="area2">
+				<!-- <view class="area2">
 					<view class="text4">
 				        <text >预计起点发车</text>
 						</view>
 					<view class="text4">
 						<text>{{departureTime}}</text>
 					</view>
-				</view> 
+				</view> -->
 			</view>
 		<!-- 横向动态列表 -->
 		<view class="box3">
@@ -45,50 +65,55 @@
 				<image class="image1" src="../../static/GCJX/detailedBus/star.png"></image> 
 				<view style="position: absolute;top: -4px;left: 33px;height: 600upx;padding-top: 29px;">
 					<!-- 循环前判断公交方向 -->
-					<block v-for="(item,index) in list" :key="index">
-			<!-- 序号	 -->	<text class="num" style="">{{index+1}}</text>
-			<!-- 站点	 -->    <text class="stationName" style="">{{item.stationName}}</text>
-			<!-- 公交 -->	    <image v-if="item.isArrive==1" class="image2" src="../../static/GCJX/detailedBus/bus.png"></image>
-			<!-- 箭头 -->		<image v-if="index!=0&&index!=realtimeDynamic.length-1" class="arrowHead" style="" src="../../static/GCJX/detailedBus/arrowHead.png"></image>
-			<!-- 绿条 -->		<image v-if="item.stationStatu==0&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/green.png"></image>
-			<!-- 橙条	 -->	<image v-if="item.stationStatu==1&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/orange.png"></image>
-			<!-- 红条 -->		<image v-if="item.stationStatu==2&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/red.png"></image>
-			<!-- 终点	 -->	<image v-if="index==realtimeDynamic.length-1" class="image3" src="../../static/GCJX/detailedBus/end.png"></image>
+					<block v-for="(item,index) in list1" :key="index">
+			<!-- 序号	 -->	<text :class="item.stationName==inStation?'num':'num2'">{{index+1}}</text>
+			<!-- 站点	 -->    <text :class="item.stationName==inStation?'stationName':'stationName2'" @click="getCarDetaile(item.stationIndex,item.lat,item.lon)">{{item.stationName}}</text>
+			<!-- v-for="(item2,index2) in carList" :key="index2" v-if="item2.stationIndex==index+1" -->
+			<!-- <view  > -->
+			
+			<!-- 公交 -->	   <image v-for="(item2,index2) in carList" :key="index2" v-if="item2.stationIndex==index+1" class="image2" src="../../static/GCJX/detailedBus/bus.png"></image>
+			<!-- </view> -->
+			<!-- 箭头 -->		<image v-if="index!=0&&index!=list1.length" class="arrowHead"  src="../../static/GCJX/detailedBus/arrowHead.png"></image>
+			<!-- 绿条 -->		<image style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/green.png"></image>
+			
+			<!-- 橙条	 -->	<!-- <image v-if="item.stationStatu==1&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/orange.png"></image> -->
+			<!-- 红条 -->		<!-- <image v-if="item.stationStatu==2&&index!=realtimeDynamic.length-1" style="width: 107upx;height: 14upx;" src="../../static/GCJX/detailedBus/red.png"></image> -->
+			<!-- 终点	 -->	<image v-if="index==list1.length-1" class="image3" src="../../static/GCJX/detailedBus/end.png"></image>
 				    </block>
 					
 					</view>
 			</scroll-view>
 	      </view>
 			
-			</uni-popup>
+			
 			
 			
 			
 			</view>
 			<!-- 底部操作 -->
-			<view class="box4">
-				<view class="areaLeft" @click="exchange">
+			<view class="box4" v-if="lineInfo.segments.length>2">
+				<view class="areaLeft" @click="changeLine()">
 					<image class="exchange" src="../../static/GCJX/detailedBus/exchange.png"></image>
-					<text class="huanxiang">换向</text>
+					<text class="huanxiang">切换{{lineName}}></text>
 				</view>
-				<view class="areaRight" @click="controlPopup">
-					<image class="map" src="../../static/GCJX/detailedBus/loction.png"></image>
-					<text class="ditu">地图</text>
-				</view>
+				
 			</view>
 	</view>
 </template>
 
 <script>
-	import uniPopup from '../../components/GJCX/uni-popup/uni-popup3.vue'
-	import taxi from '../../common/Czc.js'
+	import gjcx from "../../common/Gjcx.js";
+	
 	export default {
 		data() {
 			return {
+				text:[1,2,3,4,5],
 				Encryption: "XMJDTzzbusxmjdt", //接口校验码
 				detailLine:'',
-				nearStastion:'',
-				arriveTime:'',
+				nearStastion:99999,
+				
+				inStation:'',
+				lineInfo:[],
 				realtimeDynamic:[],
 				realtimeDynamicback:[],
 				direction:0,
@@ -102,62 +127,7 @@
 				mapHeight: '',
 				mapWidth:'319px',
 				popupStatu:0, //弹窗状态
-				controls: [{
-						id: 'back',
-						position: {
-							left: 10,
-							top: 200,
-							width: 55,
-							height: 55
-						},
-						iconPath: '../../static/Home/Position.png',
-						clickable: true,
-					},
-					/* 			{
-									id: 'CallPollice',
-									position: {
-										left: 300,
-										top: 290,
-										width: 55,
-										height: 55
-									},
-									iconPath: '../../static/Home/CallPollice.png',
-									clickable: true,
-								}, */
-					// {
-					// 	id: 'Service',
-					// 	position: {
-					// 		left: 300,
-					// 		top: 345,
-					// 		width: 55,
-					// 		height: 55
-					// 	},
-					// 	iconPath: '../../static/Home/Service.png',
-					// 	clickable: true,
-					// },
-					{
-						id: 'Big',
-						position: {
-							left: 300,
-							top: 405,
-							width: 55,
-							height: 55
-						},
-						iconPath: '../../static/Home/Big.png',
-						clickable: true,
-					},
-					{
-						id: 'Small',
-						position: {
-							left: 300,
-							top: 440,
-							width: 55,
-							height: 55
-						},
-						iconPath: '../../static/Home/Small.png',
-						clickable: true,
-					}
-				],
+				carList:[],
 				endStation:'',
 				starTime:'',
 				endTime:'',
@@ -166,122 +136,68 @@
 				unit:'',
 				departureTime:'',
 				nList:[],
+				selectList:[],
+				inStationIndex:'',
+				inStationIndexlon:'',
+				inStationIndexlat:'',
+				carSta:999,
+				carDistance:'',
+				lineIndex:1,
+				lineIndex2:0,
+				lineName:'',
+				arriveTime:'',
 			}
 		},
 		onLoad(options) {
 			
-			var that = this;
-			  console.log("接收到的参数是list="+options.nList);//此处打印出来的是字符串，解析如下   
-			console.log(options)
-			  that.nList = JSON.parse(options.nList);//解析得到集合
-			that.busIndex();
-			that.lineDetaile();
-			that.getGaoDeKey();
-			that.getMyLocation();
-			that.$refs.popup.open();
-			uni.getSystemInfo({
-				success: function(res) {
-					if (res.screenWidth < 350) {
-						//回到我的位置
-						that.controls[0].position.top = 250;
-						//-
-						that.controls[1].position.left = 250;
-						that.controls[1].position.top = 280;
-						//+
-						that.controls[2].position.left = 250;
-						that.controls[2].position.top = 315;
-						// //客服
-						// that.controls[3].position.left = 250;
-						// that.controls[3].position.top = 350;
+			
+			this.lineInfo=JSON.parse(options.transitsList);
+			this.selectList=JSON.parse(options.arr);
+			if(this.lineInfo.segments.length>2){
+				this.lineName=this.lineInfo.segments[1].bus.buslines[0].esayname;
+			}
+			
+			
+			
+			//   console.log("接收到的参数是list="+options.nList);//此处打印出来的是字符串，解析如下   
+			// console.log(options)
+			//   that.nList = JSON.parse(options.nList);//解析得到集合
+			// that.busIndex();
+			this.lineDetaile();
+			this.getCarList();
+			// if(this.timer){
+			// 	clearInterval(this.timer);
+			// }
+			// else{
+			// 	this.timer =setInterval(()=>{
 					
-					}
-				}
-			})
+			// 		console.log('ok!!!!');
+			// 		this.getCarList();
+			// 		this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
+			// 	},5000);
+			// }
 
 		},
-		onReady() {
-			var that = this;
-			that.mapContext = uni.createMapContext("map", this);
-			uni.getSystemInfo({
-				//设置地图高度为可使用的高度
-				success: function(res) {
-					that.mapHeight = (res.windowHeight - 50) + 'px';
-				}
-			});
+		onUnload() {
+			var that=this;
+			clearInterval(that.timer);
+		},
+		
+		onHide() {
+			// console.log(this.timer);
+			// clearInterval(this.timer);
+		},
+		onShow() {
+			this.getNearstation();
 		},
 		components: {
-			//加载多方弹框组件
-			uniPopup
+			
 		},
 		methods: {
-			async busIndex(){
-				let detailline = await this.$api.gjcx('detailLine');
-				this.detailLine = detailline;
-                this.arriveTime =Math.ceil(this.detailLine.data.distance/200)
-				let nearstastion =await this.$api.gjcx('nearBy');
-				this.nearStastion =nearstastion;
-                let realtimedynamic =await this.$api.gjcx('realtimeDynamic');
-				this.realtimeDynamic =realtimedynamic.data;
-				this.list=this.realtimeDynamic;
-				let realtimedynamicback =await this.$api.gjcx('realtimeDynamicback');
-				this.realtimeDynamicback =realtimedynamicback.data;
-				this.endStation =this.detailLine.data.endStation;
-				this.starTime =this.detailLine.data.starTime;
-				this.endTime =this.detailLine.data.endTime;
-				this.price =this.detailLine.data.price;
-				this.unit =this.detailLine.data.unit;
-				this.departureTime =this.detailLine.data.departureTime;
-			},
-			getGaoDeKey: function() {
-				//获取高德key
-				var that = this;
-				that.key = taxi.GaoDeWebKey;
-			},
-			getMyLocation: function() {
-				//获取我的位置，将地图中心点移动至此
-				var that = this;
-				var ojb = {
-					type: 'gcj02',
-					geocode: true,
-					success: function(res) {
-						that.longitude = res.longitude;
-						that.latitude = res.latitude;
-					},
-					fail: function() {
-			
-					},
-				}
-				uni.getLocation(ojb);
-			},
-			//地图控件调用方法
-			controltap: function(e) {
-				var that = this;
-				var controlId = ''
-				// #ifdef APP-PLUS
-				controlId = e.detail.controlId;
-				// #endif
-				// #ifdef MP-WEIXIN
-				controlId = e.controlId;
-				// #endif
-			
-				if (controlId === 'back') {
-					//回到我的位置
-					that.mapContext.moveToLocation();
-				}   else if (controlId === 'Big') {
-					//放大
-					if (this.scale < 18) {
-						this.scale = this.scale + 1;
-					}
-				} else if (controlId === 'Small') {
-					//缩小
-					if (this.scale > 5) {
-						this.scale = this.scale - 1;
-					}
-				}
-			},
+
 			//换向 点击后更换接口
 			exchange(){
-				this.$refs.popup.open();
+				
 				if(this.direction==0){
 				this.direction =1;
 				this.list=this.realtimeDynamicback
@@ -291,66 +207,274 @@
 					this.list=this.realtimeDynamic
 				}
 			},
-			//弹框
-			controlPopup(){
-				if(this.popupStatu==0){
-					this.$refs.popup.close();
-					this.popupStatu=1;
-
-				}
-				else{
-					this.$refs.popup.open();
-					this.popupStatu=0;
-
-				}
+			
+			getCarList:function(){
+				var that=this;
+				uni.request({
+					url:gjcx.InterfaceAddress[3],
+					data:{
+						lineID:that.selectList[0].lineID,
+						direction:0,
+						Encryption:that.Encryption,
+					},
+					success:function(res){
+						that.carList=res.data;
+						console.log(JSON.parse(JSON.stringify(res.data)));
+					}
+				});
 			},
 			lineDetaile:function(){
 				var that=this;
+				// console.log(that.selectList[0].lineID);
 				uni.request({
 					url:gjcx.InterfaceAddress[2],
 					data:{
-						lineID:nList.lineID,
+						lineID:that.selectList[0].lineID,
 						direction:0,
 						Encryption:that.Encryption,
 					},
 					success:function(res){
 						that.list1=res.data;
+						
+						// console.log(that.list1);
 					}
 				});
-				uni.request({
-					url:gjcx.InterfaceAddress[2],
-					data:{
-						lineID:nList.lineID,
-						direction:1,
-						Encryption:that.Encryption,
-					},
-					success:function(res){
-						that.list2=res.data;
+			},
+			changeLine:function(){
+				var that=this;
+				that.lineIndex=that.lineIndex+1;
+				// if(that.lineIndex2<that.selectList.length-1){
+				// 	that.lineIndex2+=1;
+				// 	 that.lineDetaile(that.lineIndex);
+				// }
+				// else{
+				// 	that.lineIndex2=0;
+				// 	 that.lineDetaile(that.lineIndex);
+				// }
+				console.log(that.lineInfo.segments);
+				if(that.lineInfo.segments.length-1==that.lineIndex){
+					that.lineIndex=0;
+				}
+				// if(that.lineInfo.segments[that.lineIndex].bus.buslines.length>0){
+				that.lineName=that.lineInfo.segments[that.lineIndex].bus.buslines[0].esayname;
+				// }
+				// that.lineDetaile();
+				console.log(that.selectList);
+			},
+			
+			//计算距离公式
+			getDistance: function (la1, lo1, la2, lo2) {
+				var that=this;
+			    var La1 = la1 * Math.PI / 180.0;
+			    var La2 = la2 * Math.PI / 180.0;
+			    var La3 = La1 - La2;
+			    var Lb3 = lo1 * Math.PI / 180.0 - lo2 * Math.PI / 180.0;
+			    var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(La3 / 2), 2) + Math.cos(La1) * Math.cos(La2) * Math.pow(Math.sin(Lb3 / 2), 2)));
+			    s = s * 6378.137;
+			    s = Math.round(s * 10000) / 10000;
+			    s = s.toFixed(2);
+				// if(s>1000){
+				// 	s=s/1000+'公里';
+				// }
+				// else{
+				// 	s=s+'米';
+				// }
+				console.log(s,that.arriveTime);
+				that.arriveTime=Math.ceil((s*1000)/400);
+			    return s;
+			},
+			getNearstation:function(){            //获取该线路最近站点
+			var that = this;
+
+			uni.getLocation({
+				type: 'wgs84',
+				success: function(res) {
+					var s=0;
+					var b=0;
+					var lat;
+					var lon;
+					var myLocation=res.longitude +','+res.latitude;
+					that.nearStastion=99999;
+					// console.log(myLocation);
+					// console.log(JSON.stringify(that.list1));
+					for(let i in that.list1){
+						s=that.getDistance(res.latitude,res.longitude,that.list1[i].lat,that.list1[i].lon);
+						 // console.log(s);
+						 if(that.nearStastion>s){
+							 
+							 that.nearStastion=s;
+							 that.inStation=that.list1[i].stationName;
+							 b=that.list1[i].stationIndex;
+							 // console.log(b);
+							 lat=that.list1[i].lat;
+							 lon=that.list1[i].lon;
+						 }
 					}
-				});
-			}
+					
+					// if(that.direction==0){
+						// console.log(b,lat,lon);
+					that.getCarDetaile(b,lat,lon);
+					// console.log(b);
+					// }
+					// if(that.direction==1){
+					// that.getCarDetaile(b-that.list1.length,lat,lon);
+					// console.log(b-that.list1.length);
+					
+					// }
+				}
+			});
+				
+			},
+			
+			getCarDetaile:function(stationIndex,lat,lon){
+				var that=this;
+				// console.log(stationIndex,lat,lon);
+				var s=0;
+				var b=999;
+				that.inStationIndex=stationIndex;
+				that.inStationIndexlon=that.list1[stationIndex-1].lon;
+				that.inStationIndexlat=that.list1[stationIndex-1].lat;
+				that.carSta=999;
+				// console.log(that.carList.length);
+				that.inStation=that.list1[stationIndex-1].stationName;
+				// console.log(stationIndex,lat,lon);
+				// console.log(JSON.stringify(that.carList));
+				if(that.carList.length>0){                                //判断是否有车
+				// for(let i in that.carList){                               //循环车辆
+				// console.log(stationIndex,that.carList[i].stationIndex,stationIndex>that.carList[i].stationIndex);
+				// 	if(stationIndex>that.carList[i].stationIndex){         //判断车是否在站点前
+				// 		s=stationIndex-that.carList[i].stationIndex;
+				// 		console.log(s,b);
+				// 		if(s<b){
+				// 			b=s;                                           //得出站点前最近车辆
+				// 			that.carSta=b;
+				// 		}
+				// 		if(b<=1){
+				// 			that.carSta='即将到站';
+				// 			break;
+				// 		}
+				// 	}
+				// 	else{
+				// 		// if(that.carSta)
+				// 		// that.carSta='等待发车';
+				// 		// break;
+				// 	}
+					
+				// }
+				
+				    for(let i in that.carList){
+						// console.log(stationIndex,that.carList[i].stationIndex,stationIndex>that.carList[i].stationIndex)
+						// if(stationIndex>that.carList[i].stationIndex){
+							s=stationIndex-that.carList[i].stationIndex;
+							// console.log(that.carList[i].stationIndex);
+							if(that.direction==1){
+								s=stationIndex-(that.carList[i].stationIndex-that.list1.length);
+							}
+							if(s<1&&s>0||s==0){
+								that.carSta='即将到站';
+								that.carDistance=that.getDistance(lat,lon,that.carList[i].lat,that.carList[i].lon)*1000;
+								break;
+							}
+							if(s<that.carSta&&s>0){
+								that.carSta=s;
+								that.carDistance=that.getDistance(lat,lon,that.carList[i].lat,that.carList[i].lon)*1000;
+							}
+							if(s<0){
+								console.log(that.carSta,stationIndex);
+								if(that.carSta<stationIndex){
+									break;
+								}
+								else{
+								s=-s;
+								that.carSta='已过'+ s;
+								break;
+								}
+							}
+						// }
+						// else{
+						// 	that.carSta='等待发车';
+						// 	break;
+						// }
+					}
+				}
+				else{
+					that.carSta='等待发车';
+					
+				}
+				// console.log(that.carSta);
+			},
+			
+			
 		}
 	}
 </script>
 
 <style lang="scss">
-	// .bgColor{
-	//     position: fixed;
-	//     top: 0;
-	//     left: 0;
-	//     right: 0;
-	//     bottom: 0;
-	//     background: #F3F3F3;
-	//     z-index: -1;
-	//   }
+	.bgColor{
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+	    background: #F3F3F3;
+	    z-index: -1;
+		
+	  }
+	  .box{
+		  flex-wrap:wrap;
+		  width: 664upx;
+		  background-color: #ffffff;
+		  border-radius: 11rpx;
+		  display: flex;
+		  margin-left: 32upx;
+		  margin-top: 20upx;
+		  padding-left: 30upx;
+		  .line1{
+			flex-wrap:nowrap;
+		  	font-size: 32upx;
+			color: #06B4FD;
+			margin-top: 37upx;
+			// margin-left: 30upx;
+			margin-bottom: 33upx;
+		  }
+		  .line2{
+			 
+		  	 width: 660upx;
+		  	font-size:30upx;
+		  	
+		  	margin-bottom: 30upx;
+			
+		  	font-weight:300;
+		  	color:#333333;
+		  	
+		  	
+		  }
+		  .line3{
+		  	flex-wrap:nowrap;
+		  	 width: 660upx;
+		  	font-size:30upx;
+		  	// margin-left: 30upx;
+		  	margin-bottom: 30upx;
+		  	
+		  	font-weight:300;
+		  	color:#333333;
+		  	display: flex;
+		  	margin-right: 20upx;
+		  }
+	  }
   .box1{
-	  background-color: #FFFFFF;
-	  height: 160upx;
-	  position: relative;
-	  z-index: 9999;
+	  width: 690rpx;
+	  background-color: #ffffff;
+	  border-radius: 11rpx;
+	  display: flex;
+	  margin-left: 32upx;
+	  margin-top: 20upx;
+	  flex-wrap: wrap;
 	.text1{
 		  font-size: 32upx;
 		  margin-left: 33upx;
+		  margin-top: 38upx;
+		  width: 690rpx;
 	  }
 	  .butter {
 	  	width: 136upx;
@@ -363,31 +487,31 @@
 	  	text-align: center;
 	  	line-height: 50upx;
 		border-radius: 10upx;
+		margin-bottom: 41upx;
 	  }
 	  .butter2 {
+		  margin-left: 73upx;
+		  margin-top: 32upx;
+		  flex-wrap: nowrap;
 	  	width: 136upx;
 	  	height: 48upx;
-        position: absolute;
-		top: 73upx;
-		right: 216upx;
 	  	background-color: #01b5fd;
 	  	color: #FFFFFF;
 	  	font-size: 26upx;
 	  	text-align: center;
 	  	line-height: 50upx;
 	  		border-radius: 10upx;
+			margin-bottom: 41upx;
 	  }
 	  .text2{
-		  position: absolute;
-          top:73upx;
 		  font-size: 30upx;
-		  left: 188upx;
+		  margin-top: 37upx;
+		margin-left: 20upx;
 	  }
 	  .text3{
-	  	  position: absolute;
-		  right: 127upx;
-	      top:73upx;
+	  	  margin-left: 20upx;
 	  	  font-size: 30upx;
+		  margin-top: 37upx;
 	  }
   }
   .box2{
@@ -396,14 +520,14 @@
   	border-radius: 11rpx;
     display: flex;
 	margin-left: 32upx;
-	// position: absolute;
-	// right: 30upx;
- //    top: 188upx;
+	margin-top: 20upx;
+	text-align: center;
        .area1{
 		   text-align: center;
 		   padding-top: 20upx;
-		   margin-left: 71upx;
+		   // margin-left: 88upx;
 		   padding-bottom: 41upx;
+		   width: 690rpx;
 		.text4{
 			color: #FF7D43;
 			font-size: 30upx;
@@ -414,7 +538,7 @@
        .area2{
        		   text-align: center;
        		   padding-top: 20upx;
-       		   margin-left: 71upx;
+       		   // margin-left: 121upx;
        		   padding-bottom: 41upx;
 			   padding-right: 83upx;
        		.text4{
@@ -431,9 +555,9 @@
 		background-color: #ffffff;
 		margin-left: 32upx;
 		border-radius: 11rpx;
-		margin-top: 32upx;
+		margin-top: 20upx;
 		margin-left: 32upx;
-		margin-bottom: 187upx;
+		margin-bottom: 20upx;
 		// position: fixed;
 		// top: 300upx;
 		// z-index: 998;
@@ -473,6 +597,17 @@
 			}
 			.stationName{
 				width: 20px;
+				color: #FF7D43;
+				white-space: pre-wrap;
+				word-wrap: break-word;
+				font-size: 28upx;
+				position: absolute;
+				top: 90px;
+				transform:translateX(-25%);
+			}
+			.stationName2{
+				width: 20px;
+				
 				white-space: pre-wrap;
 				word-wrap: break-word;
 				font-size: 28upx;
@@ -481,6 +616,15 @@
 				transform:translateX(-25%);
 			}
 			.num{
+				color: #FF7D43;
+				height: 16upx;
+				width: 14upx;
+				position: absolute;
+				top: 130upx;
+				font-size: 28upx;
+				transform:translateX(-40%);
+			}
+			.num2{
 				height: 16upx;
 				width: 14upx;
 				position: absolute;
@@ -491,40 +635,24 @@
 		}
 	}
 	.box4{
-		position: absolute;
+		
 		width: 690rpx;
-		height: 96upx;
+		height: 110upx;
 		background-color: #ffffff;
 		margin-left: 32upx;
 		border-radius: 11rpx;
-		bottom: 63upx;
-		
-		// margin-top: 32upx;
-		// position: relative;
-		display: flex;
-		.areaLeft{
-			width: 345rpx;
-			text-align: center;
-			margin-top: 22upx;
+		text-align: center;
+		margin-bottom: 43upx;
+		// padding-top: 32rpx;
+        line-height: 97upx;
+
 			.exchange{
 				width: 37upx;
 				height: 28upx;
 			}
 			.huanxiang{
-				font-size: 30upx;
-			}
-		}
-		.areaRight{
-			width: 344rpx;
-			text-align: center;
-			margin-top: 22upx;
-			.map{
-				width: 28upx;
-				height: 28upx;
-			}
-			.ditu{
-				font-size: 30upx;
-			}
-		}
+				font-size: 36upx;
+				
+				}
 	}
 </style>
