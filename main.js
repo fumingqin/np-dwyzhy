@@ -8,7 +8,6 @@ import Grzx from './common/Grzx.js' //个人中心-测试用数据
 import Lyfwfmq from './common/LYFW/LyfwFmq.js' //旅游服务-测试用数据-傅洺钦
 import Lyfwcwd from './common/LYFW/LyfwCwd.js' //旅游服务-测试用数据-蔡伟达
 import store from './common/login.js' //登录
-
 import Sceniclist from 'common/scenicSpotDistribution.js' //旅游服务-景区目录-测试用数据
 
 Vue.config.productionTip = false

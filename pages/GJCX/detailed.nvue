@@ -335,16 +335,16 @@
 					that.getNearstation();
 				}
 			},
-			getNearstation:function(){            //获取该线路最近站点
+			async getNearstation(){            //获取该线路最近站点
 			var that = this;
-			
-			uni.getLocation({
+			var s=0;
+			var b=0;
+			var lat;
+			var lon;
+			await uni.getLocation({
 				type: 'wgs84',
 				success: function(res) {
-					var s=0;
-					var b=0;
-					var lat;
-					var lon;
+					
 					var myLocation=res.longitude +','+res.latitude;
 					that.nearStastion=99999;
 					// console.log(myLocation);
@@ -363,21 +363,22 @@
 						 }
 					}
 					
-					if(that.direction==0){
-					that.getCarDetaile(b,lat,lon);
-					console.log(b);
-					}
-					if(that.direction==1){
-					that.getCarDetaile(b-that.list1.length,lat,lon);
-					console.log(b-that.list1.length);
 					
-					}
 				}
 			});
+				if(that.direction==0){
+				await that.getCarDetaile(b,lat,lon);
+				console.log(b);
+				}
+				if(that.direction==1){
+				await that.getCarDetaile(b-that.list1.length,lat,lon);
+				console.log(b-that.list1.length);
 				
+				}
 			},
 			//计算车辆状态
 			getCarDetaile:function(stationIndex,lat,lon){
+				console.log(stationIndex,lat,lon);
 				var that=this;
 				var s=0;
 				that.inStationIndex=stationIndex;

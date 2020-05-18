@@ -272,11 +272,12 @@
 					for (let k = 0; k < that.dataSource.length; k++) {
 						if (that.dataSource[k].name.indexOf(that.transitsList[i].segments[j].bus.buslines[0].esayname) !== -1) {
 							that.arr.push(that.dataSource[k]);
-							console.log(that.arr);
+							// console.log(that.arr);
 						}
 					}
 					}
 				}
+				// if(that.city!=='南平市'){
 				if(that.arr.length==0){
 					uni.showToast({
 						duration:3000,
