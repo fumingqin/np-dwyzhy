@@ -40,13 +40,13 @@
 					<view class="MP_cost" v-if="adultIndex>=1">
 						<text>成人票</text>
 						<text class="MP_number">×{{adultIndex}}</text>
-						<text class="MP_userCost">¥{{adultTotalPrice}}</text>
+						<text class="MP_userCost">¥{{priceAccuracy(adultTotalPrice)}}</text>
 					</view>
 
 					<view class="MP_cost" v-if="childrenIndex>=1">
 						<text>儿童票</text>
 						<text class="MP_number">×{{childrenIndex}}</text>
-						<text class="MP_userCost">¥{{childrenTotalPrice}}</text>
+						<text class="MP_userCost">¥{{priceAccuracy(childrenTotalPrice)}}</text>
 					</view>
 
 					<!-- 保险 -->
@@ -164,16 +164,7 @@
 				childrenTotalPrice: '', //儿童总价
 
 				submitH5Data: '', //公众号H5支付参数
-
-				testOrderInfo: {
-					appid: 'wxefe31fcc2fba222e',
-					partnerid: '1583195951',
-					prepayid: 'wx18222142102675887d734e111119533100',
-					package: 'Sign=WXPay',
-					noncestr: 'xZtDRvJXIjVWYssG',
-					timestamp: '1587219759',
-					sign: 'D5586D098021D6F1EE883F1A4CF897D2'
-				}
+				userInfo : '',//用户信息
 
 			}
 		},
@@ -181,7 +172,10 @@
 			uni.showLoading({
 				title: '拉起订单中...'
 			})
-
+			
+			//获取用户信息
+			this.getUserInfo();
+			
 			uni.request({
 				url: 'http://218.67.107.93:9210/api/app/getScenicspotOrderDetail?orderNumber=' + options.orderNumber,
 				method: 'POST',
@@ -207,6 +201,23 @@
 
 
 		methods: {
+			//0.3价格取2位精度
+			priceAccuracy:function(e){
+				const pri = e.toFixed(2);
+				return pri;
+			},
+			
+			
+			//获取用户信息
+			getUserInfo:function(){
+				uni.getStorage({
+					key:'userInfo',
+					success:(res)=>{
+						this.userInfo = res.data;
+					}
+				})
+			},
+			
 			//隐藏操作
 			hide(e) {
 				if (e == 0) {
@@ -228,7 +239,7 @@
 			//数组提取
 			screenUser: function() {
 				let adult = this.orderInfo.appUserInfoList.filter(item => {
-					return item.userType == '成人';
+					return item.userType == '成人' || item.userType == '军人' || item.userType == '教师' || item.userType == '学生';
 				})
 				let children = this.orderInfo.appUserInfoList.filter(item => {
 					return item.userType == '儿童';

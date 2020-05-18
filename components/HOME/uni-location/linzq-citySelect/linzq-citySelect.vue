@@ -104,7 +104,7 @@
 				markersData:{
 				        latitude: '',//纬度
 				        longitude: '',//经度
-				        key: "134acca8871d797b16a9a6a0a873bab5"//申请的高德地图key（申请的web key）
+				        key: "db69a778b86b57c2d8d16af164f185b5"//申请的高德地图key（申请的web key）
 				      },
 				      gpsCode:'',
 			}
@@ -267,7 +267,7 @@
 			      myAmapFun.getRegeo({
 			        success:(data) =>{
 						// console.log(data)
-			          this.position =data[0].regeocodeData.addressComponent.city
+						this.position =data[0].regeocodeData.addressComponent.city
 			          uni.setStorage({
 			          	key: 'wx_position',
 			          	data:this.position
