@@ -19,17 +19,10 @@
 </template>
 
 <script>
-	import {
-		mapState,
-	    mapMutations  
-	} from 'vuex';
 	export default {
 		data() {
 			return {
-				npjq: [],
-				autoplay: true,
 				titleNViewBackground: '',
-				swiperCurrent: 0,
 				swiperLength: 0,
 				rotationPicture: [],
 				goodsList: [],
@@ -54,11 +47,6 @@
 		},
 		onLoad() {
 			this.loadData();
-			// #ifdef  H5					
-			this.getCode();
-			//#endif
-		},
-		onShow() {
 		},
 		onPullDownRefresh:function(){
 			this.loadData(); //请求接口数据
