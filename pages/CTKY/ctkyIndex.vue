@@ -1,4 +1,4 @@
-<template>
+ <template>
     <view class="myView">
 		<!-- 照片背景图 -->
 		<view>
@@ -49,6 +49,11 @@
 				</view>
 			</view>
 		</view>
+		<view v-if="entryParameters!==''" style="width: 100%; height:96upx; background: #FFFFFF; z-index: 99999; display: flex; position: fixed; bottom: 0;text-align: center; font-size: 28upx; font-weight: bold; line-height: 104upx;">
+		   <text style="width: 33%;" @click="entryNotTo(0)">车票</text>
+		   <text style="width: 33%;" @click="entryNotTo(1)">订单</text>
+		   <text style="width: 33%;" @click="entryNotTo(2)">我的</text>
+		  </view>
 	</view>
 </template>
 
@@ -75,9 +80,10 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				normalPickerNum:1,
 				specialPickerNum:0,
 				isNormal:0,//判断是普通购票还是定制班车默认是普通购票
+				entryParameters : '',//入口参数
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			var that = this;
 			if(that.departure == '') {
 				that.departure = '选择上车点'
@@ -98,6 +104,10 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			// #ifdef  H5
 			this.getOpenid();
 			//#endif
+			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
+			   if(options.entryParameters){
+			    this.entryParameters = options.entryParameters
+			   }
 		},
 		methods: {
 			
@@ -248,8 +258,8 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
 				let local = "http://nply.fjmtcy.com/#/pages/CTKY/ctkyIndex";
-				 var indexCode=uni.getStorageSync('indexCode');
-				if (code == indexCode) {
+				var indexCode=uni.getStorageSync('indexCode');
+				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 				  window.location.href =
 				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
@@ -267,10 +277,45 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 						method:'POST',
 						success(res) {
 							console.log(res,"ctkyOpenId")
+							var user1=uni.getStorageSync('userInfo');
+							if(user1==""){
+								uni.setStorageSync('res',res.data)
+								let user=res.data;
+								uni.request({
+									url:'http://218.67.107.93:9210/api/app/changeInfo',
+									data:{
+										nickname:user.nickname,
+										openId_wx:user.openid,
+										portrait:user.headimgurl,
+										unid:'',
+										openId_qq:'',
+										gender:'',
+										address:user.province+user.city,
+										birthday:'',
+										phoneNumber:'',
+										username:user.nickname,
+									},
+									method:'POST',
+									success(res1) {
+										if(res1.data.msg=="信息保存成功！"){
+											uni.setStorageSync('userInfo',res1.data.data)
+											if(res1.data.data.phoneNumber==null){
+												uni.navigateTo({
+													url:'/pages/GRZX/wxLogin',
+												})
+											}else{
+												that.logining=true;
+												that.login(res1.data.data)
+											}
+										}
+										console.log(res1,'res1')
+									}
+								})
+							}
 							uni.setStorage({
 								key:'ctkyOpenId',
 								data:res.data.openid,
-							})
+							})	
 						},
 						fail(err){
 							uni.showToast({
@@ -293,6 +338,25 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				    return null  
 				  }  
 			},
+			//页面跳转
+			   entryNotTo:function(e){
+			    if(e==0){
+			     //跳转传统客运
+			     uni.switchTab({
+			      url:''
+			     })
+			    }else if(e==1){
+			     //跳转订单
+			     uni.switchTab({
+			      url:'../../order/OrderList'
+			     })
+			    }else if(e==2){
+			     //跳转个人主页
+			     uni.switchTab({
+			      url:'../../GRZX/user'
+			     })
+			    }
+			   }
 			 //#endif
 		}
 	}

@@ -121,9 +121,10 @@
 								that.logining=true;
 								that.login(res.data.data)
 								setTimeout(function(){
-									uni.switchTab({
-										url:'/pages/Home/indexZhly'
-									})
+									// uni.switchTab({
+									// 	url:'/pages/Home/indexZhly'
+									// })
+									uni.navigateBack();
 								},500);	
 							}else{
 								uni.showToast({
