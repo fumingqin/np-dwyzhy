@@ -519,6 +519,10 @@
 				"navigationBarTitleText": "回复评论"
 			}
 		}
+        ,{
+            "path" : "pages/Home/realtimeInfo",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
