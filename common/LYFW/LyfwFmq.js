@@ -111,8 +111,8 @@ const reply = [{
 
 
 //接口域名
-const Url = 'https://zntc.145u.net:9099'; //https请求
-// const Url = 'http://zntc.145u.net'; //http请求
+// const Url = 'https://zntc.145u.net:9099'; //https请求
+// const Url = 'http://218.67.107.93:9210'; //http请求
 
 //引入模板
 	// url:$lyfw.Interface.spt_tl_six.value,
@@ -122,26 +122,26 @@ const Url = 'https://zntc.145u.net:9099'; //https请求
 //接口对象
 const Interface = {
 	//--------------------------------自由行-------------------------------
-	zyx_GetFreeTourByRegionWeixin:{
-		value: Url + '/api/ly/GetFreeTourByRegionWeixin',
-		name:'自由行-列表',
-		method:'POST',
-		pages:["pages_LYFW/pages/LYFW/independentTravel/it_list"]
-	},
+	// fy_getFyCultureList:{
+	// 	value: Url + '/api/app/getFyCultureList?regionWeixin=',
+	// 	name:'非遗-列表',
+	// 	method:'POST',
+	// 	pages:["pages/FYWH/fy_index"]
+	// },
 	
-	zyx_GetFreeTourByRegionWeixinTitle:{
-		value: Url + '/api/ly/GetFreeTourByRegionWeixinTitle',
-		name:'自由行-搜索',
-		method:'POST',
-		pages:["pages_LYFW/pages/LYFW/independentTravel/it_list"]
-	},
+	// fy_getFyCultureDetail:{
+	// 	value: Url + '/api/app/getFyCultureDetail',
+	// 	name:'非遗-详情',
+	// 	method:'POST',
+	// 	pages:["pages/FYWH/fy_index"]
+	// },
 	
-	zyx_GetCityInfo:{
-		value: Url + '/api/ly/GetCityInfo',
-		name:'自由行-地区列表',
-		method:'POST',
-		pages:["pages_LYFW/pages/LYFW/independentTravel/it_list"]
-	}
+	// fy_searchFyCultureList:{
+	// 	value: Url + '/api/app/searchFyCultureList',
+	// 	name:'非遗-搜索',
+	// 	method:'POST',
+	// 	pages:["pages/FYWH/fy_index"]
+	// }
 }
 
 // 接口声明区

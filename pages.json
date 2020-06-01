@@ -85,6 +85,7 @@
 			}
 		},
 
+
 		{
 		
 			"path": "pages/LYFW/currency/travelDetails",
@@ -495,7 +496,8 @@
         ,{
             "path" : "pages/FYWH/fy_index",
             "style" : {
-				"enablePullDownRefresh":true
+				"enablePullDownRefresh":true,
+				"onReachBottomDistance": 0
 			}
         }
         ,{
@@ -517,6 +519,10 @@
 				"navigationBarTitleText": "回复评论"
 			}
 		}
+        ,{
+            "path" : "pages/Home/realtimeInfo",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
