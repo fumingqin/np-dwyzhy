@@ -99,7 +99,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			uni.getStorage({
 				key:'ctkyOpenId',
 				fail() {
-					this.getOpenid();
+					that.getOpenid();
 				}
 			})
 			
@@ -262,7 +262,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			    let Appid = "wxef946aa6ab5788a3";//售票appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://nply.fjmtcy.com/#/pages/CTKY/ctkyIndex";
+				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
 				var indexCode=uni.getStorageSync('indexCode');
 				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
@@ -344,12 +344,8 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 											uni.navigateTo({
 												url:'/pages/GRZX/wxLogin',
 											})
-										}else{
-											that.logining=true;
-											that.login(res1.data.data)
 										}
 									}
-									console.log(res1,'res1')
 								}
 							})
 						},

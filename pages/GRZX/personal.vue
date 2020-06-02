@@ -46,10 +46,6 @@
 <script>
 	import { pathToBase64, base64ToPath } from '../../components/GRZX/js_sdk/gsq-image-tools/image-tools/index.js';
 	import wPicker from "@/components/GRZX/w-picker/w-picker.vue";
-	import {
-	    mapState,  
-	    mapMutations  
-	} from 'vuex'; 
 	export default {
 		data() {
 			return {
@@ -77,7 +73,6 @@
 			
 		},
 		computed:{
-			//...mapState(['userInfo']),
 			
 			startDate() {
 			            return this.getDate('start');
@@ -90,7 +85,6 @@
 		     wPicker
 		},
 		methods:{
-			...mapMutations(['login']),
 			loadUserInfo(){
 				uni.showLoading({
 					title:'加载中...'
@@ -110,11 +104,6 @@
 							method:"POST",
 							success(res1) {
 								console.log(res1,'res1')
-								uni.setStorage({
-									key:'userInfo',
-									data:res1.data.data,
-								})
-								theself.login(res1.data.data);
 								var base64=res1.data.data.portrait;
 								theself.port=res1.data.data.portrait;
 								if(base64!=""&&base64!=null&&theself.isBase64(base64)){
@@ -271,13 +260,9 @@
 						phoneNumber:this.phoneNumber,
 						username:this.username,
 					};
-				uni.setStorage({
-					key:'userInfo',
-					data:list,
-				})
-				 this.login(list);
-				 uni.hideLoading();
-				 uni.navigateBack();
+				uni.setStorageSync('userInfo',list);
+				uni.hideLoading();
+				uni.navigateBack();
 			},
 			getPhoto(){
 				var that=this;

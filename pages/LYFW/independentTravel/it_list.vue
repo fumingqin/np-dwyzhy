@@ -150,10 +150,11 @@
 			this.classifyList();
 			
 			// #ifdef  H5
+			var that=this;
 			uni.getStorage({
 				key:'userInfo',
 				fail() {
-					this.getCode();	
+					that.getCode();	
 				}
 			})
 			//#endif
@@ -341,7 +342,7 @@
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://nply.fjmtcy.com/#/pages/LYFW/independentTravel/it_list";
+				let local = "http://wxsp.npzhly.com/#/pages/LYFW/independentTravel/it_list";
 				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =
@@ -385,12 +386,8 @@
 											uni.navigateTo({
 												url:'/pages/GRZX/wxLogin',
 											})
-										}else{
-											that.logining=true;
-											that.login(res1.data.data)
 										}
 									}
-									console.log(res1,'res1')
 								}
 							})
 						},

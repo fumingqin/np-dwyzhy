@@ -28,10 +28,6 @@
 </template>
 
 <script>
-	import {  
-		mapState,
-	    mapMutations  
-	} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -42,14 +38,10 @@
 				currentSize:'',
 			};
 		},
-		computed: {
-			...mapState(['hasLogin','userInfo'])
-		},
 		onLoad(){
 			this.load();
 		},
 		methods:{
-			...mapMutations(['logout']),
 
 			navTo(url){
 				uni.navigateTo({
