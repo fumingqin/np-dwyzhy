@@ -326,7 +326,7 @@
 						Appid +
 						"&redirect_uri=" +
 						encodeURIComponent(local) +
-						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+						"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
 					uni.request({

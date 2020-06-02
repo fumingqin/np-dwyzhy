@@ -278,7 +278,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				  	Appid +
 				  	"&redirect_uri=" +
 				  	encodeURIComponent(local) +
-				  	"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
 					uni.setStorageSync('indexCode',code);
@@ -315,7 +315,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				  	Appid +
 				  	"&redirect_uri=" +
 				  	encodeURIComponent(local) +
-				  	"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				}else{
 					uni.request({
 						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
