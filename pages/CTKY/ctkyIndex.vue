@@ -102,7 +102,12 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 					that.getOpenid();
 				}
 			})
-			
+			uni.getStorage({
+				key:'ctkyUrl',
+				success(res) {
+					that.getUserinfo(res.data);
+				}
+			})
 			//#endif
 		},
 		methods: {
@@ -202,9 +207,11 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 							uni.navigateTo({ 
 								url:params
 							})
+							uni.removeStorageSync('ctkyUrl');
 						},
 						fail() {
-							that.getUserinfo();
+							uni.setStorageSync('ctkyUrl',params)
+							that.getUserinfo(params);
 						}
 					})
 					
@@ -294,12 +301,12 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				}
 			},
 			//获取用户信息，重新授权登录
-			getUserinfo() {
+			getUserinfo(params) {
 				var that=this;
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://nply.fjmtcy.com/#/pages/CTKY/ctkyIndex";
+				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
 				var indexCode=uni.getStorageSync('indexCode');
 				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
@@ -309,8 +316,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				  	"&redirect_uri=" +
 				  	encodeURIComponent(local) +
 				  	"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
-				} else {
-				  //存在则通过code传向后台调用接口返回微信的个人信息
+				}else{
 					uni.request({
 						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
 						header: {
@@ -344,6 +350,11 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 											uni.navigateTo({
 												url:'/pages/GRZX/wxLogin',
 											})
+										}else{
+											uni.removeStorageSync('ctkyUrl');
+											uni.navigateTo({
+												url:params
+											})
 										}
 									}
 								}
@@ -358,7 +369,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 					})
 				}
 			},
-			   //判断code信息是否存在
+			//判断code信息是否存在
 			getUrlParam(name) {
 				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
 				  let url = window.location.href.split('#')[0]   
