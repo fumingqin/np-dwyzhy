@@ -96,11 +96,6 @@
 			</view>
 		</view>
 		
-		<view v-if="entryParameters!==''" style="width: 100%; height:96upx; background: #FFFFFF; z-index: 99999; display: flex; position: fixed; bottom: 0;text-align: center; font-size: 28upx; font-weight: bold; line-height: 104upx;">
-		   <text style="width: 33%;" @click="entryNotTo(0)">车票</text>
-		   <text style="width: 33%;" @click="entryNotTo(1)">订单</text>
-		   <text style="width: 33%;" @click="entryNotTo(2)">我的</text>
-		  </view>
 	</view>
 </template>
 
@@ -135,7 +130,6 @@
 				scrollHeight:'500px',
 				leftIndex:0, //左边列表值
 				stationArray:['南平'], //左边数据内容
-				entryParameters : '',//入口参数
 			}
 		},
 		components: {
@@ -158,10 +152,6 @@
 			// #ifdef  H5
 			this.getCode();
 			//#endif
-			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
-			   if(options.entryParameters){
-			    this.entryParameters = options.entryParameters
-			   }
 		},
 		methods: {
 			textData:function() {
@@ -422,25 +412,6 @@
 				    return null  
 				  }  
 			},
-			//页面跳转
-			   entryNotTo:function(e){
-			    if(e==0){
-			     //跳转传统客运
-			     uni.switchTab({
-			      url:''
-			     })
-			    }else if(e==1){
-			     //跳转订单
-			     uni.switchTab({
-			      url:'../../order/OrderList'
-			     })
-			    }else if(e==2){
-			     //跳转个人主页
-			     uni.switchTab({
-			      url:'../../GRZX/user'
-			     })
-			    }
-			   }
 			 //#endif  
 		}
 	}
