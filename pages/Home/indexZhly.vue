@@ -125,7 +125,12 @@
 		onLoad() {
 			this.loadData();
 			// #ifdef  H5					
-			this.getCode();
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					this.getCode();	
+				}
+			})
 			//#endif
 		},
 		onShow() {

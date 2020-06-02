@@ -114,6 +114,7 @@
 									key:'userInfo',
 									data:res1.data.data,
 								})
+								theself.login(res1.data.data);
 								var base64=res1.data.data.portrait;
 								theself.port=res1.data.data.portrait;
 								if(base64!=""&&base64!=null&&theself.isBase64(base64)){

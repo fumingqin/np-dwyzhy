@@ -177,7 +177,12 @@
 			this.Getpostion();
 			
 			// #ifdef  H5
-			this.getCode();
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					this.getCode();	
+				}
+			})
 			//#endif
 			
 			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
@@ -490,9 +495,8 @@
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				var indexCode=uni.getStorageSync('indexCode');
-				let local = "http://nply.fjmtcy.com/#/pages/LYFW/independentTravel/it_list";
-				if (code == indexCode||code == null || code === "") {
+				let local = "http://nply.fjmtcy.com/#/pages/LYFW/independentTravel/ticketsList";
+				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =
 						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +

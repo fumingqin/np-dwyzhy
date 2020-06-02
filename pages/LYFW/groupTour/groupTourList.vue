@@ -99,11 +99,6 @@
 				</view>
 			</view>
 		</view>
-		<view v-if="entryParameters!==''" style="width: 100%; height:96upx; background: #FFFFFF; z-index: 99999; display: flex; position: fixed; bottom: 0;text-align: center; font-size: 28upx; font-weight: bold; line-height: 104upx;">
-		   <text style="width: 33%;" @click="entryNotTo(0)">车票</text>
-		   <text style="width: 33%;" @click="entryNotTo(1)">订单</text>
-		   <text style="width: 33%;" @click="entryNotTo(2)">我的</text>
-		  </view>
 	</view>
 </template>
 
@@ -137,7 +132,6 @@
 				tabs: ['推荐', '全部'], //选项标题
 				groupTitle: [], //内容标题
 				cateMaskState: 0, //分类面板展开状态
-				entryParameters : '',//入口参数
 			}
 		},
 
@@ -147,12 +141,13 @@
 			this.routeData();
 			
 			// #ifdef  H5
-			this.getCode();
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					this.getCode();	
+				}
+			})
 			//#endif
-			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
-			   if(options.entryParameters){
-			    this.entryParameters = options.entryParameters
-			   }
 		},
 
 		methods: {
@@ -322,9 +317,8 @@
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				var indexCode=uni.getStorageSync('indexCode');
 				let local = "http://nply.fjmtcy.com/#/pages/LYFW/groupTour/groupTourList";
-				if (code == indexCode||code == null || code === "") {
+				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =
 						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
@@ -398,25 +392,6 @@
 				    return null  
 				  }  
 			},
-			//页面跳转
-			   entryNotTo:function(e){
-			    if(e==0){
-			     //跳转传统客运
-			     uni.switchTab({
-			      url:''
-			     })
-			    }else if(e==1){
-			     //跳转订单
-			     uni.switchTab({
-			      url:'../../order/OrderList'
-			     })
-			    }else if(e==2){
-			     //跳转个人主页
-			     uni.switchTab({
-			      url:'../../GRZX/user'
-			     })
-			    }
-			   }
 			 //#endif
 		
 		}
