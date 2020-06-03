@@ -124,8 +124,14 @@
 		},
 		onLoad() {
 			this.loadData();
-			// #ifdef  H5					
-			this.getCode();
+			// #ifdef  H5	
+			var that=this;
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					that.getCode();	
+				}
+			})
 			//#endif
 		},
 		onShow() {
@@ -291,7 +297,7 @@
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://nply.fjmtcy.com/#/";
+				let local = "http://wxsp.npzhly.com/#/";
 				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =
@@ -299,7 +305,7 @@
 						Appid +
 						"&redirect_uri=" +
 						encodeURIComponent(local) +
-						"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+						"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
 					uni.setStorageSync('indexCode',code);
@@ -336,12 +342,8 @@
 											uni.navigateTo({
 												url:'/pages/GRZX/wxLogin',
 											})
-										}else{
-											that.logining=true;
-											that.login(res1.data.data)
 										}
 									}
-									console.log(res1,'res1')
 								}
 							})
 						},

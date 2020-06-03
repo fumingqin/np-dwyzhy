@@ -99,7 +99,6 @@
 				</view>
 			</view>
 		</view>
-		
 	</view>
 </template>
 
@@ -136,10 +135,20 @@
 			}
 		},
 
-		onLoad() {
+		onLoad(options) {
 			// this.routeInit();
 			this.Getpostion();
 			this.routeData();
+			
+			// #ifdef  H5
+			var that=this;
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					that.getCode();	
+				}
+			})
+			//#endif
 		},
 
 		methods: {
@@ -301,7 +310,86 @@
 				console.log(e)
 				this.currentIndex = 1;
 				this.screenContent = e;	
-			}
+			},
+			// #ifdef  H5
+			//获取openid
+			getCode() {
+				let that=this;
+			    let Appid = "wx4f666a59748ab68f";//appid
+				let code = this.getUrlParam('code'); //是否存在code
+				console.log(code);
+				let local = "http://wxsp.npzhly.com/#/pages/LYFW/groupTour/groupTourList";
+				if (code == null || code === "") {
+				  //不存在就打开上面的地址进行授权
+					window.location.href =
+						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
+						Appid +
+						"&redirect_uri=" +
+						encodeURIComponent(local) +
+						"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
+				} else {
+				  //存在则通过code传向后台调用接口返回微信的个人信息
+					uni.request({
+						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						method:'POST',
+						success(res) {
+							console.log(res,"res")
+							uni.setStorageSync('scenicSpotOpenId',res.data.openid)
+							uni.setStorageSync('res',res.data)
+							let user=res.data;
+							uni.request({
+								url:'http://218.67.107.93:9210/api/app/changeInfo',
+								data:{
+									nickname:user.nickname,
+									openId_wx:user.openid,
+									portrait:user.headimgurl,
+									unid:'',
+									openId_qq:'',
+									gender:'',
+									address:user.province+user.city,
+									birthday:'',
+									phoneNumber:'',
+									username:user.nickname,
+								},
+								method:'POST',
+								success(res1) {
+									if(res1.data.msg=="信息保存成功！"){
+										uni.setStorageSync('userInfo',res1.data.data)
+										if(res1.data.data.phoneNumber==null){
+											uni.navigateTo({
+												url:'/pages/GRZX/wxLogin',
+											})
+										}
+									}
+								}
+							})
+						},
+						fail(err){
+							uni.showToast({
+								title:"err是"+err.errMsg,
+								icon:'none'
+							})
+						}
+					})
+				}
+			},
+			//判断code信息是否存在
+			getUrlParam(name) {
+				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
+				  let url = window.location.href.split('#')[0]   
+				  let search = url.split('?')[1]  
+				  if (search) {  
+				    var r = search.substr(0).match(reg)  
+				    if (r !== null) return unescape(r[2])  
+				    return null  
+				  } else {  
+				    return null  
+				  }  
+			},
+			 //#endif
 		
 		}
 	}

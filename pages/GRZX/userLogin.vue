@@ -40,10 +40,6 @@
 </template>
 
 <script>
-	import {
-		mapState,
-	    mapMutations  
-	} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -62,7 +58,6 @@
 		
 		
 		methods: {
-			...mapMutations(['login']),
 			async load(e){
 				var that=this;
 				uni.getSystemInfo({
@@ -112,7 +107,6 @@
 				uni.showLoading({
 					title:'登录中...'
 				})
-				this.logining=true;
 				var that=this;
 				const {phoneNumber, captchaCode} = this;		
 				var phone=this.phoneNumber;
@@ -142,43 +136,14 @@
 												title:res.data.msg,
 												icon:"none"
 											})
-											uni.setStorage({
-												key:'userInfo',
-												data:res.data.data,
-											})
-											uni.getStorage({
-												key:'userInfo',
-												success:function(user){
-													console.log(user,"user")
-													if(user.data.nickname==""||user.data.nickname==null){
-														user.data.nickname="用户"+user.data.username;
-													}
-													var base64=res.data.data.portrait;
-													if(base64!=""&&base64!=null){
-														if(that.isBase64(base64)){
-															base64ToPath(base64)
-															  .then(path => {
-																user.data.portrait=path;
-																that.login(user.data);
-															  })
-															  .catch(error => {
-																console.error(error)
-															  })
-														}else{
-															that.login(user.data);
-														}
-													}else{
-														that.login(user.data);
-													}
-													if(that.urlData==1){
-														uni.switchTab({  //返回首页
-															url:'/pages/Home/indexZhly',
-														}) 
-													}else{
-														uni.navigateBack();//返回上一页
-													}
-												}
-											})
+											uni.setStorageSync('userInfo',res.data.data)
+											if(that.urlData==1){
+												uni.switchTab({  //返回首页
+													url:'/pages/Home/indexZhly',
+												}) 
+											}else{
+												uni.navigateBack();//返回上一页
+											}
 										},
 										fail(err) {
 											uni.showToast({
@@ -229,7 +194,7 @@
 									icon:"none"
 								});
 								if(res!=null||res!=""){
-									theSelf.login(res.userInfo);						
+									// theSelf.login(res.userInfo);						
 								}
 								//绑定手机号
 								uni.getStorage({
@@ -255,7 +220,7 @@
 								},1000); */	
 							},
 							fail:function(){
-								theSelf.logining=false;
+								// theSelf.logining=false;
 							}
 						})
 					}
@@ -293,10 +258,6 @@
 												key:'userInfo',
 												data:list
 											})
-											theSelf.logining=true;
-											if(list!=null||list!=""){
-												theSelf.login(list);						
-											}
 											uni.showToast({
 												title: '授权成功',
 												icon:"none"

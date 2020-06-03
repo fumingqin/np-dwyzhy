@@ -1,4 +1,4 @@
-<template>
+ <template>
     <view class="myView">
 		<!-- 照片背景图 -->
 		<view>
@@ -77,7 +77,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				isNormal:0,//判断是普通购票还是定制班车默认是普通购票
 			}
 		},
-		onLoad() {
+		onLoad(options) {
 			var that = this;
 			if(that.departure == '') {
 				that.departure = '选择上车点'
@@ -96,7 +96,18 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			that.getTodayDate();
 			//公众号获取车票的openid
 			// #ifdef  H5
-			this.getOpenid();
+			uni.getStorage({
+				key:'ctkyOpenId',
+				fail() {
+					that.getOpenid();
+				}
+			})
+			uni.getStorage({
+				key:'ctkyUrl',
+				success(res) {
+					that.getUserinfo(res.data);
+				}
+			})
 			//#endif
 		},
 		methods: {
@@ -190,9 +201,20 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 					})
 					//页面传参通过地址后面添加参数 this.isNormal=0是普通购票1是定制班车
 					var params='./selectTickets?&startStation=' + this.departure +'&endStation=' + this.destination + '&date=' + this.datestring + '&isNormal=' + this.isNormal;
-					uni.navigateTo({ 
-						url:params
+					uni.getStorage({
+						key:'userInfo',
+						success() {
+							uni.navigateTo({ 
+								url:params
+							})
+							uni.removeStorageSync('ctkyUrl');
+						},
+						fail() {
+							uni.setStorageSync('ctkyUrl',params)
+							that.getUserinfo(params);
+						}
 					})
+					
 				}
 			},
 			onSelected(e) { //选择
@@ -247,18 +269,19 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			    let Appid = "wxef946aa6ab5788a3";//售票appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://nply.fjmtcy.com/#/pages/CTKY/ctkyIndex";
-				 var indexCode=uni.getStorageSync('indexCode');
-				if (code == indexCode) {
+				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
+				var indexCode=uni.getStorageSync('indexCode');
+				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 				  window.location.href =
 				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
 				  	Appid +
 				  	"&redirect_uri=" +
 				  	encodeURIComponent(local) +
-				  	"&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"; 
+				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
+					uni.setStorageSync('indexCode',code);
 					uni.request({
 						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=6db2b79e1669f727c246d9c8ae928ecf',
 						header: {
@@ -267,20 +290,86 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 						method:'POST',
 						success(res) {
 							console.log(res,"ctkyOpenId")
-							uni.setStorage({
-								key:'ctkyOpenId',
-								data:res.data.openid,
-							})
+							uni.setStorageSync('ctkyOpenId',res.data.openid)	
 						},
 						fail(err){
 							uni.showToast({
-								title:"err是"+err.errMsg,
+								title:"请求失败",
 							})
 						}
 					})
 				}
 			},
-			   //判断code信息是否存在
+			//获取用户信息，重新授权登录
+			getUserinfo(params) {
+				var that=this;
+			    let Appid = "wx4f666a59748ab68f";//appid
+				let code = this.getUrlParam('code'); //是否存在code
+				console.log(code);
+				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
+				var indexCode=uni.getStorageSync('indexCode');
+				if (code == indexCode||code == null || code === "") {
+				  //不存在就打开上面的地址进行授权
+				  window.location.href =
+				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
+				  	Appid +
+				  	"&redirect_uri=" +
+				  	encodeURIComponent(local) +
+				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
+				}else{
+					uni.request({
+						url:'http://27.148.155.9:9055/CTKY/getWxUserinfo?code='+code+'&Appid='+Appid+'&Appsecret=788709805b9c0cbd3ccd3c7d0318c7bb',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						method:'POST',
+						success(res) {
+							console.log(res,"res")
+							uni.setStorageSync('scenicSpotOpenId',res.data.openid)
+							uni.setStorageSync('res',res.data)
+							let user=res.data;
+							uni.request({
+								url:'http://218.67.107.93:9210/api/app/changeInfo',
+								data:{
+									nickname:user.nickname,
+									openId_wx:user.openid,
+									portrait:user.headimgurl,
+									unid:'',
+									openId_qq:'',
+									gender:'',
+									address:user.province+user.city,
+									birthday:'',
+									phoneNumber:'',
+									username:user.nickname,
+								},
+								method:'POST',
+								success(res1) {
+									if(res1.data.msg=="信息保存成功！"){
+										uni.setStorageSync('userInfo',res1.data.data)
+										if(res1.data.data.phoneNumber==null){
+											uni.navigateTo({
+												url:'/pages/GRZX/wxLogin',
+											})
+										}else{
+											uni.removeStorageSync('ctkyUrl');
+											uni.navigateTo({
+												url:params
+											})
+										}
+									}
+								}
+							})
+						},
+						fail(err){
+							uni.showToast({
+								title:"请求失败",
+								icon:'none'
+							})
+						}
+					})
+				}
+			},
+			//判断code信息是否存在
 			getUrlParam(name) {
 				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
 				  let url = window.location.href.split('#')[0]   
@@ -293,7 +382,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				    return null  
 				  }  
 			},
-			 //#endif
+			// #endif
 		}
 	}
 </script>
