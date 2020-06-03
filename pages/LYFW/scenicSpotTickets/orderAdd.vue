@@ -38,12 +38,20 @@
 					</view>
 				</uni-popup>
 
-
-				<view class="MP_selectionDate">
-					<text>使用日期</text>
+			<!-- 预约时间代码开始 -->
+				<view class="MP_selectionDate" :hidden="ape_entry==0">
+					<text>预约时间</text>
+					<text class="MP_textDate" style="font-size: 30upx;">{{ape_time}}</text>
+					<text class="MP_textDate" style="margin-right: 24upx; font-size: 30upx;">{{date}}</text>
+					<text class="MP_textReminder">{{dateReminder}}</text>
+				</view>
+				
+				<view class="MP_selectionDate" :hidden="ape_entry==1">
+					<text>预约时间</text>
 					<text class="MP_textDate" @click="open">{{date}}&nbsp;> </text>
 					<text class="MP_textReminder">{{dateReminder}}</text>
 				</view>
+			<!-- 预约时间代码结束 -->
 			</view>
 
 			<!-- 购票人信息 -->
@@ -154,15 +162,12 @@
 	import uniCalendar from '../../../components/LYFW/scenicSpotTickets/uni-calendar/uni-calendar.vue'
 	export default {
 		data() {
-			const currentDate = this.getDate({
-				format: true
-			})
 			return {
 				submissionState: false, //提交状态
 				actualPayment: '', //实际付款
 				selectedValue: 0, //同意须知的选中值
 				dateReminder: '今天', //日期提醒
-				date: currentDate, //默认时间
+				date:'', //默认时间
 				maskState: 0, //优惠券面板显示状态
 
 				admissionTicket: '', //门票内容
@@ -178,12 +183,29 @@
 				adultIndex: '', //成人数量
 				childrenIndex: '', //儿童数量
 
-				couponList: []
+				couponList: [],
+				//---------------预约时段专用参数---------------------
+				ape_entry: '',//预约入口参数
+				ape_time:'',//预约时段
+				//---------------预约时段专用参数---------------------
 			}
 		},
 
-		onLoad(options) {
-			this.lyfwData();
+		onLoad:function(options) {
+			console.log(options.ape_entry)
+			//预约时间代码开始
+			if(options.ape_entry==1){
+				this.ape_entry = options.ape_entry;
+				this.date = options.ape_date;
+				this.dateReminder = options.ape_week;
+				this.ape_time = options.ape_time;
+				console.log(this.ape_entry)
+				this.lyfwData();
+			}else{
+				this.getDate();
+				this.lyfwData();
+			}
+			//预约时间代码结束
 		},
 		onShow() {
 			this.getUserInfo();
@@ -202,13 +224,40 @@
 					key:'userInfo',
 					success:(res)=>{
 						console.log(res)
-						this.userInfo = res.data;
-					}
+						if(res.data==undefined){
+							// #ifdef APP-PLUS
+							uni.showToast({
+								title:'检测到未登录，即将跳转登录页面',
+								icon:'none',
+								success:function(){
+									uni.navigateTo({
+										url:'../../GRZX/userLogin?loginType=4'
+									})
+								}
+							})
+							// #endif
+							// #ifdef H5
+							uni.showToast({
+								title:'检测到未登录，即将跳转授权主页',
+								icon:'none',
+								success:function(){
+									uni.switchTab({
+										url:'../../Home/indexZhly'
+									})
+								}
+							})
+							// #endif
+						}else{
+							this.userInfo = res.data;
+						}
+						
+					},
+					
 				})
 			},
 			
 			//读取静态数据
-			async lyfwData(e) {
+			async lyfwData() {
 				uni.getStorage({
 					key: 'ticketInformation',
 					success: (res) => {
@@ -216,6 +265,7 @@
 						// console.log(res)
 					}
 				})
+				
 				let notice = await this.$api.lyfwfmq('notice');
 				this.notice = notice.data;
 			},
@@ -241,30 +291,52 @@
 				if (e == 0) {
 					uni.getStorage({
 						key: 'userInfo',
-						fail() {
-							uni.showToast({
-								icon: 'none',
-								title: '未登录无法添加乘车人,请先登录'
-							})
-							setTimeout(function() {
-								uni.navigateTo({
-									//loginType=1,泉运登录界面
-									//loginType=2,今点通登录界面
-									//loginType=3,武夷股份登录界面
-									url: '../../GRZX/userLogin?loginType=1'
+						success:function(res) {
+							if(res.data==undefined){
+								uni.showToast({
+									icon: 'none',
+									title: '未登录无法添加乘车人,请先登录'
 								})
-							}, 500);
+								setTimeout(function() {
+									uni.navigateTo({
+										//loginType=1,泉运登录界面
+										//loginType=2,今点通登录界面
+										//loginType=3,武夷股份登录界面
+										url: '../../GRZX/userLogin?loginType=4'
+									})
+								}, 500);
+							}else{
+								uni.navigateTo({
+									url: '../../GRZX/addPassenger?type=add',
+								})
+							}
 						},
-						success() {
-							uni.navigateTo({
-								url: '../../GRZX/addPassenger?type=add',
-							})
-						}
 					})
 				} else if (e == 1) {
-					uni.navigateTo({
-						url: '../../GRZX/passengerInfo?submitType=1',
+					uni.getStorage({
+						key: 'userInfo',
+						success:function(res) {
+							if(res.data==undefined){
+								uni.showToast({
+									icon: 'none',
+									title: '未登录无法选择乘车人,请先登录'
+								})
+								setTimeout(function() {
+									uni.navigateTo({
+										//loginType=1,泉运登录界面
+										//loginType=2,今点通登录界面
+										//loginType=3,武夷股份登录界面
+										url: '../../GRZX/userLogin?loginType=4'
+									})
+								}, 500);
+							}else{
+								uni.navigateTo({
+									url: '../../GRZX/passengerInfo?submitType=1',
+								})
+							}
+						}
 					})
+					
 				}
 
 
@@ -583,19 +655,19 @@
 
 
 			//获取当前时间并格式化
-			getDate(type) {
+			getDate:function() {
 				const date = new Date();
 				let year = date.getFullYear();
 				let month = date.getMonth() + 1;
 				let day = date.getDate();
-				if (type === 'start') {
-					year = year - 60;
-				} else if (type === 'end') {
-					year = year + 2;
-				}
+				// if (type === 'start') {
+				// 	year = year - 60;
+				// } else if (type === 'end') {
+				// 	year = year + 2;
+				// }
 				month = month > 9 ? month : '0' + month;;
 				day = day > 9 ? day : '0' + day;
-				return `${year}-${month}-${day}`;
+				this.date = `${year}-${month}-${day}`;
 			},
 
 
