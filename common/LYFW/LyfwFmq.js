@@ -106,47 +106,9 @@ const reply = [{
 
 
 
-
-
-
-
-//接口域名
-// const Url = 'https://zntc.145u.net:9099'; //https请求
-// const Url = 'http://218.67.107.93:9210'; //http请求
-
-//引入模板
-	// url:$lyfw.Interface.spt_tl_six.value,
-	// method:$lyfw.Interface.spt_tl_six.method,
-	// import $lyfw from '../../../common/LYFW/LyfwFmq.js' //引用路径
-
-//接口对象
-const Interface = {
-	//--------------------------------自由行-------------------------------
-	// fy_getFyCultureList:{
-	// 	value: Url + '/api/app/getFyCultureList?regionWeixin=',
-	// 	name:'非遗-列表',
-	// 	method:'POST',
-	// 	pages:["pages/FYWH/fy_index"]
-	// },
-	
-	// fy_getFyCultureDetail:{
-	// 	value: Url + '/api/app/getFyCultureDetail',
-	// 	name:'非遗-详情',
-	// 	method:'POST',
-	// 	pages:["pages/FYWH/fy_index"]
-	// },
-	
-	// fy_searchFyCultureList:{
-	// 	value: Url + '/api/app/searchFyCultureList',
-	// 	name:'非遗-搜索',
-	// 	method:'POST',
-	// 	pages:["pages/FYWH/fy_index"]
-	// }
-}
-
 // 接口声明区
 export default {
-	Interface,
 	tweets,
-	reply
+	reply,
+	notice
 }

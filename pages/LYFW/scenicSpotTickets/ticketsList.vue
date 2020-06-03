@@ -108,7 +108,12 @@
 				</scroll-view>
 			</view>
 		</view>
-
+		
+		<view v-if="entryParameters!==''" style="width: 100%; height:96upx; background: #FFFFFF; z-index: 99999; display: flex; position: fixed; bottom: 0;text-align: center; font-size: 28upx; font-weight: bold; line-height: 104upx;">
+			<text style="width: 33%;" @click="entryNotTo(0)">车票</text>
+			<text style="width: 33%;" @click="entryNotTo(1)">订单</text>
+			<text style="width: 33%;" @click="entryNotTo(2)">我的</text>
+		</view>
 
 
 	</view>
@@ -146,6 +151,7 @@
 				cateValue : '', //分类筛选值
 				
 				regionWeixin: '请选择', //微信地区数值
+				entryParameters : '',//入口参数
 			}
 		},
 		
@@ -159,6 +165,14 @@
 		},
 		
 		onLoad:function(options) {
+			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
+			if(options.entryParameters){
+				this.entryParameters = options.entryParameters
+			}
+			uni.showLoading({
+				title:'加载中...',
+				icon:'loading'
+			})
 			// #ifdef H5
 			uni.showToast({
 				title:'公众号当前定位无法启用，已默认定位南平市',
@@ -187,17 +201,26 @@
 				uni.request({
 					url:'http://218.67.107.93:9210/api/app/getSixScenicspotList?requestArea=' +this.regionWeixin,
 					method:'POST',
-					success:(res) => { 
+					success:(res) => {
 						// console.log(res)
 						if (res.data.msg == '获取景区信息成功！') {
 							this.sixPalaceList = res.data.data;
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
 							this.sixPalaceList = '';
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 							uni.showToast({
 								title: '该地区暂无景点信息',
 								icon: 'none'
 							})
 						}
+					},
+					fail: function(ee) {
+						// console.log(ee)
+						uni.stopPullDownRefresh();
+						uni.hideLoading()
 					}
 				})
 				
@@ -209,14 +232,23 @@
 						// console.log(res)
 						if (res.data.msg == '获取景区信息成功！') {
 							this.scenicList = res.data.data;
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
 							this.scenicList = '';
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 							uni.showToast({
 								title: '该地区暂无景点信息',
 								icon: 'none'
 							})
 						}
 						
+					},
+					fail: function(ee) {
+						// console.log(ee)
+						uni.stopPullDownRefresh();
+						uni.hideLoading()
 					}
 				})
 				setTimeout(()=>{
@@ -232,14 +264,18 @@
 						success: (res) => {
 							// console.log(res)
 							this.regionWeixin = res.data;
-							this.lyfwData(); //请求接口数据
 						},
 						fail: (res) => {
+							// #ifdef APP-NVUE
 							uni.showToast({
 								title:'请选择地区',
 								icon:'none'
 							})
+							// #endif
 						},
+						complete: () => {
+							this.lyfwData(); //请求接口数据
+						}
 					}),
 					uni.getStorage({
 						key: 'app_position',
@@ -247,17 +283,21 @@
 							// console.log(res)
 							if (res.data !== undefined) {
 								this.regionWeixin = res.data.city;
-								this.lyfwData(); //请求接口数据
 							}
 						},
 						fail: (res) => {
+							// #ifdef APP-NVUE
 							uni.showToast({
 								title:'请选择地区',
 								icon:'none'
 							})
+							// #endif
 						},
+						complete: () => {
+							this.lyfwData(); //请求接口数据
+						}
 					})
-				}, 500)
+				},1000)
 			},
 			
 			//打开地区选择器
@@ -465,6 +505,26 @@
 				}
 				if(this.scenicListIndex >= this.scenicList.length){
 					this.loadingType = 2;
+				}
+			},
+			
+			//页面跳转
+			entryNotTo:function(e){
+				if(e==0){
+					//跳转传统客运
+					uni.switchTab({
+						url:''
+					})
+				}else if(e==1){
+					//跳转订单
+					uni.switchTab({
+						url:'../../order/OrderList'
+					})
+				}else if(e==2){
+					//跳转个人主页
+					uni.switchTab({
+						url:'../../GRZX/user'
+					})
 				}
 			}
 
