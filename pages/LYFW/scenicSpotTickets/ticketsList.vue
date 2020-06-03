@@ -177,10 +177,7 @@
 			if(options.entryParameters){
 			    this.entryParameters = options.entryParameters
 			}
-			uni.showLoading({
-				title:'加载中...',
-				icon:'loading'
-			})
+			
 			// #ifdef H5
 			uni.showToast({
 				title:'公众号当前定位无法启用，已默认定位南平市',
@@ -188,6 +185,10 @@
 			})
 			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
 			// #endif
+			uni.showLoading({
+				title:'加载中...',
+				icon:'loading'
+			})
 			this.cateId = options.tid;
 			this.loadCateList(options.fid, options.sid);
 			this.Getpostion();
