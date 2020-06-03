@@ -231,7 +231,7 @@
 								icon:'none',
 								success:function(){
 									uni.navigateTo({
-										url:'../../GRZX/userLogin?loginType=1'
+										url:'../../GRZX/userLogin?loginType=4'
 									})
 								}
 							})
@@ -302,7 +302,7 @@
 										//loginType=1,泉运登录界面
 										//loginType=2,今点通登录界面
 										//loginType=3,武夷股份登录界面
-										url: '../../GRZX/userLogin?loginType=1'
+										url: '../../GRZX/userLogin?loginType=4'
 									})
 								}, 500);
 							}else{
@@ -326,7 +326,7 @@
 										//loginType=1,泉运登录界面
 										//loginType=2,今点通登录界面
 										//loginType=3,武夷股份登录界面
-										url: '../../GRZX/userLogin?loginType=1'
+										url: '../../GRZX/userLogin?loginType=4'
 									})
 								}, 500);
 							}else{
