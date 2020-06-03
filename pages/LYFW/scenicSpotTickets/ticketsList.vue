@@ -528,7 +528,7 @@
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://wxsp.npzhly.com/#/pages/LYFW/independentTravel/ticketsList";
+				let local = "http://wxsp.npzhly.com/#/pages/LYFW/scenicSpotTickets/ticketsList";
 				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =
