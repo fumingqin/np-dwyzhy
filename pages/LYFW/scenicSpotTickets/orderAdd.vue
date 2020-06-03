@@ -39,14 +39,14 @@
 				</uni-popup>
 
 			<!-- 预约时间代码开始 -->
-				<view class="MP_selectionDate" :hidden="ape_entry=='false'">
+				<view class="MP_selectionDate" :hidden="ape_entry==0">
 					<text>预约时间</text>
 					<text class="MP_textDate" style="font-size: 30upx;">{{ape_time}}</text>
 					<text class="MP_textDate" style="margin-right: 24upx; font-size: 30upx;">{{date}}</text>
 					<text class="MP_textReminder">{{dateReminder}}</text>
 				</view>
 				
-				<view class="MP_selectionDate" :hidden="ape_entry=='true'">
+				<view class="MP_selectionDate" :hidden="ape_entry==1">
 					<text>预约时间</text>
 					<text class="MP_textDate" @click="open">{{date}}&nbsp;> </text>
 					<text class="MP_textReminder">{{dateReminder}}</text>
@@ -194,7 +194,7 @@
 		onLoad:function(options) {
 			console.log(options.ape_entry)
 			//预约时间代码开始
-			if(options.ape_entry=='true'){
+			if(options.ape_entry==1){
 				this.ape_entry = options.ape_entry;
 				this.date = options.ape_date;
 				this.dateReminder = options.ape_week;

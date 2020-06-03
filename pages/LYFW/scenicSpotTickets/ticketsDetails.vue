@@ -121,7 +121,7 @@
 				date: '', //时间轴上选中的日期
 				currentTime: '', //当前时间
 				//-----------------时间选择器参数结束-------------------
-				ape_status:true,//预约开关控制参数
+				ape_status:1,//预约开关控制参数
 				radioCurrent: 0, //时段radio选择参数
 				apeData: [{
 					date: '10:00-11:00',
@@ -227,11 +227,11 @@
 					key: 'ticketInformation',
 					data: e,
 					success:()=>{
-						if(this.ape_status==false){
+						if(this.ape_status==0){
 							uni.navigateTo({
-								url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=false'
+								url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
 							})
-						}else if(this.ape_status==true){
+						}else if(this.ape_status==1){
 							this.getDate();
 							this.$refs.popup.open()
 						}
@@ -249,7 +249,7 @@
 				// console.log(this.dateArray[this.selectIndex])
 				// console.log(this.apeData[this.radioCurrent].date)
 				uni.navigateTo({
-					url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=true&ape_date='+this.dateArray[this.selectIndex].longDate +'&ape_week=' +this.dateArray[this.selectIndex].week +'&ape_time=' +this.apeData[this.radioCurrent].date
+					url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date='+this.dateArray[this.selectIndex].longDate +'&ape_week=' +this.dateArray[this.selectIndex].week +'&ape_time=' +this.apeData[this.radioCurrent].date
 				})
 				
 			},
