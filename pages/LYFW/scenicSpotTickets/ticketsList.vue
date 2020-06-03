@@ -164,6 +164,19 @@
 		},
 		
 		onLoad:function(options) {
+			// #ifdef  H5
+			var that=this;
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					that.getCode();	
+				}
+			})
+			//#endif
+			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
+			if(options.entryParameters){
+			    this.entryParameters = options.entryParameters
+			}
 			uni.showLoading({
 				title:'加载中...',
 				icon:'loading'
@@ -179,20 +192,9 @@
 			this.loadCateList(options.fid, options.sid);
 			this.Getpostion();
 			
-			// #ifdef  H5
-			var that=this;
-			uni.getStorage({
-				key:'userInfo',
-				fail() {
-					that.getCode();	
-				}
-			})
-			//#endif
 			
-			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
-			   if(options.entryParameters){
-			    this.entryParameters = options.entryParameters
-			   }
+			
+			
 		},
 		
 		onPullDownRefresh:function(){
@@ -206,7 +208,7 @@
 		methods: {
 			//请求模拟接口数据
 			lyfwData:function() {
-				// console.log(this.regionWeixin)
+				console.log(this.regionWeixin)
 				// 六宫格
 				uni.request({
 					url:'http://218.67.107.93:9210/api/app/getSixScenicspotList?requestArea=' +this.regionWeixin,
@@ -287,6 +289,7 @@
 							this.lyfwData(); //请求接口数据
 						}
 					}),
+					
 					uni.getStorage({
 						key: 'app_position',
 						success: (res) => {
