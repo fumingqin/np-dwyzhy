@@ -470,12 +470,11 @@
 						var a = '';
 						if(res.data.msg =='获取订单列表成功！'){
 							a = res.data.data.filter(item => {
-								return item.orderType == '待支付';
+								return item.orderType == '待支付' || item.orderType == '审核中';
 							})
 						}
 						console.log(a)
 						if (a == '') {
-							
 							// #ifdef H5
 							uni.getStorage({
 								key:'scenicSpotOpenId',
@@ -501,6 +500,7 @@
 											orderActualPayment: that.actualPayment,
 											sellerCompanyCode: '南平旅游H5',
 											tppId: res.data,
+											ape_time : that.ape_time,
 										},
 									
 										method: 'POST',
@@ -527,15 +527,28 @@
 												})
 												that.submissionState = false;
 											} else if (res.data.msg == '下单成功') {
-												uni.setStorage({
-													key: 'submitH5Data',
-													data: res.data.data,
-													success: function() {
-														uni.redirectTo({
-															url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
-														})
-													}
-												})
+												if(that.ape_entry==0){
+													uni.setStorage({
+														key: 'submitH5Data',
+														data: res.data.data,
+														success: function() {
+															uni.redirectTo({
+																url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
+															})
+														}
+													})
+												}else if(that.ape_entry==1){
+													uni.setStorage({
+														key: 'submitH5Data',
+														data: res.data.data,
+														success: function() {
+															uni.redirectTo({
+																url:'successfulPayment2'
+															})
+														}
+													})
+												}
+												
 									
 											}
 									
@@ -578,6 +591,7 @@
 									orderActualPayment: this.actualPayment,
 									sellerCompanyCode: '南平旅游APP',
 									tppId: 0,
+									ape_time : that.ape_time,
 								},
 
 								method: 'POST',
@@ -598,9 +612,17 @@
 										})
 										that.submissionState = false;
 									} else if (res.data.msg == '下单成功') {
-										uni.redirectTo({
-											url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
-										})
+										if(that.ape_entry==0){
+											uni.redirectTo({
+												url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
+											})
+										}else if(that.ape_entry==1){
+											uni.redirectTo({
+												url:'successfulPayment2'
+											})
+										}
+										
+										
 									}
 
 								}
@@ -611,7 +633,7 @@
 						} else if (a.length > 0) {
 							uni.hideLoading()
 							uni.showToast({
-								title: '订单中，存在待支付订单，请支付/取消后再下单',
+								title: '订单中，存在待支付/审核订单，请支付/取消后再下单',
 								icon: 'none',
 								duration: 2000
 							})
