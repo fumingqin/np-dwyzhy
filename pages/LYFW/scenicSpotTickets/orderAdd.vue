@@ -292,54 +292,49 @@
 					uni.getStorage({
 						key: 'userInfo',
 						success:function(res) {
-							if(res.data==undefined){
-								uni.showToast({
-									icon: 'none',
-									title: '未登录无法添加乘车人,请先登录'
-								})
-								setTimeout(function() {
-									uni.navigateTo({
-										//loginType=1,泉运登录界面
-										//loginType=2,今点通登录界面
-										//loginType=3,武夷股份登录界面
-										url: '../../GRZX/userLogin?loginType=4'
-									})
-								}, 500);
-							}else{
-								uni.navigateTo({
-									url: '../../GRZX/addPassenger?type=add',
-								})
-							}
+							uni.navigateTo({
+								url: '../../GRZX/addPassenger?type=add',
+							})
 						},
+						fail:function(){
+							uni.showToast({
+								icon: 'none',
+								title: '未登录无法添加乘车人,请先登录'
+							})
+							setTimeout(function() {
+								uni.navigateTo({
+									//loginType=1,泉运登录界面
+									//loginType=2,今点通登录界面
+									//loginType=3,武夷股份登录界面
+									url: '../../GRZX/userLogin?loginType=4'
+								})
+							}, 500);
+						}
 					})
 				} else if (e == 1) {
 					uni.getStorage({
 						key: 'userInfo',
 						success:function(res) {
-							if(res.data==undefined){
-								uni.showToast({
-									icon: 'none',
-									title: '未登录无法选择乘车人,请先登录'
-								})
-								setTimeout(function() {
-									uni.navigateTo({
-										//loginType=1,泉运登录界面
-										//loginType=2,今点通登录界面
-										//loginType=3,武夷股份登录界面
-										url: '../../GRZX/userLogin?loginType=4'
-									})
-								}, 500);
-							}else{
+							uni.navigateTo({
+								url: '../../GRZX/passengerInfo?submitType=1',
+							})
+						},
+						fail:function(err){
+							uni.showToast({
+								icon: 'none',
+								title: '未登录无法选择乘车人,请先登录'
+							})
+							setTimeout(function() {
 								uni.navigateTo({
-									url: '../../GRZX/passengerInfo?submitType=1',
+									//loginType=1,泉运登录界面
+									//loginType=2,今点通登录界面
+									//loginType=3,武夷股份登录界面
+									url: '../../GRZX/userLogin?loginType=4'
 								})
-							}
+							}, 500);
 						}
 					})
-					
 				}
-
-
 			},
 
 			//用户数据读取
