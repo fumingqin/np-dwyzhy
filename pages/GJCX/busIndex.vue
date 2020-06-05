@@ -169,14 +169,6 @@
 				successNum: 0,
 				successNum1: 0,
 				historyList: [],
-				timer: '',
-				appid:'wx4f666a59748ab68f',
-				secret:'788709805b9c0cbd3ccd3c7d0318c7bb',
-				nonce:'',
-				timestamp:'',
-				thisUrl:'',
-				signature:'',
-				ticket:''
 			}
 		},
 		created() {},
@@ -216,6 +208,12 @@
 		},
 		onLoad() {
 			var that=this;
+			uni.getLocation({
+				success:function(res){
+					console.log(res);
+					console.log('定位成功');
+				}
+			});
 			that.Getpostion();
 			that.getAllLine();
 			// this.Encryption();
