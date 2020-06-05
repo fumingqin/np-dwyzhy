@@ -145,6 +145,11 @@
                     "key" : "D74BZ-7CIK4-EQLUK-DR4DG-2OSLQ-AGBN6"
                 }
             }
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
         }
     }
 }
