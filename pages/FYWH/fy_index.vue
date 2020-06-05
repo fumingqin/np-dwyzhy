@@ -23,13 +23,14 @@
 
 		<!-- 搜索内容 -->
 		<view :hidden="searchIndex==0" v-for="(item,index) in searchData" :key="index">
-			<view class="Tk_scrollview" @click="godetail(item.ticketId)">
+			<view class="Tk_scrollview" @click="godetail(item.fy_Id)">
 				<view class="Tk_item">
-					<image class="Tk_image" :src="item.imageUrl[0]" />
+					<image class="Tk_image" :src="item.fy_imageUrl" mode="aspectFill" />
 					<view class="Tk_bacg">
-						<text class="Tk_text1">{{item.title}}</text>
-						<text class="Tk_text2">{{item.label[0]}}</text>
-						<text class="Tk_text3">{{item.synopsis}}</text>
+						<text class="Tk_text1">{{item.fy_title}}</text>
+						<view class="Tk_text3" >
+							<rich-text :nodes="item.fy_synopsis"></rich-text>
+						</view>
 					</view>
 				</view>
 			</view>
@@ -40,8 +41,7 @@
 			<QSTabs :current="current" :tabs="tabs" minWidth="80" @change="change($event)" />
 		</view>
 
-		<!-- <view :hidden="current==1"> -->
-			
+		<view :hidden="current==1">
 			<!-- 注视区 -->
 			<view class="fa_MainView">
 				<view class="fa_TitleView">
@@ -49,49 +49,87 @@
 				</view>
 			</view>
 			<swiper style="height: 560upx; padding: 0 8rpx;" circular="circular" autoplay="autoplay">
-				<swiper-item style="display: flex;" v-for="(item,index) in itText" :key="index" @click="natTo(item.productID)">
+				<swiper-item style="display: flex;" v-for="(item,index) in itText" :key="index" @click="natTo(item.fy_Id)">
 					<view class="fa_listBarView"  >
-						<image class="fa_listBarImage" mode="aspectFill" :src="item.imageUrl[0]"></image>
-						<text class="fa_listBarText1">{{item.title}}</text>
-						<text class="fa_listBarText2">{{item.label[0]}}</text>
+						<image class="fa_listBarImage" mode="aspectFill" :src="item.fy_imageUrl"></image>
+						<text class="fa_listBarText1">{{item.fy_title}}</text>
+						<view class="fa_listBarText2" >
+							<rich-text :nodes="item.fy_synopsis"></rich-text>
+						</view>
 					</view>
 				</swiper-item>
 			</swiper>
 			
 			
-			<!-- 滑动区 -->
-			<view class="listBarViewSpace">
-				<view class="newDiscoveryTitleView">
-					<text class="newDiscoveryTitle">朱子家礼</text>
-				</view>
-				<scroll-view scroll-x="true">
-				<view style="display: flex;">
-					<view class="listBarView"  v-for="(item,index) in itText" :key="index" @click="natTo(item.productID)">
-						<image class="listBarImage" mode="aspectFill" :src="item.imageUrl[0]"></image>
-						<text class="listBarText1">{{item.title}}</text>
-						<text class="listBarText2">{{item.label[0]}}</text>
-					</view>
-				</view>
-				</scroll-view>
-			</view>
 
 			<!-- 历史文化 -->
 			<view class="newDiscoveryView">
 				<view class="newDiscoveryTitleView">
 					<text class="newDiscoveryTitle">历史文化</text>
 				</view>
-				<view class="newDiscoveryConentView" v-for="(item,index) in newDiscovery" :key="index" @click="natTo(item.productID)">
-					<image class="newDiscoveryConentImage" mode="aspectFill" :src="item.imageUrl[0]"></image>
-					<text class="newDiscoveryConentText1">{{item.title}}</text>
+				<view class="newDiscoveryConentView" v-for="(item,index) in newDiscovery" :key="index" v-if="index < fy_dataIndex" @click="natTo(item.fy_Id)">
+					<image class="newDiscoveryConentImage" mode="aspectFill" :src="item.fy_imageUrl"></image>
+					<text class="newDiscoveryConentText1">{{item.fy_title}}</text>
 					<!-- <text class="newDiscoveryConentText2">销售量：{{item.salesVolume}}</text> -->
-					<text class="newDiscoveryConentText2">{{item.synopsis}}</text>
+					<view class="newDiscoveryConentText2" >
+						<rich-text :nodes="item.fy_synopsis"></rich-text>
+					</view>
 				</view>
 			</view>
-		<!-- </view> -->
+			
+			
+		</view>
+		
+		<view :hidden="current==0">
+			<!-- 注视区 -->
+			<view class="fa_MainView">
+				<view class="fa_TitleView">
+					<text class="fa_DiscoveryTitle">{{screenDate}}</text>
+				</view>
+			</view>
+			<swiper style="height: 560upx; padding: 0 8rpx;" circular="circular" autoplay="autoplay">
+				<swiper-item style="display: flex;" v-for="(item,index) in itText" :key="index"  @click="natTo(item.fy_Id)">
+					<view class="fa_listBarView"  >
+						<image class="fa_listBarImage" mode="aspectFill" :src="item.fy_imageUrl"></image>
+						<text class="fa_listBarText1">{{item.fy_title}}</text>
+						<view class="fa_listBarText2" >
+							<rich-text :nodes="item.fy_synopsis"></rich-text>
+							<scroll-view></scroll-view>
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
+			
+			
+			
+			<!-- 历史文化 -->
+			<view class="newDiscoveryView">
+				<view class="newDiscoveryTitleView">
+					<text class="newDiscoveryTitle">历史文化</text>
+				</view>
+				<view class="newDiscoveryConentView" v-for="(item,index) in newDiscovery2" :key="index" v-if="index < fy_dataIndex" @click="natTo(item.fy_Id)">
+					<image class="newDiscoveryConentImage" mode="aspectFill" :src="item.fy_imageUrl"></image>
+					<text class="newDiscoveryConentText1">{{item.fy_title}}</text>
+					<!-- <text class="newDiscoveryConentText2">销售量：{{item.salesVolume}}</text> -->
+					<!-- <text class="newDiscoveryConentText2">{{item.fy_synopsis}}</text> -->
+					<view class="fa_listBarText2" >
+						<rich-text :nodes="item.fy_synopsis"></rich-text>
+					</view>
+				</view>
+			</view>
+
+		</view>
+		
+		<view style="width: 100%; float: left; text-align: center; font-size: 24upx; margin: 16upx 0; color: #aaa;">
+			<text v-if="current==0" :hidden="disStatus== 1">{{loadingType== 0 ? loadingText.down : (loadingType === 1 ? loadingText.refresh : loadingText.nomore)}}</text>
+			<text v-if="current==1" :hidden="disStatus2== 1">{{loadingType== 0 ? loadingText.down : (loadingType === 1 ? loadingText.refresh : loadingText.nomore)}}</text>
+			<text v-if="current==0" :hidden="disStatus== 0">暂无历史数据</text>
+			<text v-if="current==1" :hidden="disStatus2== 0">暂无历史数据</text>
+		</view>
 
 
 		<!-- 分类面板 -->
-		<view class="cate-mask" :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''" @click="toggleCateMask('none')">
+		<view class="cate-mask" :class="cateMaskState===0 ? 'none' : cateMaskState===1 ? 'show' : ''" @click="toggleCateMask('none')"> 
 			<view class="cate-content">
 				<scroll-view scroll-y class="cate-list">
 					<view v-for="(item,index) in regionList" :key="index">
@@ -112,7 +150,6 @@
 	import citySelect from '@/components/HOME/uni-location/linzq-citySelect/linzq-citySelect.vue'
 	import popupLayer from '@/components/HOME/uni-location/popup-layer/popup-layer.vue'
 	import QSTabs from '@/components/LYFW/ouristRoute/QS-tabs/QS-tabs.vue'
-	import $lyfw from '@/common/LYFW/LyfwFmq.js' //引用路径
 	export default {
 		data() {
 			return {
@@ -123,20 +160,36 @@
 				regionApp: '请选择', //APP地区数值
 
 				current: 0, //标题下标
+				currentBuffer : 0,//标题缓冲下标
 				cateMaskState: 0, //分类面板展开状态
-				screenIndex : '',//点击默认值
-				screenDate: '泉州市',//地区默认值
-				tabs: ['推荐', '全部'], //选项标题
+				screenIndex : 8,//点击默认值
+				screenDate: '定位中',//地区默认值
+				tabs: ['非遗','物质', '全部'], //选项标题
+				
+				fy_dataIndex: 4, //列表默认数量
+				loadingType: 0, //加载更多状态
+				loadingText: {
+					down: '上拉加载更多',
+					refresh: '正在加载...',
+					nomore: '没有更多了',
+				},
+				
+				
 
-				itText: '', //六宫格
-				newDiscovery: '', //新发现
-
+				itText: '', //非遗六宫格
+				itText2: '', //物质六宫格
+				newDiscovery: '', //非遗文化
+				newDiscovery2: '', //物质文化
+				disStatus:0,//非遗内容状态值，当为1的时候为空
+				disStatus2:0,//物质内容状态值，当为1的时候为空
+				
+				
 				ifyFirst: {
 					imageUrl: ['']
 				}, //分类产品首个
 				ifyList: '', //分类产品列表
 				
-				regionList : ['泉州市','光泽县','建瓯市','建阳区','浦城县','邵武市','松溪县','武夷山市','延平区','政和县','市本级'], //地区
+				regionList : ['市本级','光泽县','建瓯市','建阳区','浦城县','邵武市','松溪县','武夷山市','延平区','政和县'], //地区
 
 				scrollHeight: '500px',
 			}
@@ -151,31 +204,47 @@
 				title: '加载文化中...',
 				icon: 'loading'
 			})
+			this.screenDate = this.regionList[this.screenIndex];
 			this.Getpostion();
 		},
 		onPullDownRefresh: function() {
 			this.textData();
 		},
+		
+		//页面触底
+		onReachBottom() {
+			uni.showLoading({
+				title: '加载更多中...',
+				icon: 'loading'
+			})
+			this.getMore();
+		},
+
 		methods: {
 			//请求列表接口数据
 			textData: function() {
 				//请求列表
 				uni.request({
-					url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.value,
-					method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.method,
-					data: {
-						regionWeixin: this.screenDate,
-					},
+					url:'http://218.67.107.93:9210/api/app/getFyCultureList?regionWeixin='+this.regionList[this.screenIndex],
+					method:'POST',
 					success: (res) => {
-						// console.log(res)
-						if (res.data.status == true) {
-							this.itText = res.data.data;
+						console.log(res)
+						if (res.data.msg == '非遗文化列表信息成功！') {
+							let feiyi = res.data.data.filter(item => {
+								return item.type == '非遗';
+							})
+							let wuzhi = res.data.data.filter(item => {
+								return item.type == '物质';
+							})
+							this.itText = feiyi; //非遗数组
+							this.itText2 = wuzhi; //物质数组
 							uni.hideLoading()
 							uni.stopPullDownRefresh()
 						} else {
 							uni.hideLoading()
 							uni.stopPullDownRefresh()
 							this.itText = '';
+							this.itText2 = '';
 							uni.showToast({
 								title: '该地区暂未录入历史文化',
 								icon: 'none'
@@ -195,24 +264,40 @@
 					}
 				})
 
-				//新发现
+				//文化接口
 				uni.request({
-					url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.value,
-					method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixin.method,
-					data: {
-						regionWeixin: this.screenDate,
-					},
+					url:'http://218.67.107.93:9210/api/app/getFyCultureList?regionWeixin='+this.regionList[this.screenIndex],
+					method:'POST',
 					success: (res) => {
-						if (res.data.status == true) {
+						console.log(res)
+						if (res.data.msg == '非遗文化列表信息成功！') {
 							var sc = res.data.data;;
 							sc.sort((a, b) => a.id - b.id)
-							this.newDiscovery = sc;
+							let feiyi2 = sc.filter(item => {
+								return item.type == '非遗';
+							})
+							let wuzhi2 = sc.filter(item => {
+								return item.type == '物质';
+							})
+							if(feiyi2==''){
+								this.disStatus = 1;
+							}else{
+								this.newDiscovery = feiyi2; //非遗数组
+								this.disStatus = 0;
+							}
+							if(wuzhi2==''){
+								this.disStatus2 = 1;
+							}else{
+								this.newDiscovery2 = wuzhi2; //物质数组
+								this.disStatus2 = 0;
+							}
 							uni.hideLoading()
 							uni.stopPullDownRefresh()
 						} else {
 							uni.hideLoading()
 							uni.stopPullDownRefresh()
 							this.newDiscovery = '';
+							this.newDiscovery2 = '';
 							uni.showToast({
 								title: '该地区暂未录入历史文化',
 								icon: 'none'
@@ -316,6 +401,8 @@
 
 			//搜索框-搜索
 			searchNow: function() {
+				console.log(this.regionList[this.screenIndex])
+				console.log(this.searchValue)
 				if (this.searchValue == '') {
 					uni.showToast({
 						title: '未输入搜索关键字',
@@ -330,17 +417,8 @@
 					title: '正在搜索',
 				})
 				uni.request({
-					url: $lyfw.Interface.zyx_GetFreeTourByRegionWeixinTitle.value,
-					method: $lyfw.Interface.zyx_GetFreeTourByRegionWeixinTitle.method,
-					data: {
-						// #ifdef H5
-						regionWeixin: '南平市',
-						// #endif
-						// #ifndef H5
-						regionWeixin: this.regionWeixin,
-						// #endif
-						title: this.searchValue
-					},
+					url:'http://218.67.107.93:9210/api/app/searchFyCultureList?regionWeixin=' +this.regionList[this.screenIndex] +'&title=' +this.searchValue,
+					method: 'POST',	
 					success: (res) => {
 						console.log(res)
 						if (res.data.data) {
@@ -355,17 +433,28 @@
 								icon: 'none',
 							});
 							this.searchValue = ''
-
+						}else if(res.statusCode == 404){
+							uni.hideLoading()
+							uni.showToast({
+								title: '服务器请求失败，请联系客服',
+								icon: 'none',
+							});
+							this.searchValue = ''
 						}
 					}
 				})
 			},
 
 			//tabbar筛选点击
-			change(index) {
+			change:function(index) {
 				if(index == 0){
 					this.current = index;
+					this.fy_dataIndex=4;  
+				}else if(index == 1){
+					this.current = index;
+					this.fy_dataIndex=4;
 				}else{
+					this.currentBuffer = this.current;
 					this.current = index;
 					this.toggleCateMask('show')
 				}
@@ -373,7 +462,7 @@
 			},
 			
 			//显示分类面板
-			toggleCateMask(type) {
+			toggleCateMask:function(type) {
 				if(type=='show'){
 					let timer = type === 'show' ? 10 : 300;
 					let state = type === 'show' ? 1 : 0;
@@ -385,7 +474,7 @@
 					let timer = type === 'show' ? 10 : 300;
 					let state = type === 'show' ? 1 : 0;
 					this.cateMaskState = 1;
-					this.current = 0
+					this.current = this.currentBuffer;
 					setTimeout(() => {
 						this.cateMaskState = state;
 					}, timer)
@@ -398,7 +487,8 @@
 				this.screenIndex = index;
 				this.screenDate = item;
 				this.toggleCateMask('none');
-				this.current = 0
+				this.current = this.currentBuffer;
+				this.fy_dataIndex=4;
 				uni.pageScrollTo({
 					duration: 300,
 					scrollTop: 0
@@ -413,12 +503,37 @@
 			natTo: function(e) {
 				console.log(e)
 				uni.navigateTo({
-					url:'fy_touristroute?id=' +e
+					url:'fy_touristroute?fy_Id=' +e
 				})
 			},
 
 			
-
+			//页面触底加载信息
+			getMore(){
+				this.loadingType = 1;
+				if(this.current == 0){
+					if (this.fy_dataIndex < this.newDiscovery.length) {
+						var a = this.fy_dataIndex + 4;
+						this.fy_dataIndex = a;
+						this.loadingType = 0;
+						uni.hideLoading()
+					}else if (this.fy_dataIndex >= this.newDiscovery.length) {
+						this.loadingType = 2;
+						uni.hideLoading()
+					}
+				}else if(this.current == 1){
+					if (this.fy_dataIndex < this.newDiscovery.length) {
+						var a = this.fy_dataIndex + 4;
+						this.fy_dataIndex = a;
+						this.loadingType = 0;
+						uni.hideLoading()
+					}else if (this.fy_dataIndex >= this.newDiscovery.length) {
+						this.loadingType = 2;
+						uni.hideLoading()
+					}
+				}
+				
+			},
 		}
 	}
 </script>
@@ -487,7 +602,7 @@
 			display: flex;
 
 			.Tk_image {
-				width: 182upx;
+				width: 460upx;
 				height: 152upx;
 				border-radius: 12upx;
 				margin: 24rpx 0rpx;
@@ -565,8 +680,9 @@
 			margin-top: 12upx;
 			font-size: 32upx;
 			overflow: hidden;
+			white-space: nowrap; 
 			text-overflow: ellipsis;
-			width: 216upx;
+			width: 480upx;
 		}
 		
 		.fa_listBarText2 {
@@ -577,7 +693,7 @@
 			overflow: hidden; 
 			text-overflow: ellipsis; 
 			white-space: nowrap; 
-			width: 216upx;
+			width: 480upx;
 		}
 		
 	}
@@ -658,7 +774,8 @@
 				margin-top: 12upx;
 				font-size: 30upx;
 				overflow: hidden;
-				text-overflow: ellipsis;
+				white-space: nowrap;
+				// text-overflow: ellipsis;
 				width: 332upx;
 			}
 

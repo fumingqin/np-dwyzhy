@@ -1,32 +1,12 @@
 <script>
-	import {
-		mapMutations
-	} from 'vuex';
+	// import {
+	// 	mapMutations
+	// } from 'vuex';
 	export default {
-		methods: {
-			...mapMutations(['login'])
-		},
+		// methods: {
+		// 	...mapMutations(['login'])
+		// },
 		onLaunch: function() {
-			// 获取登录状态
-			let userInfo = uni.getStorageSync('userInfo') || '';
-			if(userInfo.unid){
-				//更新登陆状态
-				uni.getStorage({
-					key: 'userInfo',
-					success: (res) => {
-						if(res.data.nickname==""||res.data.nickname==null){
-							// #ifndef  H5
-							res.data.nickname="用户"+res.data.username;
-							// #endif
-														
-							// #ifdef  H5
-							res.data.nickname=res.data.username;
-							// #endif
-						}
-						this.login(res.data);
-					}
-				});
-			}
 			
 			// #ifdef APP-PLUS
 			// 获取客户端的CID

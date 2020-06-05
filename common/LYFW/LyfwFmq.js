@@ -106,47 +106,9 @@ const reply = [{
 
 
 
-
-
-
-
-//接口域名
-const Url = 'https://zntc.145u.net:9099'; //https请求
-// const Url = 'http://zntc.145u.net'; //http请求
-
-//引入模板
-	// url:$lyfw.Interface.spt_tl_six.value,
-	// method:$lyfw.Interface.spt_tl_six.method,
-	// import $lyfw from '../../../common/LYFW/LyfwFmq.js' //引用路径
-
-//接口对象
-const Interface = {
-	//--------------------------------自由行-------------------------------
-	zyx_GetFreeTourByRegionWeixin:{
-		value: Url + '/api/ly/GetFreeTourByRegionWeixin',
-		name:'自由行-列表',
-		method:'POST',
-		pages:["pages_LYFW/pages/LYFW/independentTravel/it_list"]
-	},
-	
-	zyx_GetFreeTourByRegionWeixinTitle:{
-		value: Url + '/api/ly/GetFreeTourByRegionWeixinTitle',
-		name:'自由行-搜索',
-		method:'POST',
-		pages:["pages_LYFW/pages/LYFW/independentTravel/it_list"]
-	},
-	
-	zyx_GetCityInfo:{
-		value: Url + '/api/ly/GetCityInfo',
-		name:'自由行-地区列表',
-		method:'POST',
-		pages:["pages_LYFW/pages/LYFW/independentTravel/it_list"]
-	}
-}
-
 // 接口声明区
 export default {
-	Interface,
 	tweets,
-	reply
+	reply,
+	notice
 }

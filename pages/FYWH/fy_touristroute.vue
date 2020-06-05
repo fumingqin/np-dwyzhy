@@ -1,30 +1,29 @@
 <template>
 	<view class="Ly_background">
-			<!-- 顶部轮播图（可点击进入相册并放大） -->
-			<swiper class="swi" circular autoplay >
-				<swiper-item class="swi-item" v-for="(item,index) in piclist" :key="index">
-				<image :src="item" @click="goImgList" />
-				<view class="view">{{imgnumber}}张图片</view>
-				</swiper-item>
-			</swiper>
+		<view style="position: relative;">
+			<image class="swiImage" :src="piclist" @click="goImgList" mode="aspectFill" />
+			<view class="view">{{imgnumber}}张图片</view>
+		</view>
+			
+			
 			<view>
 				<!-- 标题、发布时间、点击量、分享 -->
 				<view class="clicks">
-				<text class="title">{{tweets.title}}</text>
-				<text class="time">{{tweets.date}}&nbsp;&nbsp;{{tweets.clicks}}万次游览</text>
+				<text class="title">{{tweets.fy_detailsTitle}}</text>
+				<text class="time">{{tweets.fy_detailsDate}}&nbsp;&nbsp;{{tweets.fy_detailsClicks}}万次游览</text>
 				</view>
 			</view>
 			<!-- 文章内容 -->
 			<view class="Zj_background">
 				<view class="tweetsTitle">介绍</view>
 				<view class="tweetscontent" >
-					<rich-text :nodes="tweets.titlecontent"></rich-text>
+					<rich-text :nodes="tweets.fy_detailsContent"></rich-text>
 				</view>
 			</view>
 			
 			<!-- 回复区 -->
 			<!-- 模块命名：Hf -->
-			<view>
+			<!-- <view>
 				<view class="tweetsTitle">回复</view> 
 				<view class="Hf_box" style="margin: 72upx 0;" >
 					<image class="Hf_image" :src="userInfo.portrait || '/static/FYWH/missing-face.png'" mode="aspectFill" ></image>
@@ -47,7 +46,7 @@
 					<view class="Hf_viewreply" @click="navTo('/pages/FYWH/fy_toreply')">
 					<text> 查看{{replyContent.length}}条回复 ></text>
 				</view>
-			</view>
+			</view> -->
 	</view>
 </template>
 <script>
@@ -68,7 +67,7 @@
 				}, //评论内容
 				
 				
-				piclist :[],    //相册图片数组
+				piclist :'',    //相册图片数组
 				imgnumber : '', //图片张数
 				tweets : {},    //用户内容
 				scenicSpot : [], //景点内容
@@ -77,11 +76,10 @@
 			}
 		},
 		onLoad:function(options){
-			// let id = options.id;
 			// if(id){
 			// 	this.$api.msg(`点击了${id}`);
 			// }
-			this.tweetsInit();
+			this.tweetsInit(options.fy_Id);
 			
 		},
 		onNavigationBarButtonTap : function() {
@@ -110,7 +108,7 @@
 
 		methods: {
 			//读取静态数据json.js 
-			async tweetsInit(){
+			tweetsInit:function(e){
 				uni.setStorage({
 					key:'userInfo',
 					success: (res) => {
@@ -120,13 +118,40 @@
 					}
 				})
 				
-				let ts = await this.$api.lyfwfmq('tweets');
-				this.tweets = ts;
-				this.piclist = ts.image;
-				this.imgnumber = ts.imageNumber;
+				uni.request({
+					url:'http://218.67.107.93:9210/api/app/getFyCultureDetail?fy_Id='+e,
+					method:'POST',
+					success: (res) => {
+						console.log(res)
+						if (res.data.msg == '获取非遗文化信息成功！') {
+							this.tweets = res.data.data;
+							this.piclist = res.data.data.fy_detailsImage;
+							this.imgnumber = res.data.data.imageNumber;
+							uni.hideLoading()
+							uni.stopPullDownRefresh()
+						}else{
+							uni.hideLoading()
+							uni.stopPullDownRefresh()
+							uni.showToast({
+								title: '网络异常，请检查网络后尝试',
+								icon: 'none'
+							})
+						}
+					},
+					fail: function() {
+						uni.hideLoading()
+						uni.stopPullDownRefresh()
+						uni.showToast({
+							title: '网络异常，请检查网络后尝试',
+							icon: 'none'
+						})
 				
-				let replycontent = await this.$api.lyfwfmq('reply');
-				this.replyContent = replycontent;
+					}
+				})
+				
+				
+				// let replycontent = await this.$api.lyfwfmq('reply');
+				// this.replyContent = replycontent;
 				
 				
 			},
@@ -228,18 +253,9 @@
 		height: 100%;
 		background: #fff;
 		//顶部轮播区样式
-		.swi {
+		.swiImage {
 			width: 100%;
 			height: 440upx;
-			.swi-item {
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
-			}
-			image {
-				width: 100%;
-				height: 100%;
-			}
 		}
 		//相册下标
 		.view {

@@ -64,7 +64,8 @@
 		onLoad(options) {
 			this.startLonLat=options.startLonLat;
 			this.endLonLat=options.endLonLat;
-			console.log(this.startLonLat,this.endLonLat);
+			console.log(this.startLonLat);
+			console.log(this.endLonLat);
 			this.initialPoint=options.initialPoint;
 			this.destination=options.destination;
 			this.city=options.city;

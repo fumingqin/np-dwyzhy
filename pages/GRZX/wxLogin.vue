@@ -15,10 +15,6 @@
 </template>
 
 <script>
-	import {
-		mapState,
-	    mapMutations  
-	} from 'vuex';
 	export default {
 	    data() {
 	        return {
@@ -31,7 +27,6 @@
 			
 	    },
 	    methods: {
-			...mapMutations(['login']),
 			returnClick(){		//返回个人中心
 				uni.switchTab({
 					url:'/pages/GRZX/user'
@@ -121,9 +116,10 @@
 								that.logining=true;
 								that.login(res.data.data)
 								setTimeout(function(){
-									uni.switchTab({
-										url:'/pages/Home/indexZhly'
-									})
+									// uni.switchTab({
+									// 	url:'/pages/Home/indexZhly'
+									// })
+									uni.navigateBack();
 								},500);	
 							}else{
 								uni.showToast({

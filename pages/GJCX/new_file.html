@@ -1,0 +1,644 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>公交查询</title>
+		<link href="../../static/HTML/framework7.ios.css" rel="stylesheet" />
+		<link href="../../static/HTML/framework7.ios.colors.css" rel="stylesheet" />
+		<link href="../../static/HTML/my-app.css" rel="stylesheet" />
+		<link href="../../static/HTML/Framework7StyleAlter.css" rel="stylesheet" />
+		<link href="../../static/HTML/toast.css" rel="stylesheet" />
+		<!-- 这个是调用微信js的引用 -->
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript"></script>
+		<!-- 这个是阿里图标的样式文件 -->
+		<link href="http://at.alicdn.com/t/font_282067_uf697z7ntrzfr.css" rel="stylesheet" />
+		<script src="http://g.alicdn.com/sj/lib/jquery/dist/jquery.min.js"></script>
+		<script src="../../common/HTML/framework7_alter.js"></script>
+		<script src="../../common/HTML/toast.js"></script>
+		<script src="../../common/HTML/global.js"></script>
+		<script src="../../common/HTML/public.js"></script>
+		<script src="../../common/HTML/PositionTool.js"></script>
+		<script src="../../common/HTML/jquery-form.js"></script>
+		<script src="../../common/HTML/avalon.modern.js"></script>
+		<script src="../../common/HTML/moment.min.js"></script>
+
+
+
+		<style>
+			#container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .infoWindowDes {
+            color: #0075c7;
+        }
+
+        .list-block {
+            margin: .5rem 0;
+        }
+
+        .content {
+            position: fixed;
+            top: 44px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .reLocation {
+            position: fixed;
+            bottom: 14rem;
+            left: .5rem;
+            z-index: 100000;
+            padding: .5rem;
+            border: 1px solid #666;
+            background: white;
+            color: #1296db !important;
+            font-size: 1.4rem;
+        }
+
+        .form-point {
+            position: fixed;
+            bottom: 0;
+            left: .5rem;
+            right: .5rem;
+            z-index: 100000;
+            padding: .5rem 0;
+            border: 1px solid #666;
+            background: white;
+        }
+
+            .form-point ul {
+                width: 70%;
+                float: left;
+            }
+
+        .list-block ul::before, .list-block ul::after {
+            height: 0px;
+        }
+
+        .list-block .item-media + .item-inner {
+            margin-left: 8px;
+        }
+			.panel {
+            background: white;
+            color: black;
+        }
+
+        .list-block .item-content, .list-block .item-inner {
+            min-height: 2rem;
+        }
+
+        .list-block .item-content {
+            padding-left: 0.5rem;
+        }
+
+        .list-block.media-list .item-media, .list-block.media-list .item-inner {
+            display: block;
+            padding-top: 0.3rem;
+            padding-bottom: 0.25rem;
+        }
+
+        .list-block input[type="text"] {
+            font-size: 1rem;
+        }
+			/*我标签页的样式*/
+        #headPortraitDiv {
+            height: 40%;
+            line-height: 40%;
+            position: relative;
+            background: #4c9ed9;
+            background-size: 100% 100%;
+            text-align: center;
+        }
+
+        #headPortrait {
+            height: 40%;
+            border-radius: 50%;
+            margin-top: 1.4rem;
+            /*display:block;
+        position:absolute;
+        top:50%; left:50%; */
+            background: white;
+            padding: .4rem;
+        }
+
+        .userInfoDiv {
+            width: 100%;
+            height: 30%;
+            line-height: 30%;
+            text-align: center;
+            font-size: .6rem;
+            position: absolute;
+            bottom: 25;
+        }
+
+            .userInfoDiv p {
+                font-size: .8rem;
+                color: White;
+            }
+			.navbar_left {
+            display: inline-block;
+            min-width: 70px;
+            height: 100%;
+            padding: .5rem .5rem .5rem 0;
+            box-sizing: border-box;
+            float: left;
+            text-align: center;
+        }
+
+        .navbar_center {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            padding: .5rem 0;
+            box-sizing: border-box;
+            float: left;
+        }
+
+        .searchSpan {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            border: 1px solid #aaa;
+            background: white;
+            /*height:1.6rem;
+            line-height:1.6rem;*/
+            text-align: left;
+            padding: 0 .5rem;
+            color: #aaa;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .navbar_right {
+            display: inline-block;
+            min-width: 70px;
+            height: 100%;
+            padding: .5rem 0 .5rem .5rem;
+            box-sizing: border-box;
+            float: right;
+            text-align: center;
+        }
+
+            .navbar_left a, .navbar_right a {
+                width: 100%;
+                display: inline-block;
+                text-align: center;
+            }
+    </style>
+	</head>
+	<body>
+		<div class="statusbar-overlay"></div>
+		<div class="panel-overlay"></div>
+		<div class="views">
+			<div class="view view-main">
+				<div class="navbar " ms-controller="header">
+					<div class="navbar-inner">
+						<div class="navbar_left" ms-controller="btnBack">
+							<a class="open-panel" ms-click="click">
+								返回
+							</a>
+						</div>
+						<div class="navbar_center"><span class="searchSpan" ms-click="click">搜索线路、站点、地点</span></div>
+					</div>
+				</div>
+				<div id="container" ms-controller="reLocation" ></div>
+				<i class="icon iconfont icon-youpinwangtubiao- reLocation" ms-controller="reLocation"  ms-click-="click"></i>
+
+			</div>
+		</div>
+		<iframe id="geoPage" width=0 height=0 frameborder=0 style="display:none;" scrolling="no" src="https://apis.map.qq.com/tools/geolocation?key=OB4BZ-D4W3U-B7VVO-4PJWW-6TKDJ-WPB77&referer=myapp"></iframe>
+		<script src="../../common/HTML/my-app.js"></script>
+
+		<script type="text/javascript" src='http://webapi.amap.com/maps?v=1.3&key=1a1ace9c54f2939d64029725f3fe5b77&plugin=AMap.ToolBar'></script>
+		<!-- UI组件库 1.0 -->
+		<script src="http://webapi.amap.com/ui/1.0/main.js"></script>
+
+		<scarpt src="http://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js" />
+
+		<script>
+			var isGetCurrentLocation = 'True';
+			isGetCurrentLocation = GetQueryString('isGetCurrentLocation');
+
+			var isAlarm = '';
+			isAlarm = GetQueryString('isAlarm');
+			var dataForWeixin = {
+				appId: '',
+				timestamp: '',
+				nonceStr: '',
+				signature: '',
+				ticket: '',
+				thisUrl: '',
+				jsApiList: ['getLocation', 'scanQRCode']
+			};
+
+			avalon.ready(function() {
+				var count = 1;
+				var header = avalon.define({
+					$id: "header",
+					click: function() {
+						location.href = "/WayTicket/Index";
+					}
+				});
+				
+				var btnBack = avalon.define({
+					$id: "btnBack",
+					visible: true,
+					click: function() {
+						location.href = "/WayTicket/Index";
+					}
+				});
+				var btnMenu = avalon.define({
+					$id: "btnMenu",
+					visible: true,
+					click: function() {
+						location.href = "/TaxiPassenger/MyJourney";
+					}
+				});
+
+				var reLocation = avalon.define({
+					$id: "reLocation",
+					type: true,
+					click: function() { //重新定位到当前位置
+						//gaodeMap.positionpicker.start([gaodeMap.currentLon, gaodeMap.currentLat]);
+						if (gaodeMap.positionpicker) {
+							gaodeMap.positionpicker.stop();
+							//gaodeMap.positionpicker.start([117.1776652336, 26.8976259381]);
+							gaodeMap.positionpicker.start([gaodeMap.currentLon, gaodeMap.currentLat]);
+						}
+
+					},
+					fache: function() {
+						location.href = "/TaxiPassenger/SelectSite";
+					}
+				});
+
+				var formPoint = avalon.define({
+					$id: "formPoint",
+					startAddr: '',
+					startPoint: '',
+					goAddr: '',
+					goPoint: '',
+					goClick: function() {
+						var searchObject = new Object();
+						searchObject.name = '';
+						searchObject.lat = '';
+						searchObject.lon = '';
+						searchObject.location = '';
+						XZY.writeData('endSearchObject', XZY.JSONtoString(searchObject));
+						XZY.writeData('searchType', 'end');
+						location.href = "/gaodemap/Search_Autocomplete1";
+					},
+					init: function() {
+						if (XZY.readData('startSearchObject')) {
+							var startSearchObject = XZY.ObjecttoJson(XZY.readData('startSearchObject'));
+							formPoint.startAddr = startSearchObject.name;
+							formPoint.startPoint = startSearchObject.location;
+						}
+
+						if (XZY.readData('endSearchObject')) {
+							var endSearchObject = XZY.ObjecttoJson(XZY.readData('endSearchObject'));
+							formPoint.goAddr = endSearchObject.name;
+							formPoint.goPoint = endSearchObject.location;
+						}
+					},
+					click: function() {
+						//alert('正在开发中!');
+						if (formPoint.startAddr && formPoint.goAddr) {
+							XZY.writeData('lineSearchBack', '/gaodemap/index?isGetCurrentLocation=False'); //需要重新定位当前位置
+							location.href = "/line/LineSearchByStartEndPointResult_Gaode";
+						} else {
+							alert('请输入起点、终点再操作!');
+						}
+
+					},
+					switchStartEnd: function() { //切换起点、终点
+						var targetSearchObject = '';
+						var startSearchObject = '';
+						var endSearchObject = '';
+						if (XZY.readData('startSearchObject')) { //起点不为空
+							startSearchObject = XZY.ObjecttoJson(XZY.readData('startSearchObject'));
+						}
+						if (XZY.readData('endSearchObject')) { //终点不为空
+							endSearchObject = XZY.ObjecttoJson(XZY.readData('endSearchObject'));
+						}
+
+						targetSearchObject = startSearchObject;
+						startSearchObject = endSearchObject;
+						endSearchObject = targetSearchObject;
+
+						XZY.writeData('startSearchObject', XZY.JSONtoString(startSearchObject));
+						XZY.writeData('endSearchObject', XZY.JSONtoString(endSearchObject));
+						formPoint.init();
+					}
+				});
+				var positionPicker = '';
+				var gaodeMap = avalon.define({
+					$id: "gaodeMap",
+					getLocation: function() {
+
+						/***************************************
+						由于Chrome、IOS10等已不再支持非安全域的浏览器定位请求，为保证定位成功率和精度，请尽快升级您的站点到HTTPS。
+						***************************************/
+						var map, geolocation;
+						//加载地图，调用浏览器定位服务
+						map = new AMap.Map('container', {
+							resizeEnable: true
+						});
+						map.plugin('AMap.Geolocation', function() {
+							geolocation = new AMap.Geolocation({
+								enableHighAccuracy: true, //是否使用高精度定位，默认:true
+								timeout: 10000, //超过10秒后停止定位，默认：无穷大
+								maximumAge: 0, //定位结果缓存0毫秒，默认：0
+								convert: true, //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
+								showButton: true, //显示定位按钮，默认：true
+								buttonPosition: 'LB', //定位按钮停靠位置，默认：'LB'，左下角
+								buttonOffset: new AMap.Pixel(10, 20), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+								showMarker: true, //定位成功后在定位到的位置显示点标记，默认：true
+								showCircle: true, //定位成功后用圆圈表示定位精度范围，默认：true
+								panToLocation: true, //定位成功后将定位到的位置作为地图中心点，默认：true
+								zoomToAccuracy: true //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+							});
+							map.addControl(geolocation);
+							geolocation.getCurrentPosition();
+							AMap.event.addListener(geolocation, 'complete', onComplete); //返回定位信息
+							AMap.event.addListener(geolocation, 'error', onError); //返回定位出错信息
+						});
+						//解析定位结果
+						function onComplete(data) {
+							var str = ['定位成功'];
+							str.push('经度：' + data.position.getLng());
+							str.push('纬度：' + data.position.getLat());
+							if (data.accuracy) {
+								str.push('精度：' + data.accuracy + ' 米');
+							} //如为IP精确定位结果则没有精度信息
+							str.push('是否经过偏移：' + (data.isConverted ? '是' : '否'));
+							//document.getElementById('tip').innerHTML = str.join('<br>');
+							alert(str.join('<br>'));
+						}
+						//解析定位错误信息
+						function onError(data) {
+							//document.getElementById('tip').innerHTML = '定位失败';
+							alert('定位失败');
+						}
+
+					},
+					currentLat: '26.8962700000',
+					currentLon: '117.1843700000',
+					geolocation: null,
+					markerIcon: icon = new AMap.Icon({
+						image: '../../Images/mylocation.png',
+						size: new AMap.Size(26, 26)
+					}),
+					// new qq.maps.MarkerImage("../../Images/mylocation.png", new qq.maps.Size(26, 26), new qq.maps.Point(0, 0), new qq.maps.Point(13, 13)),
+					marker: null,
+					startmarker: null,
+					endmarker: null,
+					directionsService: null,
+					route_lines: [],
+					getCurLocation: function() {
+						gaodeMap.geolocation.getLocation(gaodeMap.onComplete, gaodeMap.showErr, {
+							timeout: 9000,
+							failTipFlag: false
+						});
+					},
+					onComplete: function(position) {
+						//alert(position.addressComponent.city + position.addressComponent.district + position.formattedAddress);
+						gaodeMap.currentLon = position.position.lng;
+						gaodeMap.currentLat = position.position.lat;
+						XZY.writeData('localPosition', XZY.JSONtoString([gaodeMap.currentLat, gaodeMap.currentLon]));
+						gaodeMap.positionPicker();
+					},
+					onError: function(e) {
+						//alert('定位失败！');
+						window.addEventListener('message', function(event) {
+
+							// 接收位置信息
+
+							var loc = event.data;
+
+							if (loc) {
+								if (gaodeMap.positionpicker) {
+									gaodeMap.positionpicker.stop();
+									//gaodeMap.positionpicker.start([117.1776652336, 26.8976259381]);
+									gaodeMap.positionpicker.start([loc.lng, loc.lat]);
+								}
+							}
+
+							//alert('location' + loc.lat);
+
+						}, false);
+					},
+					init: function() {
+
+						gaodeMap.map = new AMap.Map('container', {
+							resizeEnable: true,
+							zoom: 18,
+							dragEnable: true,
+							jogEnable: true,
+							center: [117.1826100000, 26.8958100000] //118.59965 24.890006
+						});
+
+
+						XZY.writeData('localPosition', XZY.JSONtoString([gaodeMap.currentLat, gaodeMap.currentLon]));
+
+						gaodeMap.getLocation_Weixin();
+						//gaodeMap.getCurLocation();
+					},
+
+					positionPicker: function() {
+
+						AMapUI.loadUI(['misc/PositionPicker'], function(PositionPicker) {
+
+							positionPicker = new PositionPicker({
+								mode: 'dragMarker',
+								map: gaodeMap.map
+							});
+							gaodeMap.positionpicker = positionPicker;
+							positionPicker.on('success', function(positionResult) {
+								//alert(positionResult.position.lat + '' + positionResult.address + positionResult.nearestJunction + positionResult.nearestRoad + positionResult.nearestPOI);
+								var addr = positionResult.address.substring(positionResult.address.indexOf('省') + 1, positionResult.address
+									.length);
+								var localPosition = gcj02tobd09(positionResult.position.lng, positionResult.position.lat); //谷歌、高德 转 百度
+								//alert(positionResult.position.lat + ',' + positionResult.position.lng + ' ' + kll);
+
+								if (formPoint.startAddr) { //起点框有值
+									if (count != 1) { //不是第一次加载
+										if (addr != formPoint.startAddr) {
+											if (confirm('是否把“起点”切换到“' + addr + '”？')) { //拖动切换起点
+												formPoint.startAddr = addr;
+												formPoint.startPoint = positionResult.position;
+											}
+										}
+									}
+								} else {
+									formPoint.startAddr = addr;
+									formPoint.startPoint = positionResult.position;
+								}
+								var searchObject = new Object();
+								searchObject.name = formPoint.startAddr;
+								searchObject.lat = formPoint.startPoint;
+								searchObject.lon = formPoint.startPoint;
+								searchObject.location = formPoint.startPoint;
+								XZY.writeData('startSearchObject', XZY.JSONtoString(searchObject));
+								//if (count==1) {
+								//    XZY.writeData('localPosition', XZY.JSONtoString(localPosition));
+								//}
+								count++;
+
+								var currentCity = '';
+								if (positionResult.regeocode.addressComponent.district.indexOf('县') > 0) {
+									currentCity = positionResult.regeocode.addressComponent.district;
+								} else {
+									currentCity = positionResult.regeocode.addressComponent.city;
+								}
+								currentCity = currentCity.substring(0, currentCity.length - 1);
+								XZY.writeData('CurrentCity', currentCity);
+
+
+								if (isAlarm == 'True') {
+									var defaultCity = '';
+									var a = XZY.readData('city') || '';
+									if (a != '') {
+										a = XZY.ObjecttoJson(a);
+										defaultCity = a.CityName;
+									} else {
+										defaultCity = XZY.city;
+									}
+									if (defaultCity != currentCity) {
+
+
+									}
+									sessionStorage.setItem("haveVisit", 1);
+								}
+
+								//}
+
+							});
+							positionPicker.on('fail', function(positionResult) {
+								alert('失败');
+							});
+
+							positionPicker.start([gaodeMap.currentLon, gaodeMap.currentLat]);
+							gaodeMap.map.panBy(0, 1);
+
+							gaodeMap.map.addControl(new AMap.ToolBar({
+								liteStyle: true
+							}))
+
+						});
+					},
+					reLocation: function() {
+						positionPicker.stop();
+						positionPicker.start([117.1776652336, 26.8976259381]);
+					},
+					getLocation_Weixin: function() {
+						if (isGetCurrentLocation != 'False') { //需要重新定位当前位置
+
+							myApp.showPreloader('正在定位中...');
+							$.post("http://27.148.155.9:9055/GJCX/getStationsJson", {
+								"appid": "wx4f666a59748ab68f",
+								"secret": "788709805b9c0cbd3ccd3c7d0318c7bb"
+							}, function(result) {
+								dataForWeixin.appId = result.appid;
+								dataForWeixin.timestamp = result.timestamp;
+								dataForWeixin.nonceStr = result.nonce;
+								dataForWeixin.signature = result.signature;
+							})
+							wx.config({
+								debug: false,
+								appId: dataForWeixin.appId, // 必填，公众号的唯一标识
+								timestamp: dataForWeixin.timestamp, // 必填，生成签名的时间戳
+								nonceStr: dataForWeixin.nonceStr, // 必填，生成签名的随机串
+								signature: dataForWeixin.signature, // 必填，签名，见附录1
+								jsApiList: dataForWeixin.jsApiList // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+							});
+							wx.ready(function() {
+								wx.getLocation({
+
+									type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+
+									success: function(res) {
+
+										var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+
+										var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+
+										var speed = res.speed; // 速度，以米/每秒计
+
+										var accuracy = res.accuracy; // 位置精度
+
+										//alert(latitude + ',' + longitude);
+
+										gaodeMap.convertGpsToGaode(longitude + ',' + latitude);
+
+										myApp.hidePreloader();
+									}
+
+								});
+
+							});
+							wx.error(function(res) {
+								//alert(res.errMsg);
+							});
+
+							setTimeout(function() {
+								myApp.hidePreloader();
+							}, 3000);
+
+							sessionStorage.setItem("haveGetCurrentLocation", 1);
+						}
+
+
+
+					},
+					convertGpsToGaode: function(locations) {
+
+						$.ajax({
+							type: 'POST',
+							url: 'http://restapi.amap.com/v3/assistant/coordinate/convert',
+							timeout: globalData.loadTimeOut,
+							data: {
+								key: '716b5e707a1a750195df77ed45988834',
+								coordsys: 'gps',
+								locations: locations
+							},
+							beforeSend: function() {
+
+							},
+							success: function(result) {
+								if (result.status == 1) {
+									var locationArr = result.locations.split(',');
+									gaodeMap.currentLon = locationArr[0];
+									gaodeMap.currentLat = locationArr[1];
+									XZY.writeData('localPosition', XZY.JSONtoString([gaodeMap.currentLat, gaodeMap.currentLon]));
+									gaodeMap.positionPicker();
+								} else {
+									alert('GPS坐标转换成高德坐标出错!');
+								}
+							},
+							error: function(xhr, errorText, errorType) {
+								alert('错误  errorText:' + errorText + ', xhr:' + xhr);
+							}
+						});
+
+					}
+				});
+
+				avalon.scan();
+				gaodeMap.init();
+				formPoint.init();
+
+			});
+		</script>
+
+
+	</body>
+
+
+</html>

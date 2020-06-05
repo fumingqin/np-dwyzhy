@@ -192,7 +192,9 @@ const InterfaceAddress = [
 	//获取线路轨迹定位信息，根据线路编号，线路方向
 	'http://111.231.109.113:8002/api/bus/getBusLineTrajectoryByLineIdDirection',
 	//获取所有线路信息
-	'http://111.231.109.113:8002/api/bus/getBusLineInfo'
+	'http://111.231.109.113:8002/api/bus/getBusLineInfo',
+	//微信SDK数据接口
+	'http://27.148.155.9:9055/GJCX/getStations'
 ]
 const GaoDeWebKey = [
 	"2348ba1d476b5e44917533b65583f969", 

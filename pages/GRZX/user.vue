@@ -9,8 +9,8 @@
 			<!-- <image src="../../static/GRZX/scan.png" class="scanClass" @click="scanClick"></image>
 			 -->
 			<view class="userInfoClass" @click="checkLogin">
-				<image class="portraitClass" :src="userInfo.portrait || '/static/GRZX/missing-face.png'"></image>
-				<text class="usernameClass">{{userInfo.nickname || '游客'}}</text>
+				<image class="portraitClass" :src="portrait || '/static/GRZX/missing-face.png'"></image>
+				<text class="usernameClass">{{nickname || '游客'}}</text>
 				<!-- <image src="../../static/GRZX/edit.png" class="editClass"></image> -->
 			</view>
 			
@@ -70,9 +70,7 @@
 
 <script>
 	import listCell from '@/components/GRZX/mix-list-cell';
-	import {  
-	    mapState 
-	} from 'vuex'; 
+	import { pathToBase64, base64ToPath } from '../../components/GRZX/js_sdk/gsq-image-tools/image-tools/index.js';
 	export default{
 		components: {
 			listCell
@@ -80,25 +78,14 @@
 		data(){
 			return{
 				QQ:'2482549389',
+				portrait:'',
+				nickname:'',
 			}
-		},
-		computed: {
-			...mapState(['hasLogin','userInfo'])
 		},
 		onLoad(){
 		},
 		onShow(){
-			//this.loadData();
-			uni.request({
-				url:'http://218.67.107.93:9210/api/app/bindTel?phoneNumber=15280846565',
-				data:{
-					wxOpenid:'oMluguKtIHQ2Qcomm4By98am4J-0',
-				},
-				method:'POST',
-				success(res) {
-					console.log(res,"res")
-				}
-			})
+			this.loadData();
 		},
 		onNavigationBarButtonTap(e) {
 			const index = e.index;
@@ -133,23 +120,46 @@
 			
 		},
 		methods:{
-			// async loadData(){
-			// 	var that=this;
-			// 	uni.getStorage({
-			// 		key:'userInfo',
-			// 		success:function(res){
-			// 			if(that.hasLogin){
-			// 				that.userInfo.nickName=res.data.nickName;
-			// 				that.userInfo.avatarUrl=res.data.avatarUrl;	
-			// 			}else{
-			// 				that.userInfo.nickName='游客';
-			// 				that.userInfo.avatarUrl='../../static/GRZX/missing-face.png';	
-			// 			}
-						
-			// 			console.log(res,"00000002")
-			// 		}
-			// 	})
-			// },
+			loadData(){
+				var that=this;
+				uni.getStorage({
+					key:'userInfo',
+					success(res){
+						console.log(res,"222")
+						if(res.data.phoneNumber!=""&&res.data.phoneNumber!=null){
+							uni.request({
+								url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
+								method:'POST',
+								success(res1) {
+									uni.setStorageSync('userInfo',res1.data.data)
+									that.nickname=res1.data.data.nickname;
+									var base64=res1.data.data.portrait;
+									if(base64!=""&&base64!=null&&that.isBase64(base64)){
+										base64ToPath(base64)
+										  .then(path => {
+											that.portrait=path;
+										  })
+										  .catch(error => {
+											console.error(error)
+										  })	
+									}else{
+										that.portrait=base64;
+									}
+								}
+							})
+						}else{
+							uni.showToast({
+								title:'该用户未绑定手机号',
+								icon:'none'
+							})
+						}
+					},
+					fail() {
+						that.nickname='';
+						that.portrait='';
+					}
+				})
+			},
 			orderClick(){
 				uni.switchTab({
 					url:'/pages/order/OrderList'
@@ -174,53 +184,51 @@
 				})  
 			},
 			checkLogin(){
-				if(!this.hasLogin){
-					uni.showToast({
-						title : '请先登录',
-						icon : 'none',
-					})
-					setTimeout(function(){
-						uni.navigateTo({	
-							//loginType=1,泉运登录界面
-							//loginType=2,今点通登录界面
-							//loginType=3,南平综合出行界面
-							//loginType=4,武夷股份登录界面(大武夷智慧游)
-							url  : '/pages/GRZX/userLogin?loginType=4&&urlData=1'
-						}) 
-					},500);
-				}else{
-					var user=uni.getStorageSync('userInfo')
-					console.log(user,"183")
-					// #ifdef  H5
-					uni.getStorage({
-						key:'userInfo',
-						success(res) {
-							console.log(res,"188")
-							if(res.data.phoneNumber==null||res.data.phoneNumber==""){
-								uni.showToast({
-									title:'未绑定手机号，请绑定手机号',
-									icon:'none',
-								})
-							  setTimeout(function(){
-								uni.navigateTo({
-									url :'/pages/GRZX/wxLogin',
-								})
-							  },1000);
-							}else{
-								uni.navigateTo({
-									url :'/pages/GRZX/personal',
-								})  
-							}
+				uni.getStorage({
+					key:'userInfo',
+					fail() {
+						uni.showToast({
+							title : '请先登录',
+							icon : 'none',
+						})
+						setTimeout(function(){
+							uni.navigateTo({	
+								//loginType=1,泉运登录界面
+								//loginType=2,今点通登录界面
+								//loginType=3,南平综合出行界面
+								//loginType=4,武夷股份登录界面(大武夷智慧游)
+								url  : '/pages/GRZX/userLogin?loginType=4&&urlData=1'
+							}) 
+						},500);
+					},
+					success(res) {
+						console.log(res,"183")
+						// #ifdef  H5
+						if(res.data.phoneNumber==null||res.data.phoneNumber==""){
+							uni.showToast({
+								title:'未绑定手机号，请绑定手机号',
+								icon:'none',
+							})
+						  setTimeout(function(){
+							uni.navigateTo({
+								url :'/pages/GRZX/wxLogin',
+							})
+						  },1000);
+						}else{
+							uni.navigateTo({
+								url :'/pages/GRZX/personal',
+							})  
 						}
-					})	
-					// #endif
-					
-					// #ifndef  H5
-					uni.navigateTo({
-						url :'/pages/GRZX/personal',
-					})
-					// #endif
-				}
+						// #endif
+						
+						// #ifndef  H5
+						uni.navigateTo({
+							url :'/pages/GRZX/personal',
+						})
+						// #endif
+					}
+				})
+
 			},
 			collectionClick(){
 				uni.navigateTo({
@@ -241,7 +249,16 @@
 			},
 			QQClick(){
 				plus.runtime.openURL('mqq://im/chat?chat_type=wpa&uin=' + this.QQ + '&version=1&src_type=web ');
-			}
+			},
+			//------------判断是否为base64格式-----------
+			isBase64:function(str) {
+			    if (str ==='' || str.trim() ===''){ return false; }
+			    try {
+			        return btoa(atob(str)) == str;
+			    } catch (err) {
+			        return false;
+			    }
+			},
 		}
 		
 	}

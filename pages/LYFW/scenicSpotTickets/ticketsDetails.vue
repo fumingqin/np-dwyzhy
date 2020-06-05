@@ -15,20 +15,20 @@
 			</view>
 		</view>
 		<!-- 门票滑块 -->
-		<!-- 模块命名：Tk -->
+		<!-- 模块命名：Tk godetail(item) -->
 		<view :hidden="admissionTicketStatus == '该景区暂无门票产品信息！'">
-		<scroll-view class="Tk_scrollview" >
-			<view class="tweetsTitle2">门票</view>
-			<view class="Tk_item"  v-for="(item,index) in admissionTicket" :key="index" @click="godetail(item)">
-				<view class="Tk_bacg">
-					<text class="Tk_text1">{{item.admissionTicketName}}</text>
-					<text class="Tk_text3">¥{{item.ticketAdultPrice}}元</text>
-					<text class="Tk_text2">包含：{{item.ticketContain}}</text>
-					<text class="Tk_text2">{{item.ticketComment_s1}}&nbsp;|&nbsp;{{item.ticketComment_s2}}&nbsp;|&nbsp;{{item.ticketComment_s3}}</text>
-					<view class="Tk_butter">立即预订</view>
+			<scroll-view class="Tk_scrollview">
+				<view class="tweetsTitle2">门票</view>
+				<view class="Tk_item" v-for="(item,index) in admissionTicket" :key="index" @click="show(item)">
+					<view class="Tk_bacg">
+						<text class="Tk_text1">{{item.admissionTicketName}}</text>
+						<text class="Tk_text3">¥{{item.ticketAdultPrice}}元</text>
+						<text class="Tk_text2">包含：{{item.ticketContain}}</text>
+						<text class="Tk_text2">{{item.ticketComment_s1}}&nbsp;|&nbsp;{{item.ticketComment_s2}}&nbsp;|&nbsp;{{item.ticketComment_s3}}</text>
+						<view class="Tk_butter">立即预订</view>
+					</view>
 				</view>
-			</view>
-		</scroll-view>
+			</scroll-view>
 		</view>
 
 		<!-- 文章内容 -->
@@ -36,10 +36,59 @@
 			<view class="tweetsTitle">介绍</view>
 			<rich-text class="tweetscontent" :nodes="scSpotContent.ticketScenicContent"></rich-text>
 		</view>
+		<uni-popup ref="popup" type="bottom">
+			<view class="boxVlew">
+				<view class="titleView">
+					<text class="Nb_text1">预约时间</text>
+					<text class="Nb_text2 jdticon icon-fork " @click="close"></text>
+				</view>
+
+				<view class="headerClass">
+					<scroll-view class="scrollClass" scroll-x>
+						<view class="blockClass" :class="selectIndex == index ? 'viewPress': '' " v-for="(item,index) in dateArray" :key="index"
+						 @click="viewClick(index,item)" v-model="selectIndex">
+							<view class="textCLass">
+								<view class="weekClass">{{item.week}}</view>
+								<view class="dateClass">{{item.date}}</view>
+							</view>
+						</view>
+					</scroll-view>
+					<view style="width: 14%; align-items: center; justify-content: center;display: flex;" @click="onShowDatePicker">
+						<image src="../../../static/LYFW/scenicSpotTickets/ticketsList/calendar.png" class="calendarImage"></image>
+					</view>
+				</view>
+				
+				<view class="ape_title">选择预约时段</view>
+				<scroll-view style="height: 566upx;" scroll-y>
+						<label class="ape_contView" v-for="(item,index) in apeData" :key="index" :class="index===radioCurrent ? 'ape_contViewBackground' : ''">
+							<radio-group @change="radioChange(index)">
+								<radio class="ape_contRadio"  color='#ff6600' :checked="index===radioCurrent"></radio>
+								<text class="ape_contText" style="font-weight: bold;">{{item.date}}</text>
+								<text class="ape_contText">剩余名额：{{item.number}}名</text>
+								<text class="ape_contIcon jdticon icon-zuojiantou-up" :hidden="index!==radioCurrent"></text>
+							</radio-group>
+						</label>
+				</scroll-view>
+				
+				<view class="ape_contButter" @click="godetail">
+					确认预约
+				</view>
+			</view>
+		</uni-popup>
+		<uni-calendar ref="calendar" :insert="false" :date="date" :lunar="true" @confirm="onSelected"></uni-calendar>
+
 	</view>
 </template>
 <script>
+	import uniCalendar from '@/components/LYFW/scenicSpotTickets/uni-calendar/uni-calendar.vue'
+	import uniPopup from "@/components/LYFW/scenicSpotTickets/uni-popup/uni-popup.vue"
 	export default {
+		components: {
+			//加载多方弹框组件
+			uniPopup,
+			//加载日期组件
+			uniCalendar,
+		},
 		data() {
 			return {
 				piclist: [{
@@ -59,16 +108,50 @@
 					ticketComment_s2: '',
 					ticketComment_s3: '',
 					ticketAdultPrice: 240,
-					ticketChildPrice: '', 
+					ticketChildPrice: '',
 					ticketAdultPrice: '',
-					companyId : '',
-					executeScheduleId : '',
+					companyId: '',
+					executeScheduleId: '',
 				}], //门票内容
-				admissionTicketStatus:'',//判断是否展示
+				admissionTicketStatus: '', //判断是否展示
+
+				//-----------------时间选择器参数开始-------------------
+				selectIndex: '', //选中的下标
+				dateArray: [], //时间轴的数量的数组
+				date: '', //时间轴上选中的日期
+				currentTime: '', //当前时间
+				//-----------------时间选择器参数结束-------------------
+				ape_status:1,//预约开关控制参数
+				radioCurrent: 0, //时段radio选择参数
+				apeData: [{
+					date: '10:00-11:00',
+					number: '1851',
+				}, {
+					date: '11:00-12:00',
+					number: '1238',
+				}, {
+					date: '12:00-13:00',
+					number: '1762',
+				}, {
+					date: '13:00-14:00',
+					number: '2699',
+				}, {
+					date: '14:00-15:00',
+					number: '1568',
+				}, {
+					date: '15:00-16:00',
+					number: '1532',
+				}, {
+					date: '16:00-17:00',
+					number: '1155',
+				}]
+
+
 			}
 		},
 		onLoad(options) {
 			this.lyfwData(JSON.parse(options.ticketId));
+
 		},
 		onNavigationBarButtonTap: function() {
 			this.share();
@@ -116,7 +199,7 @@
 						this.scSpotContent = res.data.data;
 					}
 				})
-				
+
 				// 请求景区门票
 				uni.request({
 					url: 'http://218.67.107.93:9210/api/app/getOneScenicspotTicket?ticketId=' + e,
@@ -137,16 +220,36 @@
 					url: '/pages/LYFW/currency/imglist'
 				})
 			},
-			//路由整合
-			godetail: function(e) {
+
+			//打开弹框，判断预约功能是否开启，并执行对应操作
+			show: function(e) {
 				uni.setStorage({
-					key:'ticketInformation',
-					data:e,
-					success() {
-						uni.navigateTo({
-							url: '/pages/LYFW/scenicSpotTickets/orderAdd'
-						})
+					key: 'ticketInformation',
+					data: e,
+					success:()=>{
+						if(this.ape_status==0){
+							uni.navigateTo({
+								url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
+							})
+						}else if(this.ape_status==1){
+							this.getDate();
+							this.$refs.popup.open()
+						}
 					}
+				})
+			},
+			//关闭弹框
+			close: function() {
+				this.$refs.popup.close()
+			},
+
+
+			//预约时段点击跳转
+			godetail: function() {
+				// console.log(this.dateArray[this.selectIndex])
+				// console.log(this.apeData[this.radioCurrent].date)
+				uni.navigateTo({
+					url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date='+this.dateArray[this.selectIndex].longDate +'&ape_week=' +this.dateArray[this.selectIndex].week +'&ape_time=' +this.apeData[this.radioCurrent].date
 				})
 				
 			},
@@ -182,6 +285,180 @@
 					url
 				})
 			},
+
+			//--------------------------------时间选择器代码开始（整体直接复制，遇到“必改”2个字根据自身代码实际情况进行微调----------------
+			//-------------------------点击时间选择器发生事件-------------------------------------
+			viewClick: function(e, item) {
+				this.selectIndex = e;
+				this.date = item.longDate;
+				console.log(item)
+				this.getDeparture();
+			},
+
+			//点击顶部时间，请求该时间的班次列表
+			getDeparture: function() {
+				this.currentTime = this.date; //必改，currentTime为你要请求的时间
+				console.log(typeof(this.currentTime))
+				console.log(typeof(this.date))
+				// console.log(this.setOutDate)
+				// this.GetSchedule(); //必改，GetSchedule为请求班次的方法
+			},
+			//-------------------------------显示日期-------------------------------
+			onShowDatePicker() { //显示
+				this.$refs.calendar.open();
+			},
+
+			//-------------------------------选择日期-------------------------------
+			onSelected: function(e) {
+				this.date = e.fulldate;
+				this.currentTime = e.fulldate; //必改，currentTime为你要请求的时间
+				// this.GetSchedule();  //必改，GetSchedule为请求班次的方法
+				var IsExist = false;
+				for (var i = 0; i < this.dateArray.length; i++) {
+					if ((new Date(this.dateArray[i].longDate)).getTime() == (new Date(this.date)).getTime()) {
+						IsExist = true;
+						this.selectIndex = i;
+					}
+				}
+				//判断时间轴上是否存在改日期，不存在则重新绘制
+				if (!IsExist) {
+					this.dateArray = [];
+					var dateToday = new Date(); //获取今天日期
+					var date = new Date(this.date); //选中的日期
+					this.selectIndex = 0;
+					for (var i = 0; i < 8; i++) {
+						var mydate = new Date(date.getTime() + 24 * i * 60 * 60 * 1000); //日期一天加一次
+						var nowdate = this.getTime(3, mydate); //获取该日期的缩写  月/日
+						var week = this.getTime(2, mydate); //获取该日期为周几
+						var longdate = this.getTime(0, mydate); //获取 年/月/日
+						if (this.getTime(0, mydate) == this.getTime(0, dateToday)) {
+							week = '今天';
+						}
+						this.dateArray.push({
+							week: week,
+							date: nowdate,
+							longDate: longdate,
+						});
+					}
+				}
+			},
+			//-------------------------------获取当前时间-------------------------------
+			getDate: function() {
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+				// if (type === 'start') {
+				// 	year = year - 60;
+				// } else if (type === 'end') {
+				// 	year = year + 2;
+				// }
+				month = month > 9 ? month : '0' + month;;
+				day = day > 9 ? day : '0' + day;
+				this.currentTime = `${year}/${month}/${day}`;
+				console.log(this.currentTime)
+				this.loadDate(this.currentTime); //初始化时间轴
+			},
+
+			//-------------------------------初始化时间轴-------------------------------
+			loadDate: function(param) {
+				var that = this;
+				var date = '';
+
+
+				//将时间的-转换成/
+				// var subStr = new RegExp('-', 'ig');
+				// var result = param.replace(subStr, "/");
+				date = new Date(param);
+				// console.log(date)
+
+				this.selectIndex = 0;
+				for (var i = 0; i < 7; i++) {
+					var mydate = new Date(date.getTime() + 24 * i * 60 * 60 * 1000);
+					var nowdate = this.getTime(3, mydate);
+					var week = this.getTime(2, mydate);
+					var longdate = this.getTime(0, mydate);
+					if (mydate.getTime() == date.getTime()) {
+						week = '今天';
+					}
+					this.dateArray.push({
+						week: week,
+						date: nowdate,
+						longDate: longdate,
+					});
+				}
+			},
+			//-------------------------------点击班次进行缓存，并打开页面  结束-------------------------------
+			//日期时间转换函数   type 0 年月日 ，1 时分秒 ， 2 星期 ，3 月/日  4几月几日
+			getTime: function(type, date1) {
+				let date = new Date(date1.getTime()),
+					currentDate,
+					currentTime,
+					sortDate,
+					monthAndDay,
+					seperator = "-", // 如果想要其他格式 只需 修改这里 
+					year = date.getFullYear(),
+					month = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth() + 1),
+					weex = date.getDay(),
+					day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate(),
+					hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours(),
+					minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes(),
+					second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				// month >= 1 && month <= 9 ? (month = "0" + month) : "";
+				// day >= 0 && day <= 9 ? (day = "0" + day) : "";
+				//当前 日期
+				currentDate = year + seperator + month + seperator + day;
+				//当前 时间
+				currentTime = hour + ":" + minute + ":" + second;
+				sortDate = month + "-" + day;
+				monthAndDay = month + "月" + day + "日";
+				// 输出格式 为 2018-8-27 14:45:33
+				// console.log(currentDate +" "+ currentTime);
+				if (type == 0) {
+					// console.log('-1',currentDate)
+					return currentDate
+				} else if (type == 1) {
+					// console.log('0',currentTime)
+					return currentTime;
+				} else if (type == 2) {
+					if (weex == 1) {
+						return '周一'
+					}
+					if (weex == 2) {
+						return '周二'
+					}
+					if (weex == 3) {
+						return '周三'
+					}
+					if (weex == 4) {
+						return '周四'
+					}
+					if (weex == 5) {
+						return '周五'
+					}
+					if (weex == 6) {
+						return '周六'
+					}
+					if (weex == 0) {
+						return '周日'
+					}
+				} else if (type == 3) {
+					// console.log('1',sortDate)
+					return sortDate;
+
+				} else if (type == 4) {
+					// console.log('2',monthAndDay)
+					return monthAndDay;
+				} else {
+					// console.log('3',currentDate + " " + currentTime)
+					return currentDate + " " + currentTime;
+				}
+			},
+			//--------------------------------时间选择器代码结束-----------------------------------------------------
+
+			radioChange(e) {
+				this.radioCurrent = e;
+			}
 
 		}
 	}
@@ -337,11 +614,164 @@
 			display: flex;
 			position: relative;
 			letter-spacing: 4upx;
-			line-height: 48upx; 
+			line-height: 48upx;
 			color: #333333;
 			padding: 32upx 32upx;
 			padding-top: 8upx;
 			font-size: 33upx;
 		}
 	}
+
+	//须知弹框
+	.boxVlew {
+		width: 90%;
+		height: 928upx;
+		padding: 16upx 40upx;
+		padding-bottom: 92upx;
+		background: #FFFFFF;
+
+		.titleView {
+			margin: 24upx 0;
+
+			//弹框标题
+			.Nb_text1 {
+				position: relative;
+				font-size: 38upx;
+				font-weight: bold;
+				top: 8upx;
+				margin-bottom: 16upx;
+			}
+
+			//弹框关闭按钮
+			.Nb_text2 {
+				margin-top: 8upx;
+				float: right;
+				color: #333;
+				font-size: 32upx;
+			}
+		}
+	}
+
+	//---------------------------------------时间轴样式开始-----------------------------------------------------
+	.headerClass {
+		width: 100%;
+		background: #FFFFFF;
+		// height: 780upx;
+		//padding-left: 10upx;
+		margin-bottom: 10upx;
+		display: flex;
+		margin-top: 40upx;
+	}
+
+	.scrollClass {
+		height: 102upx;
+		width: 86%;
+		white-space: nowrap; //外层写这俩
+		flex-wrap: nowrap;
+		border-right: 1rpx #ddd solid;
+	}
+
+	.blockClass {
+		margin: 12upx 14upx;
+		//background: #FFFFFF;
+		width: 87upx;
+		height: 84upx;
+		border-radius: 8upx;
+		display: inline-block; //里层写这个
+	}
+
+	.textCLass {
+		margin: 9upx 10upx;
+	}
+
+	.weekClass {
+		//display: block;
+		font-size: 26upx;
+		font-family: MicrosoftYaHei;
+		font-weight: 400;
+		color: #333333;
+		text-align: center;
+	}
+
+	.dateClass {
+		//display: block;
+		font-size: 24upx;
+		font-family: MicrosoftYaHei;
+		font-weight: 400;
+		color: #333333;
+		text-align: center;
+	}
+
+	.calendarImage {
+		width: 35upx;
+		height: 37upx;
+	}
+
+	.viewPress {
+		background: #1EA2FF;
+
+		.weekClass {
+			color: #FFFFFF;
+		}
+
+		.dateClass {
+			color: #FFFFFF;
+		}
+	}
+
+	//---------------------------------------时间轴样式结束-----------------------------------------------------
+
+
+	//---------------------------------------预约时段样式开始-----------------------------------------------------
+	.ape_title {
+		margin: 16upx 0;
+		margin-top: 32upx;
+		font-size: 30upx;
+	}
+	
+	
+	.ape_contView {
+		display: flex;
+		padding: 32upx 0 32upx 16upx;
+		border-radius: 12upx;
+		margin: 24upx 0;
+		background: #eee;
+
+		&.ape_contViewBackground {
+			background: #49abf1;
+			color: #fff;
+		}
+
+		.ape_contRadio {
+			margin: 0 0 0 16upx;
+			transform: scale(0.8);
+			color: #007AFF;
+		}
+
+		.ape_contText {
+			margin: 0 16upx;
+			padding-top: 6upx;
+			font-size: 28upx;
+		}
+
+		.ape_contIcon {
+			padding-top: 12upx;
+			font-size: 28upx;
+			margin-left: 24upx;
+			color: #fff;
+		}
+	}
+	
+	.ape_contButter{
+		height: 96upx; 
+		font-size: 30upx; 
+		letter-spacing: 2upx; 
+		margin: 24upx 0; 
+		background:#ff6600; 
+		color: #fff; 
+		border-radius: 48upx;
+		text-align: center;
+		line-height: 96upx;
+	}
+	//---------------------------------------预约时段样式结束-----------------------------------------------------
 </style>
