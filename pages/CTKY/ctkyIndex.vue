@@ -42,8 +42,17 @@
 					<label class="clearHistory" @click="clickHistory">清除历史</label>
 				</view> -->
 			</view>
-			<view class="historyView">
+			<!-- <view class="historyView">
 				<label class="historyTitle">历史记录</label>
+				<view class="historyListView">
+					<view class="historyText" @tap="historyItemTap(index)" v-for="(i,index) in historyLines" :key=index v-if="index<10">{{i}}</view>
+				</view>
+			</view> -->
+			<view class="historyView">
+				<view style="justify-content: space-between; align-items: center;display: flex;">
+					<label class="historyTitle">历史记录</label>
+					<label class="clearHistory" @click="clickHistory">清除历史</label>
+				</view>
 				<view class="historyListView">
 					<view class="historyText" @tap="historyItemTap(index)" v-for="(i,index) in historyLines" :key=index v-if="index<10">{{i}}</view>
 				</view>
@@ -90,6 +99,11 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				key:'historyLines',
 				success:function(data){
 					that.historyLines = data.data;
+					if(data.data){
+						var station = data.data[0].split('-');
+						that.departure = station[0];
+						that.destination = station[1];
+					}
 				}
 			})
 			//获取当前日期
@@ -194,7 +208,16 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 						icon: 'none'
 					})
 				}else {
-					this.historyLines.unshift(this.departure + "-" + this.destination);
+					// this.historyLines.unshift(this.departure + "-" + this.destination);
+					var station = this.departure + "-" + this.destination;
+					if(this.historyLines) {
+						for(let i = 0; i <= this.historyLines.length;i++){
+							if(station == this.historyLines[i]) {
+								this.historyLines.splice(i,1);
+							}
+						}
+						this.historyLines.unshift(this.departure + "-" + this.destination);
+					}
 					uni.setStorage({
 						key:'historyLines',
 						data:this.historyLines,
@@ -556,6 +579,9 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 	}
 
 	.clearHistory {
+		font-size: 25rpx;
+		color: #2C2D2D;
+		margin-right: 20rpx;
 		float: right;
 	}
 
