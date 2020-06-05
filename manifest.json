@@ -145,6 +145,11 @@
                     "key" : "JLUBZ-5JYH3-R2636-3EZKS-D3YME-TQBEU"
                 }
             }
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
         }
     }
 }
