@@ -301,9 +301,9 @@
 			},
 			//--------------------------发起下单请求-----------------------
 			getOrder: function() {
-				// console.log('用户信息',that.userInfo);
-				// console.log('订单信息',that.orderInfo);
-				// console.log('idNameType',that.idNameType);
+				// console.log('用户信息',this.userInfo);
+				// console.log('订单信息',this.orderInfo);
+				// console.log('idNameType',this.idNameType);
 				
 				var companyCode = '南平旅游APP';
 				// #ifdef H5
@@ -312,9 +312,34 @@
 				// #ifdef APP-PLUS
 				companyCode = '南平旅游APP';
 				// #endif
-				
 				var that = this;
 				uni.showLoading();
+				var data= {
+					companyCode: companyCode,
+					clientID: that.userInfo.unid, //用户ID
+					clientName: that.userInfo.username, //用户名
+					phoneNumber: that.userInfo.phoneNumber, //手机号码
+				
+					scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
+					executeScheduleID: that.orderInfo.executeScheduleID,
+					startSiteID: that.orderInfo.startSiteID, //上车点ID
+					endSiteID: that.orderInfo.endSiteID, //下车点ID
+					startSiteName: that.orderInfo.startStaion, //起点站
+					endSiteName: that.orderInfo.endStation, //终点站
+					priceID: that.orderInfo.priceID, //价格ID
+					setOutTime: that.orderInfo.setTime, //订单时间
+					insuredPrice: that.orderInfo.insurePrice, //保险价格
+					carType: that.orderInfo.shuttleType, //班车类型
+				
+					fullTicket: that.adultNum, //全票人数
+					halfTicket: that.childrenNum, //半票人数
+					carryChild: that.childrenNum, //携童人数
+					idNameType: that.idNameType,
+					insured: that.isInsurance, //是否选择了保险
+					openId: that.ctkyOpenID,
+					totalPrice: that.totalPrice, //总价格
+				};
+				console.log(data)
 				uni.request({
 					url: 'http://218.67.107.93:9210/api/app/addOrder',
 					method: 'POST',
@@ -369,6 +394,7 @@
 								icon: 'none'
 							})
 						} else {
+							uni.hideLoading();
 							console.log('出错了');
 						}
 					},
@@ -497,29 +523,22 @@
 				}, function(res) {
 					if (res.err_msg == "get_brand_wcpay_request:ok") {
 						//支付成功再进计时器查询状态
-						// location.href = "/Order/BaseCallback/" + flowID;
-						// alert("支付成功");
 						uni.showToast({
 							title: '支付成功',
 							icon: 'none'
 						})
-						uni.redirectTo({
-							url: '/pages/CTKY/paySuccess',
-						})
+						setTimeout(function(){
+							// that.getTicketPaymentInfo_ticketIssue(that.orderNum);
+						},4000)
 					} else if (res.err_msg == "get_brand_wcpay_request:cancel") {
-						// alert("您取消了支付，请重新支付");
 						uni.showToast({
 							title: '您取消了支付',
 							icon: 'none'
 						})
 					} else if (res.err_msg == "get_brand_wcpay_request:faile") {
-						// alert("支付失败，请重新支付");
 						uni.showToast({
 							title: '支付失败，请重新支付',
 							icon: 'none'
-						})
-						uni.redirectTo({
-							url: '/pages/CTKY/payFail'
 						})
 					} else {
 						// location.href = "/Coach/GetCoach";
@@ -543,15 +562,15 @@
 					},
 					success:function(res){
 						console.log(response)
-						if(response.errCode == 0) {//成功
+						if(res.errMsg == 'requestPayment:ok') {//成功
 							uni.showToast({
 								title: '支付成功',
 								icon: 'none'
 							})
-							uni.redirectTo({
-								url: '/pages/CTKY/paySuccess',
-							})
-						}else if(response.errCode == -1) {//错误
+							setTimeout(function(){
+								// that.getTicketPaymentInfo_ticketIssue(that.orderNum);
+							},4000)
+						}else if(res.errMsg == 'requestPayment:fail errors') {//错误
 							uni.showToast({
 								title: '支付失败，请重新支付',
 								icon: 'none'
@@ -559,7 +578,7 @@
 							uni.redirectTo({
 								url: '/pages/CTKY/payFail'
 							})
-						}else if(response.errCode == -2) {//用户取消
+						}else if(res.errMsg == 'requestPayment:fail canceled') {//用户取消
 							uni.showToast({
 								title: '您取消了支付',
 								icon: 'none'
@@ -577,7 +596,95 @@
 					}
 				})
 				// #endif
-
+				// #ifdef MP-WEIXIN
+				uni.hideLoading()
+				uni.requestPayment({
+					provider: 'wxpay',
+					timeStamp:that.paymentData.TimeStamp,
+					nonceStr:that.paymentData.NonceStr,
+					package:that.paymentData.Package,
+					signType:that.paymentData.SignType,
+					paySign:that.paymentData.PaySign,
+					success(res) {
+						console.log(res)
+						if (res.errMsg == "requestPayment:ok") {
+							uni.showToast({
+								title: '支付成功',
+								icon: 'none',
+							})
+							uni.showLoading({
+							    title: '加载中...'
+							});
+							setTimeout(function(){
+								that.getTicketPaymentInfo_ticketIssue(that.orderNum);
+							},4000)
+						}else if (res.errMsg == "requestPayment:fail cancel") {
+							setTimeout(function() {
+								that.showToast("您取消了支付，请重新支付")
+							}, 1000)
+						}else if (res.errMsg == "requestPayment:fail errors") {
+							setTimeout(function() {
+								that.showToast("支付失败，请重新支付")
+							}, 1000)
+						}
+					},
+					fail(res) {
+						console.log(res)
+						if (res.errMsg == "requestPayment:fail cancel") {
+							setTimeout(function() {
+								that.showToast("您取消了支付，请重新支付")
+							}, 1000)
+						}else if (res.errMsg == "requestPayment:fail errors") {
+							setTimeout(function() {
+								that.showToast("支付失败，请重新支付")
+							}, 1000)
+						}else {
+							that.showToast("支付出错")
+						}
+					}
+				});
+				// #endif
+			},
+			//--------------------------成功之后重新获取车票支付参数--------------------------
+			getTicketPaymentInfo_ticketIssue: function(orderNumber) {
+				var that = this;
+				var timer = null;
+				that.timer = timer;
+				uni.showLoading({
+					title: '检索订单是否支付...'
+				});
+				timer = setInterval(function() {
+					uni.request({
+						url: 'http://218.67.107.93:9210/api/app/getPayParam',
+						method: 'POST',
+						header: {
+							'content-type': 'application/x-www-form-urlencoded'
+						},
+						data: {
+							resultStr: res.data.data.resultStr,
+							id: res.data.data.id
+						},
+						success: (res) => {
+							console.log('支付参数返回数据', res);
+							if (res.data.data == '订票成功') {
+								uni.hideLoading();
+								clearInterval(timer);
+								uni.showToast({
+									title: '出票成功',
+									icon: 'none',
+								})
+								uni.redirectTo({
+									url: './CTKYPaySuccess'
+								})
+							}
+						},
+						fail(res) {
+							uni.hideLoading();
+							//回调失败，取消定时器
+							clearInterval(timer);
+						}
+					})
+				}, 3000)
 			},
 			//获取当前时间并格式化
 			getDate: function(res) {
