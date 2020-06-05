@@ -178,21 +178,23 @@ const realtimeDynamicback ={
 const InterfaceAddress = [
 
 	//获取线路信息，根据站点名称
-	'http://111.231.109.113:8002/api/bus/getBusLineInfoByStationName',
+	'http://27.148.155.9:8002/api/bus/getBusLineInfoByStationName',
 	//获取离某个经纬度最近的一个站点信息，根据经纬度信息
-	'http://111.231.109.113:8002/api/bus/getBusStationInfoByLonLat',
+	'http://27.148.155.9:8002/api/bus/getBusStationInfoByLonLat',
 	//获取线路站点信息，根据线路编号，线路方向
-	'http://111.231.109.113:8002/api/bus/getBusLineStationInfoByLineIdDirection',
+	'http://27.148.155.9:8002/api/bus/getBusLineStationInfoByLineIdDirection',
 	//获取车辆实时到站信息，根据线路编号，线路方向
-	'http://111.231.109.113:8002/api/bus/getBusArriveLeaveStationInfoByLineIdDirection',
+	'http://27.148.155.9:8002/api/bus/getBusArriveLeaveStationInfoByLineIdDirection',
 	//获取距离某站最近车辆信息 根据线路编号，方向，站点名称 
-	'http://111.231.109.113:8002/api/bus/getBusLineArriveLeaveStationInfoByLineIdDirectionStationName',
+	'http://27.148.155.9:8002/api/bus/getBusLineArriveLeaveStationInfoByLineIdDirectionStationName',
 	//根据起始点经纬度获取距离
-	'http://111.231.109.113:8002/api/zhcx/getPlanningLineByLonLat',
+	'http://27.148.155.9:8002/api/zhcx/getPlanningLineByLonLat',
 	//获取线路轨迹定位信息，根据线路编号，线路方向
-	'http://111.231.109.113:8002/api/bus/getBusLineTrajectoryByLineIdDirection',
+	'http://27.148.155.9:8002/api/bus/getBusLineTrajectoryByLineIdDirection',
 	//获取所有线路信息
-	'http://111.231.109.113:8002/api/bus/getBusLineInfo'
+	'http://27.148.155.9:8002/api/bus/getBusLineInfo',
+	//微信SDK数据接口
+	'http://27.148.155.9:9055/GJCX/getStations'
 ]
 const GaoDeWebKey = [
 	"2348ba1d476b5e44917533b65583f969", 

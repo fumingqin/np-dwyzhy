@@ -249,7 +249,7 @@
 					type:'wgs84',
 					geocode:true,
 					success: function(res) {
-						// console.log(res)
+						console.log(res);
 							uni.setStorage({
 								key: 'app_position',
 								data:res.address,

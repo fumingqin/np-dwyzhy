@@ -150,7 +150,6 @@
 				cateValue : '', //分类筛选值
 				
 				regionWeixin: '请选择', //微信地区数值
-				
 				entryParameters : '',//入口参数
 			}
 		},
@@ -165,17 +164,6 @@
 		},
 		
 		onLoad:function(options) {
-			// #ifdef H5
-			uni.showToast({
-				title:'公众号当前定位无法启用，已默认定位南平市',
-				icon:'none'
-			})
-			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
-			// #endif
-			this.cateId = options.tid;
-			this.loadCateList(options.fid, options.sid);
-			this.Getpostion();
-			
 			// #ifdef  H5
 			var that=this;
 			uni.getStorage({
@@ -185,11 +173,29 @@
 				}
 			})
 			//#endif
-			
 			//判断是由哪个入口进入，空是正式进入，有值是跳转进入（独立公众号）
-			   if(options.entryParameters){
+			if(options.entryParameters){
 			    this.entryParameters = options.entryParameters
-			   }
+			}
+			
+			// #ifdef H5
+			uni.showToast({
+				title:'公众号当前定位无法启用，已默认定位南平市',
+				icon:'none'
+			})
+			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
+			// #endif
+			uni.showLoading({
+				title:'加载中...',
+				icon:'loading'
+			})
+			this.cateId = options.tid;
+			this.loadCateList(options.fid, options.sid);
+			this.Getpostion();
+			
+			
+			
+			
 		},
 		
 		onPullDownRefresh:function(){
@@ -203,22 +209,31 @@
 		methods: {
 			//请求模拟接口数据
 			lyfwData:function() {
-				// console.log(this.regionWeixin)
+				console.log(this.regionWeixin)
 				// 六宫格
 				uni.request({
 					url:'http://218.67.107.93:9210/api/app/getSixScenicspotList?requestArea=' +this.regionWeixin,
 					method:'POST',
-					success:(res) => { 
+					success:(res) => {
 						// console.log(res)
 						if (res.data.msg == '获取景区信息成功！') {
 							this.sixPalaceList = res.data.data;
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
 							this.sixPalaceList = '';
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 							uni.showToast({
 								title: '该地区暂无景点信息',
 								icon: 'none'
 							})
 						}
+					},
+					fail: function(ee) {
+						// console.log(ee)
+						uni.stopPullDownRefresh();
+						uni.hideLoading()
 					}
 				})
 				
@@ -230,14 +245,23 @@
 						// console.log(res)
 						if (res.data.msg == '获取景区信息成功！') {
 							this.scenicList = res.data.data;
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 						} else if (res.data.msg == '查不到相关景区，请确认景区名！') {
 							this.scenicList = '';
+							uni.hideLoading()
+							uni.stopPullDownRefresh();
 							uni.showToast({
 								title: '该地区暂无景点信息',
 								icon: 'none'
 							})
 						}
 						
+					},
+					fail: function(ee) {
+						// console.log(ee)
+						uni.stopPullDownRefresh();
+						uni.hideLoading()
 					}
 				})
 				setTimeout(()=>{
@@ -253,32 +277,41 @@
 						success: (res) => {
 							// console.log(res)
 							this.regionWeixin = res.data;
-							this.lyfwData(); //请求接口数据
 						},
 						fail: (res) => {
+							// #ifdef APP-NVUE
 							uni.showToast({
 								title:'请选择地区',
 								icon:'none'
 							})
+							// #endif
 						},
+						complete: () => {
+							this.lyfwData(); //请求接口数据
+						}
 					}),
+					
 					uni.getStorage({
 						key: 'app_position',
 						success: (res) => {
 							// console.log(res)
 							if (res.data !== undefined) {
 								this.regionWeixin = res.data.city;
-								this.lyfwData(); //请求接口数据
 							}
 						},
 						fail: (res) => {
+							// #ifdef APP-NVUE
 							uni.showToast({
 								title:'请选择地区',
 								icon:'none'
 							})
+							// #endif
 						},
+						complete: () => {
+							this.lyfwData(); //请求接口数据
+						}
 					})
-				}, 500)
+				},500)
 			},
 			
 			//打开地区选择器
@@ -496,7 +529,7 @@
 			    let Appid = "wx4f666a59748ab68f";//appid
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://wxsp.npzhly.com/#/pages/LYFW/independentTravel/ticketsList";
+				let local = "http://wxsp.npzhly.com/#/pages/LYFW/scenicSpotTickets/ticketsList";
 				if (code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =

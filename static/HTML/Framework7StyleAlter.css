@@ -1,0 +1,58 @@
+﻿/*.header {
+        background-color: #288bce;
+        color: white;
+}*/
+.header a{
+        color: black;
+}
+
+.header_back{
+    width:30%;
+    text-align:left;
+        color: black;
+}
+
+.header_back .iconfont{
+    font-size:1.1rem;
+}
+
+.header_title{
+    width:40%;
+    text-align:center;
+    font-weight:500;
+}
+
+.header_btnMenu{
+    width:30%;
+}
+
+.header_btnMenu a{
+    text-align:right;
+    align-items:flex-end !important;
+    justify-content: flex-end !important;
+    padding-right:.5rem;
+}
+
+
+    .content{
+        position:fixed;
+        top:44px;
+        bottom:0;
+        left:0;
+        right:0;
+        overflow:auto;
+    }
+
+    
+body {
+    margin: 0;
+    font-family: tahoma, arial,"Hiragino Sans GB", "Microsoft Yahei", \5b8b\4f53, sans-serif;
+    font-size: 20px !important;
+    line-height: 23px;
+    color: #333;
+    background-color: #fff;
+}
+
+.list-block {
+    margin: 10px 0 20px;
+}

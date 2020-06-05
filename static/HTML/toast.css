@@ -1,0 +1,40 @@
+.toast-container{
+  position: fixed;
+  left: 30px;
+  top: 50%;
+  right: 30px;
+  z-index: 9999;
+  margin-top: -75px;
+ display: none;
+  text-align:center;
+  opacity: 0;
+  transition: opacity 0.8s;
+}
+
+.toast-container.show{
+  display: block;
+}
+
+.toast-container.fadein{
+  opacity: 1;
+}
+
+.toast-icon{
+  font-size:85px;
+  text-align:center;
+}
+
+.toast-msg{
+     background-color: black; 
+  border-radius: 15px;
+  color: #fff;
+  font-size: 20px;
+  line-height:50px;
+  font-weight: normal;
+  font-family: 'Helvetica-Neue', 'HelveticaNeue', arial, sans-serif;
+  padding:10px;
+  font-weight:normal;
+  max-width:100%;
+  word-wrap:break-word;
+  display:inline-block;
+}

@@ -201,15 +201,16 @@
 			this.getAllLine();
 			// this.Encryption();
 			this.getNearbysites();
-			// if(this.timer){
-			// 	clearInterval(this.timer);
-			// }
-			// else{
-			// 	this.timer =setInterval(()=>{
-			// 		this.getNearbysites();
-			// 		console.log('ok!!!!')
-			// 	},10000);
-			// }
+			if(this.timer1){
+				clearInterval(this.timer1);
+			}
+			else{
+				this.timer1 =setInterval(()=>{
+					console.log('jiekoiuok!!!!');
+					this.getNearbysites();
+					
+				},10000);
+			}
 		},
 		
 		methods: {

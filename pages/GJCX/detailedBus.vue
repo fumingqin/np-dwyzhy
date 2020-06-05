@@ -165,17 +165,17 @@
 			// that.busIndex();
 			this.lineDetaile();
 			this.getCarList();
-			// if(this.timer){
-			// 	clearInterval(this.timer);
-			// }
-			// else{
-			// 	this.timer =setInterval(()=>{
+			if(this.timer){
+				clearInterval(this.timer);
+			}
+			else{
+				this.timer =setInterval(()=>{
 					
-			// 		console.log('ok!!!!');
-			// 		this.getCarList();
-			// 		this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
-			// 	},5000);
-			// }
+					console.log('ok!!!!');
+					this.getCarList();
+					this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
+				},5000);
+			}
 
 		},
 		onUnload() {
@@ -294,18 +294,18 @@
 					var lat;
 					var lon;
 					var myLocation=res.longitude +','+res.latitude;
-					that.nearStastion=99999;
+					that.nearStastion=999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;
 					// console.log(myLocation);
 					// console.log(JSON.stringify(that.list1));
 					for(let i in that.list1){
 						s=that.getDistance(res.latitude,res.longitude,that.list1[i].lat,that.list1[i].lon);
-						 // console.log(s);
+						 console.log(that.nearStastion>s,that.nearStastion>s,s);
 						 if(that.nearStastion>s){
 							 
 							 that.nearStastion=s;
 							 that.inStation=that.list1[i].stationName;
 							 b=that.list1[i].stationIndex;
-							 // console.log(b);
+							 console.log(b);
 							 lat=that.list1[i].lat;
 							 lon=that.list1[i].lon;
 						 }
@@ -321,6 +321,9 @@
 					// console.log(b-that.list1.length);
 					
 					// }
+				},
+				fail:function(info){
+					console.log(info);
 				}
 			});
 				
@@ -328,7 +331,7 @@
 			
 			getCarDetaile:function(stationIndex,lat,lon){
 				var that=this;
-				// console.log(stationIndex,lat,lon);
+				console.log(stationIndex,lat,lon);
 				var s=0;
 				var b=999;
 				that.inStationIndex=stationIndex;
@@ -340,28 +343,6 @@
 				// console.log(stationIndex,lat,lon);
 				// console.log(JSON.stringify(that.carList));
 				if(that.carList.length>0){                                //判断是否有车
-				// for(let i in that.carList){                               //循环车辆
-				// console.log(stationIndex,that.carList[i].stationIndex,stationIndex>that.carList[i].stationIndex);
-				// 	if(stationIndex>that.carList[i].stationIndex){         //判断车是否在站点前
-				// 		s=stationIndex-that.carList[i].stationIndex;
-				// 		console.log(s,b);
-				// 		if(s<b){
-				// 			b=s;                                           //得出站点前最近车辆
-				// 			that.carSta=b;
-				// 		}
-				// 		if(b<=1){
-				// 			that.carSta='即将到站';
-				// 			break;
-				// 		}
-				// 	}
-				// 	else{
-				// 		// if(that.carSta)
-				// 		// that.carSta='等待发车';
-				// 		// break;
-				// 	}
-					
-				// }
-				
 				    for(let i in that.carList){
 						// console.log(stationIndex,that.carList[i].stationIndex,stationIndex>that.carList[i].stationIndex)
 						// if(stationIndex>that.carList[i].stationIndex){
@@ -390,11 +371,7 @@
 								break;
 								}
 							}
-						// }
-						// else{
-						// 	that.carSta='等待发车';
-						// 	break;
-						// }
+						
 					}
 				}
 				else{

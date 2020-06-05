@@ -7,7 +7,7 @@
 
 		<view class="cover-container">
 			<image class="okImage" mode="aspectFill" src="../../../static/LYFW/scenicSpotTickets/successfulPayment/ok.png"></image>
-			<text class="title">提交成功，审核中</text>
+			<text class="title">购票成功</text>
 			<text class="content">无选择操作，将在10秒后自动返回首页</text>
 			<view class="buttonView">
 				<view class="orderButton" @click="godetail(0)">查看订单</view>

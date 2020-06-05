@@ -138,6 +138,18 @@
         "usingComponents" : true
     },
     "h5" : {
-        "title" : "大武夷智慧游"
+        "title" : "大武夷智慧游",
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : "JLUBZ-5JYH3-R2636-3EZKS-D3YME-TQBEU"
+                }
+            }
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        }
     }
 }
