@@ -19,7 +19,7 @@
 		<view :hidden="admissionTicketStatus == '该景区暂无门票产品信息！'">
 			<scroll-view class="Tk_scrollview">
 				<view class="tweetsTitle2">门票</view>
-				<view class="Tk_item" v-for="(item,index) in admissionTicket" :key="index" @click="show(item)">
+				<view class="Tk_item" v-for="(item,index) in admissionTicket" :key="item" @click="show(item)">
 					<view class="Tk_bacg">
 						<text class="Tk_text1">{{item.admissionTicketName}}</text>
 						<text class="Tk_text3">¥{{item.ticketAdultPrice}}元</text>
@@ -57,19 +57,19 @@
 						<image src="../../../static/LYFW/scenicSpotTickets/ticketsList/calendar.png" class="calendarImage"></image>
 					</view>
 				</view>
-				
+
 				<view class="ape_title">选择预约时段</view>
 				<scroll-view style="height: 566upx;" scroll-y>
-						<label class="ape_contView" v-for="(item,index) in apeData" :key="index" :class="index===radioCurrent ? 'ape_contViewBackground' : ''">
-							<radio-group @change="radioChange(index)">
-								<radio class="ape_contRadio"  color='#ff6600' :checked="index===radioCurrent"></radio>
-								<text class="ape_contText" style="font-weight: bold;">{{item.date}}</text>
-								<text class="ape_contText">剩余名额：{{item.number}}名</text>
-								<text class="ape_contIcon jdticon icon-zuojiantou-up" :hidden="index!==radioCurrent"></text>
-							</radio-group>
-						</label>
+						<view class="ape_contView" v-for="(item,index) in apeData" :key="item.ape_time" :class="index===radioCurrent && item.ape_numberStatus=='空闲' ? 'ape_contViewBackground' : ''" @click="radioChange(index)">
+							<image  class="ape_contImage" src="../../../static/LYFW/scenicSpotTickets/ticketsList/xuanzhong.png" mode="aspectFill" :hidden="index===radioCurrent && item.ape_numberStatus=='空闲'"></image>
+							<image  class="ape_contImage" src="../../../static/LYFW/scenicSpotTickets/ticketsList/xuanzhong2.png" mode="aspectFill" v-if="index===radioCurrent && item.ape_numberStatus=='空闲'"></image>
+							<text class="ape_contText" style="font-weight: bold;">{{item.ape_time}}</text>
+							<text class="ape_contText">剩余名额：{{item.ape_number}}名</text>
+							<text class="ape_contText">{{item.ape_numberStatus}}</text>
+							<text class="ape_contIcon jdticon icon-zuojiantou-up" :hidden="index!==radioCurrent"></text>
+						</view>
 				</scroll-view>
-				
+
 				<view class="ape_contButter" @click="godetail">
 					确认预约
 				</view>
@@ -121,29 +121,36 @@
 				date: '', //时间轴上选中的日期
 				currentTime: '', //当前时间
 				//-----------------时间选择器参数结束-------------------
-				ape_status:1,//预约开关控制参数
-				radioCurrent: 0, //时段radio选择参数
+				ape_status: 1, //预约开关控制参数
+				radioCurrent: '', //时段radio选择参数
 				apeData: [{
-					date: '10:00-11:00',
-					number: '1851',
+					ape_time: '10:00-11:00',
+					ape_number: '0',
+					ape_numberStatus: '已满'
 				}, {
-					date: '11:00-12:00',
-					number: '1238',
+					ape_time: '11:00-12:00',
+					ape_number: '0',
+					ape_numberStatus: '已满'
 				}, {
-					date: '12:00-13:00',
-					number: '1762',
+					ape_time: '12:00-13:00',
+					ape_number: '0',
+					ape_numberStatus: '已满'
 				}, {
-					date: '13:00-14:00',
-					number: '2699',
+					ape_time: '13:00-14:00',
+					ape_number: '278',
+					ape_numberStatus: '空闲'
 				}, {
-					date: '14:00-15:00',
-					number: '1568',
+					ape_time: '14:00-15:00',
+					ape_number: '387',
+					ape_numberStatus: '空闲'
 				}, {
-					date: '15:00-16:00',
-					number: '1532',
+					ape_time: '15:00-16:00',
+					ape_number: '874',
+					ape_numberStatus: '空闲'
 				}, {
-					date: '16:00-17:00',
-					number: '1155',
+					ape_time: '16:00-17:00',
+					ape_number: '2000',
+					ape_numberStatus: '空闲'
 				}]
 
 
@@ -226,12 +233,12 @@
 				uni.setStorage({
 					key: 'ticketInformation',
 					data: e,
-					success:()=>{
-						if(this.ape_status==0){
+					success: () => {
+						if (this.ape_status == 0) {
 							uni.navigateTo({
 								url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
 							})
-						}else if(this.ape_status==1){
+						} else if (this.ape_status == 1) {
 							this.getDate();
 							this.$refs.popup.open()
 						}
@@ -249,9 +256,10 @@
 				// console.log(this.dateArray[this.selectIndex])
 				// console.log(this.apeData[this.radioCurrent].date)
 				uni.navigateTo({
-					url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date='+this.dateArray[this.selectIndex].longDate +'&ape_week=' +this.dateArray[this.selectIndex].week +'&ape_time=' +this.apeData[this.radioCurrent].date
+					url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date=' + this.dateArray[this.selectIndex].longDate +
+						'&ape_week=' + this.dateArray[this.selectIndex].week + '&ape_time=' + this.apeData[this.radioCurrent].ape_time
 				})
-				
+
 			},
 
 			//分享
@@ -456,8 +464,18 @@
 			},
 			//--------------------------------时间选择器代码结束-----------------------------------------------------
 
-			radioChange(e) {
-				this.radioCurrent = e;
+			radioChange: function(e) {
+				console.log(e)
+				if(this.apeData[e].ape_numberStatus=='已满'){
+					uni.showToast({
+						title:'该时段预约人数已满，请选择其他时段',
+						icon:'none'
+					})
+					// this.radioCurrent = '';
+				}else if(this.apeData[e].ape_numberStatus=='空闲'){
+					this.radioCurrent = e;
+				}
+
 			}
 
 		}
@@ -728,8 +746,8 @@
 		margin-top: 32upx;
 		font-size: 30upx;
 	}
-	
-	
+
+
 	.ape_contView {
 		display: flex;
 		padding: 32upx 0 32upx 16upx;
@@ -742,36 +760,37 @@
 			color: #fff;
 		}
 
-		.ape_contRadio {
-			margin: 0 0 0 16upx;
-			transform: scale(0.8);
-			color: #007AFF;
+		.ape_contImage{
+			margin: 0 0 0 8upx;
+			width: 40upx;
+			height: 40upx;
 		}
 
 		.ape_contText {
-			margin: 0 16upx;
-			padding-top: 6upx;
+			margin: 0 12upx;
+			padding-top: 2upx;
 			font-size: 28upx;
 		}
 
 		.ape_contIcon {
-			padding-top: 12upx;
-			font-size: 28upx;
-			margin-left: 24upx;
+			padding-top: 10upx;
+			font-size: 24upx;
+			margin-left: 6upx;
 			color: #fff;
 		}
 	}
-	
-	.ape_contButter{
-		height: 96upx; 
-		font-size: 30upx; 
-		letter-spacing: 2upx; 
-		margin: 24upx 0; 
-		background:#ff6600; 
-		color: #fff; 
+
+	.ape_contButter {
+		height: 96upx;
+		font-size: 30upx;
+		letter-spacing: 2upx;
+		margin: 24upx 0;
+		background: #ff6600;
+		color: #fff;
 		border-radius: 48upx;
 		text-align: center;
 		line-height: 96upx;
 	}
+
 	//---------------------------------------预约时段样式结束-----------------------------------------------------
 </style>
