@@ -208,13 +208,14 @@
 		},
 		onLoad() {
 			var that=this;
-			uni.getLocation({
-				success:function(res){
-					console.log(res);
-					console.log('定位成功');
-				}
-			});
-			that.Getpostion();
+			// uni.getLocation({
+			// 	type: 'wgs84',
+			// 	success:function(res){
+			// 		console.log(res);
+			// 		console.log('定位成功');
+			// 	}
+			// });
+			//that.Getpostion();
 			that.getAllLine();
 			// this.Encryption();
 			that.getNearbysites();
@@ -315,7 +316,7 @@
 				var that = this;
 				uni.request({
 					url: gjcx.InterfaceAddress[7], //获取所有线路
-					// method:'POST',
+					method:'GET',
 					header: {
 						'content-type': 'application/x-www-form-urlencoded'
 					},
@@ -323,7 +324,7 @@
 						Encryption: that.Encryption,
 					},
 					success: function(res) {
-						// console.log(res.data);
+						console.log(res.data);
 						for (var i = 0; i < res.data.length; i++) {
 							var obj = {
 								lineID: res.data[i].lineID,
@@ -336,9 +337,11 @@
 							that.dataSource.push(obj)
 						}
 						that.dataSource = that.unique(that.dataSource);
+						console.log(that.dataSource);
 					},
 					fail: function(info) {
-						console.log(info)
+						console.log(info);
+						console.log('失败')
 					}
 				})
 			},
@@ -528,7 +531,7 @@
 				};
 
 				uni.navigateTo({
-					url: 'detailed?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1
+					url: 'detailedH5?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1
 				})
 
 			},
@@ -539,15 +542,15 @@
 				that.historyList = [];
 			},
 			//获取附近站点信息并计算我的位置到附近站点的距离
-			getNearbysites: function() {
+			getNearbysites() {
 				var that = this;
-				
+				console.log('我执行了');
 				uni.getLocation({
 					type: 'wgs84',
 					success: function(res) {
 						uni.request({
 							url: gjcx.InterfaceAddress[1], //调用最近站点方法
-							// method:'POST',
+							method:'GET',
 							header: {
 								'content-type': 'application/x-www-form-urlencoded'
 							},
@@ -557,10 +560,14 @@
 								Encryption: that.Encryption,
 							},
 							success: function(sta) {
+								console.log(sta);
 								that.nearLonLat = sta.data[0].lon + ',' + sta.data[0].lat;
 								that.nearstaion1 = sta.data[0].stationName;
 								that.distance = parseInt(sta.data[0].distance * 1000);
 								that.getLinedata(that.nearstaion1)
+							},
+							fail:function(info){
+								console.log(info);
 							}
 						})
 					}
