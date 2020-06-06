@@ -52,7 +52,7 @@
 			</view>
 
 			<!-- 附近 -->
-			<view class="currencyTitle">附近</view>
+			<view class="currencyTitle" @click="textlon">附近</view>
 			<view class="box2">
 				<view class="area1">
 					<image class="image1" src="../../static/GCJX/busIndex/icon.png"></image>
@@ -312,6 +312,11 @@
 					url: 'detailed?nList=' + JSON.stringify(data) + '&nearstaion1=' + that.nearstaion1
 				})
 			},
+			textlon(){
+				uni.navigateTo({
+					url:'./text'
+				})
+			},
 			getAllLine() {
 				var that = this;
 				uni.request({
@@ -321,10 +326,10 @@
 						'content-type': 'application/x-www-form-urlencoded'
 					},
 					data: {
-						Encryption: that.Encryption,
+						encryption: that.Encryption,
 					},
 					success: function(res) {
-						console.log(res.data);
+						//console.log(res.data);
 						for (var i = 0; i < res.data.length; i++) {
 							var obj = {
 								lineID: res.data[i].lineID,
@@ -337,7 +342,7 @@
 							that.dataSource.push(obj)
 						}
 						that.dataSource = that.unique(that.dataSource);
-						console.log(that.dataSource);
+						// console.log(that.dataSource);
 					},
 					fail: function(info) {
 						console.log(info);
@@ -544,10 +549,14 @@
 			//获取附近站点信息并计算我的位置到附近站点的距离
 			getNearbysites() {
 				var that = this;
-				console.log('我执行了');
+				uni.showLoading({
+				    title: '加载中'
+				});
 				uni.getLocation({
-					type: 'wgs84',
+					type: 'gcj02',
 					success: function(res) {
+						uni.hideLoading();
+						console.log(res);
 						uni.request({
 							url: gjcx.InterfaceAddress[1], //调用最近站点方法
 							method:'GET',
@@ -567,9 +576,24 @@
 								that.getLinedata(that.nearstaion1)
 							},
 							fail:function(info){
+								uni.hideLoading();
+								uni.showToast({
+										title: '获取数据失败，请检查网络是否打开',
+										duration: 2000,
+										
+									});
 								console.log(info);
 							}
 						})
+					},
+					fail:function(info){
+						uni.hideLoading();
+						uni.showToast({
+								title: '获取定位失败,请检查GPS是否打开',
+								duration: 2000,
+								
+							});
+						console.log(info);
 					}
 				})
 			},

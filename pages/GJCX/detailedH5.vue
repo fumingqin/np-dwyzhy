@@ -1,40 +1,33 @@
 <template>
 	<view>
+		<view class="bgColor"></view>
 		<!-- 顶部基本信息 -->
 		<view class="box1">
-			<view class="text1">方向:   {{nList.lineDirection}}</view>
+			<view class="text1">方向:   {{nList.endName}}</view>
 			<view class="butter">首末时间</view>
 			<view class="text2">{{nList.firstLastTime}}</view>
 			<view class="butter2">票价</view>
-			<view class="text3">{{price}}  ></view>
+			<view class="text3">暂无数据  ></view>
 		</view>
 		<!-- 地图 -->
 		
 		<view>
 		<!-- 嵌套弹窗 -->
-		<uni-popup ref="popup" type="bottom">
+		
 			<!-- 线路信息 -->
 			<view class="box2">
 				<!-- 时间信息左 -->
 				<view class="area1">
 					<view class="text4">
-			            <text >预计到达</text>
+			            <text v-if="carSta!=='等待发车'">预计到达</text>
 						</view>
 					<view class="text4">
-						<text>下一站/{{arriveTime}}分  {{distance}}{{unit}}</text>
+						<text>{{carSta}}</text>
+						<text v-if="carSta!=='等待发车'&&carSta!=='即将到站'">站 </text>
+						<text v-if="carSta!=='等待发车'">{{arriveTime}}分/</text>
+						<text  v-if="carSta!=='等待发车'">{{carDistance}}米</text>
 					</view>
-			    </view> 
-				
-				<!-- 时间信息右 -->
-				<view class="area2">
-					<view class="text4">
-				        <text >预计起点发车</text>
-						</view>
-					<view class="text4">
-						<text>{{departureTime}}</text>
-					</view>
-				</view> 
-			</view>
+			    </view>
 		<!-- 横向动态列表 -->
 		<view class="box3">
 			<scroll-view scroll-x="true" class="scroll-X" >
@@ -56,7 +49,7 @@
 			</scroll-view>
 	      </view>
 			
-			</uni-popup>
+			
 			
 			
 			
@@ -67,16 +60,13 @@
 					<image class="exchange" src="../../static/GCJX/detailedBus/exchange.png"></image>
 					<text class="huanxiang">换向</text>
 				</view>
-				<view class="areaRight" @click="controlPopup">
-					<image class="map" src="../../static/GCJX/detailedBus/loction.png"></image>
-					<text class="ditu">地图</text>
 				</view>
 			</view>
 	</view>
 </template>
 
 <script>
-	import uniPopup from '../../components/GJCX/uni-popup/uni-popup3.vue'
+	
 	import taxi from '../../common/Czc.js'
 	export default {
 		data() {
@@ -98,62 +88,7 @@
 				mapHeight: '',
 				mapWidth:'319px',
 				popupStatu:0, //弹窗状态
-				controls: [{
-						id: 'back',
-						position: {
-							left: 10,
-							top: 200,
-							width: 55,
-							height: 55
-						},
-						iconPath: '../../static/Home/Position.png',
-						clickable: true,
-					},
-					/* 			{
-									id: 'CallPollice',
-									position: {
-										left: 300,
-										top: 290,
-										width: 55,
-										height: 55
-									},
-									iconPath: '../../static/Home/CallPollice.png',
-									clickable: true,
-								}, */
-					// {
-					// 	id: 'Service',
-					// 	position: {
-					// 		left: 300,
-					// 		top: 345,
-					// 		width: 55,
-					// 		height: 55
-					// 	},
-					// 	iconPath: '../../static/Home/Service.png',
-					// 	clickable: true,
-					// },
-					{
-						id: 'Big',
-						position: {
-							left: 300,
-							top: 405,
-							width: 55,
-							height: 55
-						},
-						iconPath: '../../static/Home/Big.png',
-						clickable: true,
-					},
-					{
-						id: 'Small',
-						position: {
-							left: 300,
-							top: 440,
-							width: 55,
-							height: 55
-						},
-						iconPath: '../../static/Home/Small.png',
-						clickable: true,
-					}
-				],
+				
 				endStation:'',
 				starTime:'',
 				endTime:'',
@@ -170,11 +105,11 @@
 			  console.log("接收到的参数是list="+options.nList);//此处打印出来的是字符串，解析如下   
 			console.log(options)
 			  that.nList = JSON.parse(options.nList);//解析得到集合
-			that.busIndex();
+			
 			that.lineDetaile();
 			that.getGaoDeKey();
 			that.getMyLocation();
-			that.$refs.popup.open();
+			
 			uni.getSystemInfo({
 				success: function(res) {
 					if (res.screenWidth < 350) {
@@ -206,28 +141,10 @@
 			});
 		},
 		components: {
-			//加载多方弹框组件
-			uniPopup
+			
 		},
 		methods: {
-			async busIndex(){
-				let detailline = await this.$api.gjcx('detailLine');
-				this.detailLine = detailline;
-                this.arriveTime =Math.ceil(this.detailLine.data.distance/200)
-				let nearstastion =await this.$api.gjcx('nearBy');
-				this.nearStastion =nearstastion;
-                let realtimedynamic =await this.$api.gjcx('realtimeDynamic');
-				this.realtimeDynamic =realtimedynamic.data;
-				this.list=this.realtimeDynamic;
-				let realtimedynamicback =await this.$api.gjcx('realtimeDynamicback');
-				this.realtimeDynamicback =realtimedynamicback.data;
-				this.endStation =this.detailLine.data.endStation;
-				this.starTime =this.detailLine.data.starTime;
-				this.endTime =this.detailLine.data.endTime;
-				this.price =this.detailLine.data.price;
-				this.unit =this.detailLine.data.unit;
-				this.departureTime =this.detailLine.data.departureTime;
-			},
+			
 			
 			getMyLocation: function() {
 				//获取我的位置，将地图中心点移动至此
@@ -273,7 +190,7 @@
 			},
 			//换向 点击后更换接口
 			exchange(){
-				this.$refs.popup.open();
+				
 				if(this.direction==0){
 				this.direction =1;
 				this.list=this.realtimeDynamicback
@@ -283,19 +200,7 @@
 					this.list=this.realtimeDynamic
 				}
 			},
-			//弹框
-			controlPopup(){
-				if(this.popupStatu==0){
-					this.$refs.popup.close();
-					this.popupStatu=1;
-
-				}
-				else{
-					this.$refs.popup.open();
-					this.popupStatu=0;
-
-				}
-			},
+			
 			lineDetaile:function(){
 				var that=this;
 				uni.request({
@@ -326,15 +231,15 @@
 </script>
 
 <style lang="scss">
-	// .bgColor{
-	//     position: fixed;
-	//     top: 0;
-	//     left: 0;
-	//     right: 0;
-	//     bottom: 0;
-	//     background: #F3F3F3;
-	//     z-index: -1;
-	//   }
+	.bgColor{
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    right: 0;
+	    bottom: 0;
+	    background: #F3F3F3;
+	    z-index: -1;
+	  }
   .box1{
 	  background-color: #FFFFFF;
 	  height: 160upx;

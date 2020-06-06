@@ -87,7 +87,8 @@
 						Encryption: that.Encryption,
 					},
 					success:function(res){
-						// console.log(res.data);
+						console.log('线路信息');
+						console.log(res.data);
 						for(var i=0;i<res.data.length;i++){
 							var obj={
 								lineID:res.data[i].lineID,
