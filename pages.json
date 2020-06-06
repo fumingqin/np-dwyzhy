@@ -522,7 +522,11 @@
         ,{
             "path" : "pages/Home/realtimeInfo",
             "style" : {}
-        }
+        },
+		{
+		    "path" : "pages/GJCX/detailedH5",
+		    "style" : {}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
