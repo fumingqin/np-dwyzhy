@@ -121,6 +121,7 @@
 				timer: '', //定时器数据
 				orderID: '', //订单id
 				ctkyOpenID:'',
+				weixinOpenId:'',
 			}
 		},
 		onLoad: function(param) {
@@ -179,7 +180,11 @@
 				uni.getStorage({
 					key: 'userInfo',
 					success: function(data) {
+						console.log('用户数据',data)
 						that.userInfo = data.data;
+						// #ifdef MP-WEIXIN
+						that.weixinOpenId = data.data.openId_xcx;
+						// #endif
 						// console.log('用户信息', that.userInfo);
 					}
 				})
@@ -212,8 +217,15 @@
 								that.adultNum++;
 							}
 						}
-						//读取用户openID
+						//-------------------------------读取用户openID-------------------------------
+						// #ifdef H5
 						that.getOpenID();
+						// #endif
+						
+						//-------------------------------下单-------------------------------
+						// #ifdef APP-PLUS || MP-WEIXIN
+						that.getOrder();
+						// #endif
 					},
 					fail() {
 						uni.showToast({
@@ -229,7 +241,7 @@
 				uni.getStorage({
 					key:'ctkyOpenId',
 					success:function(response){
-						console.log(response);
+						console.log('openid',response);
 						that.ctkyOpenID = response.data
 						//等待读取用户缓存成功之后再请求接口数据
 						that.getOrder();
@@ -239,6 +251,7 @@
 						// uni.showModal({
 						// 	content:'用户未授权',
 						// })
+						console.log('用户未授权');
 						that.getOrder();
 					}
 				})
@@ -301,18 +314,25 @@
 			},
 			//--------------------------发起下单请求-----------------------
 			getOrder: function() {
-				// console.log('用户信息',this.userInfo);
+				var that = this;
+				console.log('用户信息',this.userInfo);
 				// console.log('订单信息',this.orderInfo);
 				// console.log('idNameType',this.idNameType);
-				
-				var companyCode = '南平旅游APP';
+				var openId = '';
+				// #ifdef MP-WEIXIN
+				openId = that.weixinOpenId;
+				// #endif
+				// #ifdef H5
+				openId = that.ctkyOpenID;
+				// #endif
+				var companyCode = '南平旅游H5';
 				// #ifdef H5
 				companyCode = '南平旅游H5';
 				// #endif
 				// #ifdef APP-PLUS
 				companyCode = '南平旅游APP';
 				// #endif
-				var that = this;
+				
 				uni.showLoading();
 				var data= {
 					companyCode: companyCode,
@@ -336,7 +356,7 @@
 					carryChild: that.childrenNum, //携童人数
 					idNameType: that.idNameType,
 					insured: that.isInsurance, //是否选择了保险
-					openId: that.ctkyOpenID,
+					openId: openId,
 					totalPrice: that.totalPrice, //总价格
 				};
 				console.log(data)
@@ -415,7 +435,6 @@
 				var timer = null;
 				that.timer = timer;
 				timer = setInterval(function() {
-					// uni.showLoading();
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getPayParam',
 						method: 'POST',
