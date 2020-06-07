@@ -40,7 +40,7 @@
 				<view class="xuxian"></view>
 				<!-- 转换 -->
 				<view @click="exchange">
-					<image class="rotate" src="../../static/GCJX/busIndex/rotate.png"></image>
+					<image class="rotate" src="../../static/Home/Search.png"></image>
 				</view>
 				<view class="searchBoxRadius2">
 					<image class="searchImage2" src="../../static/GCJX/busIndex/red.png" />
@@ -456,16 +456,16 @@
 						that.endlongitude = res.longitude;
 						that.endtlatitude = res.latitude;
 						that.endlocation = res;
-						if (that.initialPoint !== '' && that.destination !== '') {
-							uni.navigateBack({
-								delta: 1
-							});
-							uni.navigateTo({
-								url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
-									'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
-							});
-							clearInterval(that.timer);
-						}
+						// if (that.initialPoint !== '' && that.destination !== '') {
+						// 	uni.navigateBack({
+						// 		delta: 1
+						// 	});
+						// 	uni.navigateTo({
+						// 		url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
+						// 			'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
+						// 	});
+						// 	clearInterval(that.timer);
+						// }
 					},
 					fail: function(info) {
 						console.log(info)
@@ -476,39 +476,50 @@
 
 			exchange: function() { //始末位置交换
 				var that = this;
-				var newinitialPoint = that.initialPoint;
-				var newstartlocation = that.startlocation;
-				var newstartlatitude = that.startlatitude;
-				var newstartlongitude = that.startlongitude;
-				uni.setStorage({
-					key: 'startlocation',
-					data: that.endlocation,
-					success: function() {
-						that.initialPoint = that.destination;
-						that.startlocation = that.endlocation;
-						that.startlatitude = that.endtlatitude;
-						that.startlongitude = that.endlongitude;
-					}
-				});
-				uni.setStorage({
-					key: 'endlocation',
-					data: newstartlocation,
-					success: function() {
-						that.destination = newinitialPoint;
-						that.endlocation = newstartlocation;
-						that.endtlatitude = newstartlatitude;
-						that.endlongitude = newstartlongitude;
-					}
-				});
-				that.startLonLat='118.04483,27.776371';
-				that.endLonLat='117.988495,27.610365';
-				that.initialPoint='高铁北';
-				that.destination='南源岭';
-				that.city='南平';
-				uni.navigateTo({
-					url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
-						'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
-				});
+				// var newinitialPoint = that.initialPoint;
+				// var newstartlocation = that.startlocation;
+				// var newstartlatitude = that.startlatitude;
+				// var newstartlongitude = that.startlongitude;
+				// uni.setStorage({
+				// 	key: 'startlocation',
+				// 	data: that.endlocation,
+				// 	success: function() {
+				// 		that.initialPoint = that.destination;
+				// 		that.startlocation = that.endlocation;
+				// 		that.startlatitude = that.endtlatitude;
+				// 		that.startlongitude = that.endlongitude;
+				// 	}
+				// });
+				// uni.setStorage({
+				// 	key: 'endlocation',
+				// 	data: newstartlocation,
+				// 	success: function() {
+				// 		that.destination = newinitialPoint;
+				// 		that.endlocation = newstartlocation;
+				// 		that.endtlatitude = newstartlatitude;
+				// 		that.endlongitude = newstartlongitude;
+				// 	}
+				// });
+				// that.startLonLat='118.04483,27.776371';
+				// that.endLonLat='117.988495,27.610365';
+				// that.initialPoint='高铁北';
+				// that.destination='南源岭';
+				// that.city='南平';
+				if(that.initialPoint==''||that.destination==''){
+					uni.showToast({
+							title: '请输入起点或终点',
+							duration: 2000,
+							icon: 'none',
+						});
+						return;
+				}
+				else{
+					uni.navigateTo({
+						url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
+							'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
+					});
+				}
+				
 			},
 			//进入详情页
 			goDetail: function(lineName, endName, i) {
