@@ -40,7 +40,7 @@
 				<view class="xuxian"></view>
 				<!-- 转换 -->
 				<view @click="exchange">
-					<image class="rotate" src="../../static/GCJX/busIndex/rotate.png"></image>
+					<image class="rotate" src="../../static/Home/Search.png"></image>
 				</view>
 				<view class="searchBoxRadius2">
 					<image class="searchImage2" src="../../static/GCJX/busIndex/red.png" />
@@ -52,7 +52,7 @@
 			</view>
 
 			<!-- 附近 -->
-			<view class="currencyTitle">附近</view>
+			<view class="currencyTitle" @click="textlon">附近</view>
 			<view class="box2">
 				<view class="area1">
 					<image class="image1" src="../../static/GCJX/busIndex/icon.png"></image>
@@ -312,6 +312,11 @@
 					url: 'detailed?nList=' + JSON.stringify(data) + '&nearstaion1=' + that.nearstaion1
 				})
 			},
+			textlon(){
+				uni.navigateTo({
+					url:'./text'
+				})
+			},
 			getAllLine() {
 				var that = this;
 				uni.request({
@@ -321,10 +326,10 @@
 						'content-type': 'application/x-www-form-urlencoded'
 					},
 					data: {
-						Encryption: that.Encryption,
+						encryption: that.Encryption,
 					},
 					success: function(res) {
-						console.log(res.data);
+						//console.log(res.data);
 						for (var i = 0; i < res.data.length; i++) {
 							var obj = {
 								lineID: res.data[i].lineID,
@@ -337,7 +342,7 @@
 							that.dataSource.push(obj)
 						}
 						that.dataSource = that.unique(that.dataSource);
-						console.log(that.dataSource);
+						// console.log(that.dataSource);
 					},
 					fail: function(info) {
 						console.log(info);
@@ -451,16 +456,16 @@
 						that.endlongitude = res.longitude;
 						that.endtlatitude = res.latitude;
 						that.endlocation = res;
-						if (that.initialPoint !== '' && that.destination !== '') {
-							uni.navigateBack({
-								delta: 1
-							});
-							uni.navigateTo({
-								url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
-									'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
-							});
-							clearInterval(that.timer);
-						}
+						// if (that.initialPoint !== '' && that.destination !== '') {
+						// 	uni.navigateBack({
+						// 		delta: 1
+						// 	});
+						// 	uni.navigateTo({
+						// 		url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
+						// 			'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
+						// 	});
+						// 	clearInterval(that.timer);
+						// }
 					},
 					fail: function(info) {
 						console.log(info)
@@ -471,39 +476,50 @@
 
 			exchange: function() { //始末位置交换
 				var that = this;
-				var newinitialPoint = that.initialPoint;
-				var newstartlocation = that.startlocation;
-				var newstartlatitude = that.startlatitude;
-				var newstartlongitude = that.startlongitude;
-				uni.setStorage({
-					key: 'startlocation',
-					data: that.endlocation,
-					success: function() {
-						that.initialPoint = that.destination;
-						that.startlocation = that.endlocation;
-						that.startlatitude = that.endtlatitude;
-						that.startlongitude = that.endlongitude;
-					}
-				});
-				uni.setStorage({
-					key: 'endlocation',
-					data: newstartlocation,
-					success: function() {
-						that.destination = newinitialPoint;
-						that.endlocation = newstartlocation;
-						that.endtlatitude = newstartlatitude;
-						that.endlongitude = newstartlongitude;
-					}
-				});
-				that.startLonLat='118.04483,27.776371';
-				that.endLonLat='117.988495,27.610365';
-				that.initialPoint='高铁北';
-				that.destination='南源岭';
-				that.city='南平';
-				uni.navigateTo({
-					url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
-						'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
-				});
+				// var newinitialPoint = that.initialPoint;
+				// var newstartlocation = that.startlocation;
+				// var newstartlatitude = that.startlatitude;
+				// var newstartlongitude = that.startlongitude;
+				// uni.setStorage({
+				// 	key: 'startlocation',
+				// 	data: that.endlocation,
+				// 	success: function() {
+				// 		that.initialPoint = that.destination;
+				// 		that.startlocation = that.endlocation;
+				// 		that.startlatitude = that.endtlatitude;
+				// 		that.startlongitude = that.endlongitude;
+				// 	}
+				// });
+				// uni.setStorage({
+				// 	key: 'endlocation',
+				// 	data: newstartlocation,
+				// 	success: function() {
+				// 		that.destination = newinitialPoint;
+				// 		that.endlocation = newstartlocation;
+				// 		that.endtlatitude = newstartlatitude;
+				// 		that.endlongitude = newstartlongitude;
+				// 	}
+				// });
+				// that.startLonLat='118.04483,27.776371';
+				// that.endLonLat='117.988495,27.610365';
+				// that.initialPoint='高铁北';
+				// that.destination='南源岭';
+				// that.city='南平';
+				if(that.initialPoint==''||that.destination==''){
+					uni.showToast({
+							title: '请输入起点或终点',
+							duration: 2000,
+							icon: 'none',
+						});
+						return;
+				}
+				else{
+					uni.navigateTo({
+						url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
+							'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin
+					});
+				}
+				
 			},
 			//进入详情页
 			goDetail: function(lineName, endName, i) {
@@ -544,10 +560,14 @@
 			//获取附近站点信息并计算我的位置到附近站点的距离
 			getNearbysites() {
 				var that = this;
-				console.log('我执行了');
+				uni.showLoading({
+				    title: '加载中'
+				});
 				uni.getLocation({
-					type: 'wgs84',
+					type: 'gcj02',
 					success: function(res) {
+						uni.hideLoading();
+						console.log(res);
 						uni.request({
 							url: gjcx.InterfaceAddress[1], //调用最近站点方法
 							method:'GET',
@@ -567,9 +587,24 @@
 								that.getLinedata(that.nearstaion1)
 							},
 							fail:function(info){
+								uni.hideLoading();
+								uni.showToast({
+										title: '获取数据失败，请检查网络是否打开',
+										duration: 2000,
+										
+									});
 								console.log(info);
 							}
 						})
+					},
+					fail:function(info){
+						uni.hideLoading();
+						uni.showToast({
+								title: '获取定位失败,请检查GPS是否打开',
+								duration: 2000,
+								
+							});
+						console.log(info);
 					}
 				})
 			},

@@ -9,7 +9,7 @@
 
 				<view class="MP_selectionDate">
 					<view class="MP_title">使用时间</view>
-					<text class="MP_text">{{utils.timeTodate('Y-m-d H:i',orderInfo.setTime)}} &nbsp; 仅限当天</text>
+					<text class="MP_text">{{turnDate(orderInfo.setTime)}} &nbsp; 仅限当天</text>
 				</view>
 
 				<view class="MP_selectionDate" :hidden="hiddenValues==0">
@@ -43,7 +43,7 @@
 					<view class="MP_cost" v-if="isInsurance == 1 ">
 						<text>保险</text>
 						<text class="MP_number">×{{ticketNum}}</text>
-						<text class="MP_total">¥{{orderInfo.insurePrice}}</text>
+						<text class="MP_total">¥{{insuredPrice}}</text>
 					</view>
 
 					<!-- 优惠券 -->
@@ -92,12 +92,10 @@
 </template>
 
 <script>
-	import utils from "@/components/CTKY/shoyu-date/utils.filter.js";
 	export default {
 		data() {
 			return {
 				countDownDate: 120, //倒计时时间
-				utils: utils,
 				userInfo: [], //用户信息
 				hiddenValues: '0', //隐藏状态值
 				channel: [{
@@ -107,6 +105,7 @@
 				}],
 				insurance: '', //保险
 				isInsurance: '', //是否有保险
+				insuredPrice:'',//保险价格
 				channeIndex: 0, //选择支付方式
 				orderInfo: [], //订单数据
 				passengerInfo: [], //乘车人信息
@@ -121,25 +120,27 @@
 				timer: '', //定时器数据
 				orderID: '', //订单id
 				ctkyOpenID:'',
+				weixinOpenId:'',
+				ticketInfo: [],
 			}
 		},
 		onLoad: function(param) {
 			var that = this;
-			//读取车票信息
-			this.getTickerInfo();
-			//读取用户信息
-			this.getUserInfo();
-			//读取乘车人信息
-			this.getPassengerInfo();
-			this.totalPrice = param.totalPrice;
-			if (param.isInsurance == 1) {
+			that.ticketInfo = JSON.parse(param.array);
+			
+			that.totalPrice = that.ticketInfo.totalPrice;//总价格
+			that.insuredPrice = that.ticketInfo.insuredPrice;//保险价格
+			if (that.ticketInfo.isInsurance == 1) {
 				this.insurance = '保险';
 				this.isInsurance = true;
 			} else {
 				this.insurance = '';
 				this.isInsurance = false;
 			}
-
+			//读取车票信息
+			this.getTickerInfo();
+			//读取用户信息
+			this.getUserInfo();
 		},
 		onUnload() {
 			clearInterval(this.timer);
@@ -162,7 +163,7 @@
 					key: 'ticketDate',
 					success: function(data) {
 						that.orderInfo = data.data;
-						// console.log('订单数据', that.orderInfo)
+						console.log('订单数据', that.orderInfo)
 					},
 					fail() {
 						uni.showToast({
@@ -179,10 +180,22 @@
 				uni.getStorage({
 					key: 'userInfo',
 					success: function(data) {
+						console.log('用户数据',data)
 						that.userInfo = data.data;
-						// console.log('用户信息', that.userInfo);
+						// #ifdef MP-WEIXIN
+						that.weixinOpenId = data.data.openId_xcx;
+						// #endif
+						//读取乘车人信息
+						that.getPassengerInfo();
 					}
 				})
+			},
+			//-------------------------------时间转换-------------------------------
+			turnDate(date) {
+				if (date) {
+					var setTime = date.replace('T', ' ');
+					return setTime;
+				}
 			},
 			//--------------------------读取乘车人信息--------------------------
 			getPassengerInfo() {
@@ -191,6 +204,7 @@
 				uni.getStorage({
 					key: 'passengerList',
 					success: function(data) {
+						console.log('乘车人信息',data);
 						that.passengerInfo = data.data;
 						for (let i = 0; i < that.passengerInfo.length; i++) {
 							let array = {
@@ -212,8 +226,15 @@
 								that.adultNum++;
 							}
 						}
-						//读取用户openID
+						//-------------------------------读取用户openID-------------------------------
+						// #ifdef H5
 						that.getOpenID();
+						// #endif
+						
+						//-------------------------------下单-------------------------------
+						// #ifdef APP-PLUS || MP-WEIXIN
+						that.getOrder();
+						// #endif
 					},
 					fail() {
 						uni.showToast({
@@ -229,7 +250,7 @@
 				uni.getStorage({
 					key:'ctkyOpenId',
 					success:function(response){
-						console.log(response);
+						console.log('openid',response);
 						that.ctkyOpenID = response.data
 						//等待读取用户缓存成功之后再请求接口数据
 						that.getOrder();
@@ -239,7 +260,8 @@
 						// uni.showModal({
 						// 	content:'用户未授权',
 						// })
-						that.getOrder();
+						console.log('用户未授权');
+						// that.getOrder();
 					}
 				})
 			},
@@ -301,10 +323,18 @@
 			},
 			//--------------------------发起下单请求-----------------------
 			getOrder: function() {
-				// console.log('用户信息',this.userInfo);
+				var that = this;
+				console.log('用户信息',this.userInfo);
 				// console.log('订单信息',this.orderInfo);
 				// console.log('idNameType',this.idNameType);
-				
+				var setTime = that.orderInfo.setTime.replace('T', ' ');
+				var openId = '';
+				// #ifdef MP-WEIXIN
+				openId = that.weixinOpenId;
+				// #endif
+				// #ifdef H5
+				openId = that.ctkyOpenID;
+				// #endif
 				var companyCode = '南平旅游APP';
 				// #ifdef H5
 				companyCode = '南平旅游H5';
@@ -312,7 +342,7 @@
 				// #ifdef APP-PLUS
 				companyCode = '南平旅游APP';
 				// #endif
-				var that = this;
+				
 				uni.showLoading();
 				var data= {
 					companyCode: companyCode,
@@ -327,8 +357,8 @@
 					startSiteName: that.orderInfo.startStaion, //起点站
 					endSiteName: that.orderInfo.endStation, //终点站
 					priceID: that.orderInfo.priceID, //价格ID
-					setOutTime: that.orderInfo.setTime, //订单时间
-					insuredPrice: that.orderInfo.insurePrice, //保险价格
+					setOutTime: setTime, //订单时间
+					insuredPrice: that.insuredPrice, //保险价格
 					carType: that.orderInfo.shuttleType, //班车类型
 				
 					fullTicket: that.adultNum, //全票人数
@@ -336,7 +366,7 @@
 					carryChild: that.childrenNum, //携童人数
 					idNameType: that.idNameType,
 					insured: that.isInsurance, //是否选择了保险
-					openId: that.ctkyOpenID,
+					openId: openId,
 					totalPrice: that.totalPrice, //总价格
 				};
 				console.log(data)
@@ -351,7 +381,7 @@
 						clientID: that.userInfo.unid, //用户ID
 						clientName: that.userInfo.username, //用户名
 						phoneNumber: that.userInfo.phoneNumber, //手机号码
-
+										
 						scheduleCompanyCode: that.orderInfo.scheduleCompanyCode,
 						executeScheduleID: that.orderInfo.executeScheduleID,
 						startSiteID: that.orderInfo.startSiteID, //上车点ID
@@ -359,16 +389,16 @@
 						startSiteName: that.orderInfo.startStaion, //起点站
 						endSiteName: that.orderInfo.endStation, //终点站
 						priceID: that.orderInfo.priceID, //价格ID
-						setOutTime: that.orderInfo.setTime, //订单时间
-						insuredPrice: that.orderInfo.insurePrice, //保险价格
+						setOutTime: setTime, //订单时间
+						insuredPrice: that.insuredPrice, //保险价格
 						carType: that.orderInfo.shuttleType, //班车类型
-
+										
 						fullTicket: that.adultNum, //全票人数
 						halfTicket: that.childrenNum, //半票人数
 						carryChild: that.childrenNum, //携童人数
 						idNameType: that.idNameType,
 						insured: that.isInsurance, //是否选择了保险
-						openId: that.ctkyOpenID,
+						openId: openId,
 						totalPrice: that.totalPrice, //总价格
 					},
 					success: (res) => {
@@ -415,7 +445,6 @@
 				var timer = null;
 				that.timer = timer;
 				timer = setInterval(function() {
-					// uni.showLoading();
 					uni.request({
 						url: 'http://218.67.107.93:9210/api/app/getPayParam',
 						method: 'POST',
@@ -438,9 +467,13 @@
 								}
 								if (payData.data.msg == '获取支付参数成功！') {
 									uni.hideLoading();
-									uni.showToast({
-										title: '请在2分钟内完成支付',
-										icon: 'none'
+									uni.showModal({
+										content: '请在2分钟内完成支付',
+										success(res) {
+											if(res.confirm) {
+												that.payment();
+											}
+										}
 									})
 									clearInterval(timer);
 									//--------------------------------开启计时器--------------------------------
