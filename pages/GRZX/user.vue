@@ -132,7 +132,11 @@
 								method:'POST',
 								success(res1) {
 									uni.setStorageSync('userInfo',res1.data.data)
-									that.nickname=res1.data.data.nickname;
+									if(res1.data.data.nickname==""||res1.data.data.nickname==null){
+										that.nickname="请输入昵称";
+									}else{
+										that.nickname=res1.data.data.nickname;
+									}
 									var base64=res1.data.data.portrait;
 									if(base64!=""&&base64!=null&&that.isBase64(base64)){
 										base64ToPath(base64)
