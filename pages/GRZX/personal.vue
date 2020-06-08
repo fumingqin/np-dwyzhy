@@ -101,7 +101,7 @@
 					success(res){
 						uni.request({
 							// url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
-							url:theself.$Grzx.Interface.url+'?phoneNumber='+res.data.phoneNumber,
+							url:theself.$Grzx.Interface.login.url+'?phoneNumber='+res.data.phoneNumber,
 							method:"POST",
 							success(res1) {
 								console.log(res1,'res1')
