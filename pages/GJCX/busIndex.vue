@@ -280,9 +280,9 @@
 			historyLine(i) {
 				var that = this;
 				that.nList = that.historyList[i];
-				// console.log(that.nList);
+				console.log(that.nList);
 				uni.navigateTo({
-					url: 'detailed?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1
+					url: 'detailedH5?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1
 				});
 			},
 			handleChange(data) {
@@ -309,7 +309,7 @@
 					})
 				}
 				uni.navigateTo({
-					url: 'detailed?nList=' + JSON.stringify(data) + '&nearstaion1=' + that.nearstaion1
+					url: 'detailedH5?nList=' + JSON.stringify(data) + '&nearstaion1=' + that.nearstaion1
 				})
 			},
 			textlon(){
