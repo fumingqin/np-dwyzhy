@@ -122,9 +122,13 @@
 		methods:{
 			loadData(){
 				var that=this;
+				uni.showLoading({
+					title:'加载信息中..'
+				})
 				uni.getStorage({
 					key:'userInfo',
 					success(res){
+						uni.hideLoading();
 						console.log(res,"222")
 						if(res.data.phoneNumber!=""&&res.data.phoneNumber!=null){
 							uni.request({
@@ -161,6 +165,7 @@
 						}
 					},
 					fail() {
+						uni.hideLoading();
 						that.nickname='';
 						that.portrait='';
 					}
