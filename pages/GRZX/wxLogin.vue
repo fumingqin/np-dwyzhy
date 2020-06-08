@@ -95,7 +95,8 @@
 				}else if(phone==list.phone&&code==list.code){
 					//调用绑定手机号接口
 					uni.request({
-						url:'http://218.67.107.93:9210/api/app/bindTel',
+						//url:'http://218.67.107.93:9210/api/app/bindTel',
+						url:that.$Grzx.Interface.bindTel.url,
 						data:{
 							phoneNumber:phone,
 							wxOpenid:openid,
@@ -155,7 +156,8 @@
 						  	self.textCode = second+"秒后重发";
 						  }},1000)
 						 uni.request({
-							url:'http://218.67.107.93:9210/api/app/getLoginCode?phoneNumber='+self.phoneNumber,
+							// url:'http://218.67.107.93:9210/api/app/getLoginCode?phoneNumber='+self.phoneNumber,
+							url:self.$Grzx.Interface.getLoginCode.url+'?phoneNumber='+self.phoneNumber,
 						    method:"POST",
 							success:(res)=>{
 						 		console.log(res.data.code);

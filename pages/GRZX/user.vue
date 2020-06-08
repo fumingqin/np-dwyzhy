@@ -128,9 +128,11 @@
 						console.log(res,"222")
 						if(res.data.phoneNumber!=""&&res.data.phoneNumber!=null){
 							uni.request({
-								url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
+								//url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
+								url:that.$Grzx.Interface.login.url+'?phoneNumber='+res.data.phoneNumber,
 								method:'POST',
 								success(res1) {
+									console.log(res1,"111")
 									uni.setStorageSync('userInfo',res1.data.data)
 									if(res1.data.data.nickname==""||res1.data.data.nickname==null){
 										that.nickname="请输入昵称";
