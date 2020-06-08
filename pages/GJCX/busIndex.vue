@@ -523,7 +523,9 @@
 			},
 			//进入详情页
 			goDetail: function(lineName, endName, i) {
-
+                uni.showLoading({
+				      title: '加载中'
+				               });
 				var that = this;
 				that.nList = that.carList[i];
 
@@ -547,7 +549,10 @@
 				};
 
 				uni.navigateTo({
-					url: 'detailedH5?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1
+					url: 'detailedH5?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1,
+					success() {
+						uni.hideLoading();
+					}
 				})
 
 			},

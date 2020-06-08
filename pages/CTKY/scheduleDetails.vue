@@ -9,7 +9,7 @@
 				<view class="ticketInfoClass">
 					<view>
 						<view class="textCLass" style="font-size: 28upx;color: #333333;display: block;padding: 0;">
-							{{utils.timeTodate('Y-m-d H:i',ticketDetail.setTime)}}出发</view>
+							{{turnDate(ticketDetail.setTime)}}出发</view>
 						<view class="textCLass" style="font-size: 32upx;color: #333333;margin-top:21upx ;display: block;padding: 0;">{{ticketDetail.startStaion}}
 							→ {{ticketDetail.endStation}}</view>
 						<view class="textCLass" style="font-size: 24upx;color: #999999; margin-top:18upx ;display: block;padding: 0;">{{ticketDetail.carType}}
@@ -212,19 +212,17 @@
 
 <script>
 	import popup from "../../components/CTKY/uni-popup/uni-popup.vue";
-	import utils from "@/components/CTKY/shoyu-date/utils.filter.js";
 	export default {
 		components: {
 			popup
 		},
 		data() {
 			return {
-				utils: utils,
 				title: '',
 				isNormal: 0, //判断是普通购票还是定制班车:1是普通0是定制
 				count: 1,
-				startStation: '', //上车点
-				endStation: '', //下车点
+				startStation: '', //定制班车上车点
+				endStation: '', //定制班车上车点	
 				indexArray: [], //下标数组
 				startStaionIndex: '',
 				endStationIndex: '',
@@ -242,13 +240,14 @@
 				isInsurance: 1, //默认选择乘车险
 				maskState: 0, //优惠券面板显示状态
 				ticketDate: '',
-				ticketDetail: [], //车票信息
+				ticketDetail: [], //车票详情数据
 				totalPrice: '', //车票总价格
 				passengerNum: 0, //乘车人数量
-				shuttleType:'',
+				shuttleType:'',//班车类型'定制班车''普通班车'
 				sepecialStartArray:[],//定制班车起点数组
 				specialEndArray:[],//定制班车终点数组
-				InsurePrice:'',
+				InsurePrice:'',//保险价格
+				adultNum:0,//成人数
 			}
 		},
 
@@ -264,7 +263,7 @@
 			uni.getStorage({
 				key: 'ticketDate',
 				success: function(data) {
-					console.log('车票数据',data)
+					// console.log('车票数据',data)
 					that.ticketDetail = data.data
 					that.totalPrice = data.data.fare
 					that.shuttleType = data.data.shuttleType; //班车类型
@@ -273,13 +272,14 @@
 					that.sepecialStartArray = data.data.starSiteArr;
 					//定制班车终点数组
 					that.specialEndArray = data.data.endSiteArr
-					console.log(that.ticketDetail)
+					// console.log(that.ticketDetail)
 				}
 			})
 		},
 		onShow() {
 			//读取乘车人信息
 			this.userData();
+			this.getStationData();
 		},
 		onReady() {
 
@@ -287,6 +287,12 @@
 		onUnload() {
 			uni.removeStorage({
 				key: 'ticketDate',
+				success: function(res) {
+					console.log('success');
+				}
+			});
+			uni.removeStorage({
+				key: 'CTKYStationList',
 				success: function(res) {
 					console.log('success');
 				}
@@ -304,10 +310,14 @@
 						that.calculateTotalPrice();
 					}
 				});
+			},
+			getStationData() {
+				var that = this;
 				//读取上下车点缓存
 				uni.getStorage({
 					key: 'CTKYStationList',
 					success: (res) => {
+						// console.log(res)
 						that.startStation = res.data.startStation;
 						that.startStaionIndex = res.data.startStationIndex;
 						that.endStation = res.data.endStation;
@@ -325,25 +335,47 @@
 					}
 				})
 			},
+			//-------------------------------时间转换-------------------------------
+			turnDate(date) {
+				if (date) {
+					var setTime = date.replace('T', ' ');
+					return setTime;
+				}
+			},
 			//-------------------------------点击上车点-----------------------------
 			startStationTap() {
 				var that = this;
+				var stationArray = {
+					startStaionIndex: that.startStaionIndex,
+					endStationIndex: that.endStationIndex,
+					specialStartArray: that.sepecialStartArray,
+					specialEndArray: that.specialEndArray
+				}
 				//跳转到选择上车点页面
 				uni.navigateTo({
-					url: '/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
+					url: '/pages/CTKY/selectStation?stationArray=' + JSON.stringify(stationArray)
 				})
+				// uni.navigateTo({
+				// 	url: '/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
+				// })
 			},
 			//-------------------------------点击下车点-----------------------------
 			endStationTap() {
 				var that = this;
+				var stationArray = {
+					startStaionIndex: that.startStaionIndex,
+					endStationIndex: that.endStationIndex,
+					specialStartArray: that.sepecialStartArray,
+					specialEndArray: that.specialEndArray
+				}
 				//跳转到选择下车点页面
 				uni.navigateTo({
-					url: '/pages/CTKY/selectStation?startStaionIndex=' + that.startStaionIndex + '&endStationIndex=' + that.endStationIndex
+					url: '/pages/CTKY/selectStation?stationArray=' + JSON.stringify(stationArray)
 				})
 			},
 			//-------------------------------删除乘车人-----------------------------
 			deleteInfo(e) {
-				console.log(e)
+				// console.log(e)
 				this.passengerInfo.splice(e, 1)
 				this.passengerNum--
 				this.calculateTotalPrice();
@@ -397,22 +429,35 @@
 			},
 			//-------------------------------跳转到地图标点-----------------------------
 			checkLocation() {
-				// #ifdef MP-WEIXIN
+				var that = this;
+				// #ifdef H5
 				uni.showModal({
-					content:'小程序暂不支持地图显示',
+					content:'公众号暂不支持地图显示',
 					showCancel:false,
 				})
 				// #endif
-				// #ifndef MP-WEIXIN
-				if (this.ticketDetail.shuttleType == '普通班车') {
-					uni.navigateTo({
-						url: '/pages/CTKY/traditionCarMark'
-					})
-				} else if (this.ticketDetail.shuttleType == '定制班车') {
-					uni.navigateTo({
-						url: '/pages/CTKY/specialMark'
-					})
+				
+				// #ifndef H5
+				if (that.ticketDetail.starSiteArr && that.ticketDetail.endSiteArr) {
+					if (this.ticketDetail.shuttleType == '普通班车') { //普通班车
+						uni.navigateTo({
+							url: '/pages/CTKY/traditionCarMark?traditionArray=' + JSON.stringify(this.ticketDetail)
+						})
+					} else if (this.ticketDetail.shuttleType == '定制班车') { //定制班车
+						uni.navigateTo({
+							url: '/pages/CTKY/specialMark?specialArray=' + JSON.stringify(this.ticketDetail)
+						})
+					}
 				}
+				// if (this.ticketDetail.shuttleType == '普通班车') {
+				// 	uni.navigateTo({
+				// 		url: '/pages/CTKY/traditionCarMark'
+				// 	})
+				// } else if (this.ticketDetail.shuttleType == '定制班车') {
+				// 	uni.navigateTo({
+				// 		url: '/pages/CTKY/specialMark'
+				// 	})
+				// }
 				// #endif
 				
 			},

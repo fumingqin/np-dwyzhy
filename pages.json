@@ -376,7 +376,7 @@
 		{
 			"path": "pages/GJCX/detailedBus",
 			"style": {
-				// "navigationBarTitleText": "41路",
+				"navigationBarTitleText": "线路详情",
 				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		},
@@ -525,7 +525,9 @@
         },
 		{
 		    "path" : "pages/GJCX/detailedH5",
-		    "style" : {}
+		    "style" : {
+				"navigationBarTitleText": "线路详情"
+			}
 		}
         ,{
             "path" : "pages/GJCX/text",
