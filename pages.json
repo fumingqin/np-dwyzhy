@@ -532,7 +532,11 @@
         ,{
             "path" : "pages/GJCX/text",
             "style" : {}
-        }
+        },
+		{
+		    "path" : "pages/GJCX/index",
+		    "style" : {}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
