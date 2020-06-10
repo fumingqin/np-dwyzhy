@@ -7,7 +7,7 @@
 		</view>
 		<view class="inputItem Captcha">
 			<image src="../../static/GRZX/yanzhengma.png" class="iconClass2"></image>
-			<input type="number" placeholder="输入验证码" maxlength="6" class="inputClass" data-key="captchaCode" @input="inputChange2" />
+			<input type="number" placeholder="输入验证码" maxlength="4" class="inputClass" data-key="captchaCode" @input="inputChange2" />
 		</view>
 		<view class="getCode style" @click="getCodeClick" id="Code">{{textCode}}</view>
 		<button type="warn" @click="bindPhone" class="btnClass">确定</button>
@@ -95,7 +95,8 @@
 				}else if(phone==list.phone&&code==list.code){
 					//调用绑定手机号接口
 					uni.request({
-						url:'http://218.67.107.93:9210/api/app/bindTel',
+						//url:'http://218.67.107.93:9210/api/app/bindTel',
+						url:that.$Grzx.Interface.bindTel.url,
 						data:{
 							phoneNumber:phone,
 							wxOpenid:openid,
@@ -124,7 +125,7 @@
 							}else{
 								uni.showToast({
 									title:'绑定失败！',
-									icon:'success',
+									icon:'none',
 								})
 							}
 						}
@@ -155,7 +156,8 @@
 						  	self.textCode = second+"秒后重发";
 						  }},1000)
 						 uni.request({
-							url:'http://218.67.107.93:9210/api/app/getLoginCode?phoneNumber='+self.phoneNumber,
+							// url:'http://218.67.107.93:9210/api/app/getLoginCode?phoneNumber='+self.phoneNumber,
+							url:self.$Grzx.Interface.getLoginCode.url+'?phoneNumber='+self.phoneNumber,
 						    method:"POST",
 							success:(res)=>{
 						 		console.log(res.data.code);

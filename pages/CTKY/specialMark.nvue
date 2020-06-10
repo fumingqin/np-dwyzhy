@@ -8,16 +8,16 @@
 			<scroll-view scroll-y="true" class="orderInfo">
 				<view>
 					<text style="font-size:32rpx; margin-top: 20rpx; margin-left: 30rpx;">{{orderInfo.station}}</text>
-					<text class="textView">{{orderInfo.time}}出发</text>
-					<text class="textView">上车点：{{orderInfo.startStation}}</text>
+					<text class="textView">{{turnDate(orderInfo.setTime)}}出发</text>
+					<text class="textView">上车点：{{orderInfo.startStaion}}</text>
 					<text class="textView">下车点：{{orderInfo.endStation}}</text>
 				</view>
 				
 				<text style="font-size:28rpx; margin-top: 20rpx; margin-left: 30rpx;">途经站</text>
 				<!-- 站点 -->
 				<view class="stationList">
-					<view class="deSelect" :class="{'select':selectIndex == index}" @tap="stationClick(stationArray[index])" v-for="(item,index) in stationArray" :key="index">
-						<text class="deSelectColor" :class="{'selectColor' : selectIndex == index}">{{item.stationName}}</text>
+					<view class="deSelect" :class="{'select':selectIndex == index}" @tap="stationClick(stationArray[index],index)" v-for="(item,index) in stationArray" :key="index">
+						<text class="deSelectColor" :class="{'selectColor' : selectIndex == index}">{{item.SiteName}}</text>
 					</view>
 				</view>
 				<text style="font-size:28rpx; margin-top: 20rpx; margin-left: 30rpx;">站点图片</text>
@@ -42,12 +42,7 @@
 					{image:'../../static/GRZX/banner3.jpg'},
 				],
 				//订单详情
-				orderInfo:{
-					station:'泉州客运中心 — 安溪',
-					time:'08月31日    12:30',
-					startStation:'茶叶大厦',
-					endStation:'3个站点',
-				},
+				orderInfo:[],
 				selectIndex:-1,//记录点击的下标
 				mapHeight:'',//地图高度
 				stationArray:[],//站点数组
@@ -68,9 +63,13 @@
 				showLocation:true,
 				mapContext: '', //mapContext对象
 				index: 0,
+				startArray:[],
+				endArray:[],
+				imageURL:'',//单个站点图片
+				arrayOrsingle:'array',
 			}
 		},
-		onLoad() {
+		onLoad(param) {
 			var that = this;
 			//获取系统信息
 			uni.getSystemInfo({
@@ -79,88 +78,47 @@
 					that.mapHeight = res.windowHeight + 'px';
 				}
 			});
+			
+			that.orderInfo = JSON.parse(param.specialArray)
+			console.log(that.orderInfo)
+			that.stationArray = that.orderInfo.starSiteArr
+			that.startArray = that.orderInfo.starSiteArr[0]
+			that.endArray = that.orderInfo.endSiteArr[0]
+			
 			// 获取绘制线路数据
-			uni.request({
-				url:'http://111.231.109.113:8000/api/MyTest/GetBusLine',
-				method:'GET',
-				data:{
-					LineCode:1
-				},
-				header : {'content-type':'application/json'},
-				success: (res) => {
-					//创建坐标数组保存坐标数据
-					var coordinateArray = [];
-					for (var i = 0; i < res.data.length; i++) {
-						// 创建坐标数组,用来保存经纬度(这是绘制线路的经纬度数组)
-						var coordinates = {
-							latitude : res.data[i].Log_Latitude,
-							longitude : res.data[i].Log_Longitude,
-						}
-						// 将坐标数组添加到标点数组--points是画线需要的标点数组
-						that.points.push(coordinates);
-					}
-					//绘制线路对象(这是绘制线路的polyline)
-					var obj = {
-						points : that.points,
-						color:"#669253",
-						width:2,
-						arrowLine: true,
-					}
-					that.polyline.push(obj);
-				},
-				fail:function(res){
-					console.log('请求失败',res);
-				},
-			});
-			// 获取站点数据
-			uni.request({
-				url:'http://111.231.109.113:8000/api/MyTest/GetBusLineStation',
-				method:'GET',
-				header:{'content-type':'application/json'},
-				data:{
-					LineCode:1
-				},
-				success: (res) => {
-					// console.log(res.data);
-					for (var i = 0; i < res.data.length; i++) {
-						var that = this;
-						var stationInfo = {
-							latitude : res.data[i].Bst_Latitude,
-							longitude : res.data[i].Bst_Longitude,
-							// 站点名称
-							stationName : res.data[i].Bls_StationName,
-							index : i,
-						}
-						that.stationArray.push(stationInfo);
-						/---------------------华丽的分割线，分割线中为绘制坐标点的方法---------------------------/
-						//创建绘制坐标点的对象marker
-						var marker = new Object();
-						marker = {
-							id : res.data[i].AID,
-							latitude : res.data[i].Bst_Latitude,
-							longitude : res.data[i].Bst_Longitude,
-						    iconPath : that.markerIconPath,//标识显示的图片
-							width : that.iconWidth,
-							height : that.iconHeight,
-							callout : {
-								content: res.data[i].Bls_StationName, //文本
-								color: '#FC4646', //文字颜色
-								fontSize: 12, //文本大小
-								borderRadius: 4, //边框圆角
-								bgColor: '#FFFFFF', //背景颜色
-								display: 'ALWAYS', //常显
-								padding:3,
-							}
-						}
-						//将坐标集合添加到绘制坐标数组中
-						that.markers.push(marker);
-						/---------------------华丽的分割线--------------------------------------/
-					}
-				},
-				fail:function(res){
-					console.log('请求失败',res);
-				},
-			})
+			// uni.request({
+			// 	url:'http://111.231.109.113:8000/api/MyTest/GetBusLine',
+			// 	method:'GET',
+			// 	data:{
+			// 		LineCode:1
+			// 	},
+			// 	header : {'content-type':'application/json'},
+			// 	success: (res) => {
+			// 		//创建坐标数组保存坐标数据
+			// 		var coordinateArray = [];
+			// 		for (var i = 0; i < res.data.length; i++) {
+			// 			// 创建坐标数组,用来保存经纬度(这是绘制线路的经纬度数组)
+			// 			var coordinates = {
+			// 				latitude : res.data[i].Log_Latitude,
+			// 				longitude : res.data[i].Log_Longitude,
+			// 			}
+			// 			// 将坐标数组添加到标点数组--points是画线需要的标点数组
+			// 			that.points.push(coordinates);
+			// 		}
+			// 		//绘制线路对象(这是绘制线路的polyline)
+			// 		var obj = {
+			// 			points : that.points,
+			// 			color:"#669253",
+			// 			width:2,
+			// 			arrowLine: true,
+			// 		}
+			// 		that.polyline.push(obj);
+			// 	},
+			// 	fail:function(res){
+			// 		console.log('请求失败',res);
+			// 	},
+			// });
+			
 			// 获取自身位置
 			that.getMyLocation();
 		},
@@ -186,14 +144,13 @@
 				});
 			},
 		    //选中站点
-			stationClick(e){
+			stationClick(e,index){
 				var that = this;
-				// console.log(e);
 				//点击站点时将对应的站点坐标设置为地图中心位置，并放大地图
 				that.centerLatitude = e.latitude;
 				that.centerLongitude = e.longitude;
 				that.scale = 15;
-				that.selectIndex = e.index;
+				that.selectIndex = index;
 			},
 			//点击站点图片
 			picTap() {
@@ -202,7 +159,14 @@
 				uni.navigateTo({
 					url: '/pages/LYFW/currency/imglist'
 				})
-			}
+			},
+			//-------------------------------时间转换-------------------------------
+			turnDate(date) {
+				if(date) {
+					var setTime = date.replace('T',' ');
+					return setTime;
+				}
+			},
 		}
 	}
 </script>

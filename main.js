@@ -13,6 +13,7 @@ import Lyfwcwd from './common/LYFW/LyfwCwd.js' //旅游服务-测试用数据-�
 import Sceniclist from 'common/scenicSpotDistribution.js' //旅游服务-景区目录-测试用数据
 
 Vue.config.productionTip = false
+Vue.prototype.$Grzx=Grzx;  //个人中心
 
 // Vue.prototype.$store=store;  //登录
 

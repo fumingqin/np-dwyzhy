@@ -2,21 +2,21 @@
 // 示例
 const InterfaceAddress = [
 	//获取线路信息，根据站点名称
-	'https://27.148.155.9:9099/api/Bus/getBusLineInfoByStationName',
+	'http://zntc.145u.net/api/Bus/getBusLineInfoByStationName',
 	//获取离某个经纬度最近的一个站点信息，根据经纬度信息
-	'https://27.148.155.9:9099/api/Bus/getBusStationInfoByLonLat',
+	'http://zntc.145u.net/api/Bus/getBusStationInfoByLonLat',
 	//获取线路站点信息，根据线路编号，线路方向
-	'https://27.148.155.9:9099/api/Bus/getBusLineStationInfoByLineIdDirection',
+	'http://zntc.145u.net/api/Bus/getBusLineStationInfoByLineIdDirection',
 	//获取车辆实时到站信息，根据线路编号，线路方向
-	'https://27.148.155.9:9099/api/Bus/getBusArriveLeaveStationInfoByLineIdDirection',
+	'http://zntc.145u.net/api/Bus/getBusArriveLeaveStationInfoByLineIdDirection',
 	//获取距离某站最近车辆信息 根据线路编号，方向，站点名称 
-	'https://27.148.155.9:9099/api/Bus/getBusLineArriveLeaveStationInfoByLineIdDirectionStationName',
+	'http://zntc.145u.net/api/Bus/getBusLineArriveLeaveStationInfoByLineIdDirectionStationName',
 	//根据起始点经纬度获取距离
-	'https://27.148.155.9:9099/api/zhcx/getPlanningLineByLonLat',
+	'http://zntc.145u.net/api/zhcx/getPlanningLineByLonLat',
 	//获取线路轨迹定位信息，根据线路编号，线路方向
-	'https://27.148.155.9:9099/api/Bus/getBusLineTrajectoryByLineIdDirection',
+	'http://zntc.145u.net/api/Bus/getBusLineTrajectoryByLineIdDirection',
 	//获取所有线路信息
-	'https://27.148.155.9:9099/api/Bus/getBusLineInfo',
+	'http://zntc.145u.net/api/Bus/getBusLineInfo',
 ]
 const GaoDeWebKey = [
 	"2348ba1d476b5e44917533b65583f969", 

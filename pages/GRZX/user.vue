@@ -122,17 +122,27 @@
 		methods:{
 			loadData(){
 				var that=this;
+				uni.showLoading({
+					title:'加载信息中..'
+				})
 				uni.getStorage({
 					key:'userInfo',
 					success(res){
+						uni.hideLoading();
 						console.log(res,"222")
 						if(res.data.phoneNumber!=""&&res.data.phoneNumber!=null){
 							uni.request({
-								url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
+								//url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
+								url:that.$Grzx.Interface.login.url+'?phoneNumber='+res.data.phoneNumber,
 								method:'POST',
 								success(res1) {
+									console.log(res1,"111")
 									uni.setStorageSync('userInfo',res1.data.data)
-									that.nickname=res1.data.data.nickname;
+									if(res1.data.data.nickname==""||res1.data.data.nickname==null){
+										that.nickname="请输入昵称";
+									}else{
+										that.nickname=res1.data.data.nickname;
+									}
 									var base64=res1.data.data.portrait;
 									if(base64!=""&&base64!=null&&that.isBase64(base64)){
 										base64ToPath(base64)
@@ -155,6 +165,7 @@
 						}
 					},
 					fail() {
+						uni.hideLoading();
 						that.nickname='';
 						that.portrait='';
 					}

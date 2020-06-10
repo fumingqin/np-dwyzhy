@@ -148,8 +148,10 @@
 				arriveTime:'',
 			}
 		},
-		onLoad(options) {
-			
+		async onLoad(options) {
+			uni.showLoading({
+			      title: '加载中'
+			               });
 			
 			this.lineInfo=JSON.parse(options.transitsList);
 			this.selectList=JSON.parse(options.arr);
@@ -163,20 +165,21 @@
 			// console.log(options)
 			//   that.nList = JSON.parse(options.nList);//解析得到集合
 			// that.busIndex();
-			this.lineDetaile();
-			this.getCarList();
-			if(this.timer){
-				clearInterval(this.timer);
-			}
-			else{
-				this.timer =setInterval(()=>{
+			await this.lineDetaile();
+			await this.getCarList();
+			this.getNearstation();
+			// if(this.timer){
+			// 	clearInterval(this.timer);
+			// }
+			// else{
+			// 	this.timer =setInterval(()=>{
 					
-					console.log('ok!!!!');
-					this.getCarList();
-					this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
-				},5000);
-			}
-
+			// 		console.log('ok!!!!');
+			// 		this.getCarList();
+			// 		this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
+			// 	},5000);
+			// }
+           uni.hideLoading();
 		},
 		onUnload() {
 			var that=this;
@@ -185,10 +188,10 @@
 		
 		onHide() {
 			// console.log(this.timer);
-			// clearInterval(this.timer);
+			clearInterval(this.timer);
 		},
-		onShow() {
-			this.getNearstation();
+		onReady() {
+			
 		},
 		components: {
 			
@@ -209,6 +212,7 @@
 			},
 			
 			getCarList:function(){
+				return new Promise((resolve, reject) => {
 				var that=this;
 				uni.request({
 					url:gjcx.InterfaceAddress[3],
@@ -219,11 +223,14 @@
 					},
 					success:function(res){
 						that.carList=res.data;
-						console.log(JSON.parse(JSON.stringify(res.data)));
+						resolve('suc');
+						// console.log(JSON.parse(JSON.stringify(res.data)));
 					}
 				});
+				})
 			},
 			lineDetaile:function(){
+				return new Promise((resolve, reject) => {
 				var that=this;
 				// console.log(that.selectList[0].lineID);
 				uni.request({
@@ -235,10 +242,11 @@
 					},
 					success:function(res){
 						that.list1=res.data;
-						
+						resolve('suc');
 						// console.log(that.list1);
 					}
 				});
+				})
 			},
 			changeLine:function(){
 				var that=this;
