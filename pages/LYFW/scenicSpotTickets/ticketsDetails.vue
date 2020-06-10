@@ -210,6 +210,7 @@
 						uni.request({
 							url:'http://218.67.107.93:9266/Appointment/getScenicSpotByID?CompanyID='+e.companyId,
 							method:'POST',
+							header: {'content-type': 'application/x-www-form-urlencoded'},
 							success:(res)=>{
 								console.log(res)
 								if (res.data.data.IsAppointment == false) {
@@ -299,9 +300,9 @@
 				console.log(e)
 				if(e == ''){
 					uni.request({
-						// url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID='+this.ticketInformation.companyId +'&dateTime='+e,
-						url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID=1' +'&dateTime='+this.currentTime,
+						url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID='+this.ticketInformation.companyId +'&dateTime='+e,
 						method:'POST',
+						header: {'content-type': 'application/x-www-form-urlencoded'},
 						success:(res)=>{
 							console.log(res)
 							this.apeData = res.data.data;
@@ -309,9 +310,9 @@
 					})
 				}else {
 					uni.request({
-						// url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID='+this.ticketInformation.companyId +'&dateTime='+this.currentTime,
-						url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID=1' +'&dateTime='+this.currentTime,
+						url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID='+this.ticketInformation.companyId +'&dateTime='+this.currentTime,
 						method:'POST',
+						header: {'content-type': 'application/x-www-form-urlencoded'},
 						success:(res)=>{
 							console.log(res)
 							this.apeData = res.data.data;
