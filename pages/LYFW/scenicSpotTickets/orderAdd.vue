@@ -597,7 +597,7 @@
 									orderActualPayment: this.actualPayment,
 									sellerCompanyCode: '南平旅游APP',
 									tppId: 0,
-									AID : that.AID,
+									appointmentId : that.AID,
 								},
 
 								method: 'POST',
