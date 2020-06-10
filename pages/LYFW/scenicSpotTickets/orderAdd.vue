@@ -505,7 +505,6 @@
 											orderActualPayment: that.actualPayment,
 											sellerCompanyCode: '南平旅游H5',
 											tppId: res.data,
-											ape_time : that.ape_time,
 											AID : that.AID,
 										},
 									
@@ -598,7 +597,6 @@
 									orderActualPayment: this.actualPayment,
 									sellerCompanyCode: '南平旅游APP',
 									tppId: 0,
-									ape_time : that.ape_time,
 									AID : that.AID,
 								},
 
