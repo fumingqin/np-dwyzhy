@@ -187,6 +187,7 @@
 				//---------------预约时段专用参数---------------------
 				ape_entry: '',//预约入口参数
 				ape_time:'',//预约时段
+				AID:'',//预约下单用的AID，必传
 				//---------------预约时段专用参数---------------------
 			}
 		},
@@ -199,6 +200,7 @@
 				this.date = options.ape_date;
 				this.dateReminder = options.ape_week;
 				this.ape_time = options.ape_time;
+				this.AID = options.AID;
 				console.log(this.ape_entry)
 				this.lyfwData();
 			}else{
@@ -496,6 +498,7 @@
 											sellerCompanyCode: '南平旅游H5',
 											tppId: res.data,
 											ape_time : that.ape_time,
+											AID : that.AID,
 										},
 									
 										method: 'POST',
@@ -587,6 +590,7 @@
 									sellerCompanyCode: '南平旅游APP',
 									tppId: 0,
 									ape_time : that.ape_time,
+									AID : that.AID,
 								},
 
 								method: 'POST',

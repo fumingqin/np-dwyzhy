@@ -60,12 +60,11 @@
 
 				<view class="ape_title">选择预约时段</view>
 				<scroll-view style="height: 566upx;" scroll-y>
-						<view class="ape_contView" v-for="(item,index) in apeData" :key="item.ape_time" :class="index===radioCurrent && item.ape_numberStatus=='空闲' ? 'ape_contViewBackground' : ''" @click="radioChange(index)">
-							<image  class="ape_contImage" src="../../../static/LYFW/scenicSpotTickets/ticketsList/xuanzhong.png" mode="aspectFill" :hidden="index===radioCurrent && item.ape_numberStatus=='空闲'"></image>
-							<image  class="ape_contImage" src="../../../static/LYFW/scenicSpotTickets/ticketsList/xuanzhong2.png" mode="aspectFill" v-if="index===radioCurrent && item.ape_numberStatus=='空闲'"></image>
-							<text class="ape_contText" style="font-weight: bold;">{{item.ape_time}}</text>
-							<text class="ape_contText">剩余名额：{{item.ape_number}}名</text>
-							<text class="ape_contText">{{item.ape_numberStatus}}</text>
+						<view class="ape_contView" v-for="(item,index) in apeData" :key="item.ape_time" :class="index==radioCurrent && item.AppointmentQuota != 0  ? 'ape_contViewBackground' : ''" @click="radioChange(index)">
+							<image  class="ape_contImage" src="../../../static/LYFW/scenicSpotTickets/ticketsList/xuanzhong.png" mode="aspectFill" :hidden="index==radioCurrent && item.AppointmentQuota != 0 "></image>
+							<image  class="ape_contImage" src="../../../static/LYFW/scenicSpotTickets/ticketsList/xuanzhong2.png" mode="aspectFill" v-if="index==radioCurrent && item.AppointmentQuota != 0 "></image>
+							<text class="ape_contText" style="font-weight: bold;">{{item.AppointmentTimeSlot}}</text>
+							<text class="ape_contText">剩余名额：{{item.AppointmentQuota}}名</text>
 							<text class="ape_contIcon jdticon icon-zuojiantou-up" :hidden="index!==radioCurrent"></text>
 						</view>
 				</scroll-view>
@@ -121,37 +120,9 @@
 				date: '', //时间轴上选中的日期
 				currentTime: '', //当前时间
 				//-----------------时间选择器参数结束-------------------
-				ape_status: 1, //预约开关控制参数
-				radioCurrent: '', //时段radio选择参数
-				apeData: [{
-					ape_time: '10:00-11:00',
-					ape_number: '0',
-					ape_numberStatus: '已满'
-				}, {
-					ape_time: '11:00-12:00',
-					ape_number: '0',
-					ape_numberStatus: '已满'
-				}, {
-					ape_time: '12:00-13:00',
-					ape_number: '0',
-					ape_numberStatus: '已满'
-				}, {
-					ape_time: '13:00-14:00',
-					ape_number: '278',
-					ape_numberStatus: '空闲'
-				}, {
-					ape_time: '14:00-15:00',
-					ape_number: '387',
-					ape_numberStatus: '空闲'
-				}, {
-					ape_time: '15:00-16:00',
-					ape_number: '874',
-					ape_numberStatus: '空闲'
-				}, {
-					ape_time: '16:00-17:00',
-					ape_number: '2000',
-					ape_numberStatus: '空闲'
-				}]
+				ticketInformation : '', //景区信息（点击预定后存）
+				radioCurrent: -1, //时段radio选择参数
+				apeData: [],
 
 
 			}
@@ -230,18 +201,29 @@
 
 			//打开弹框，判断预约功能是否开启，并执行对应操作
 			show: function(e) {
+				// console.log(e)
+				this.ticketInformation = e;
 				uni.setStorage({
 					key: 'ticketInformation',
 					data: e,
 					success: () => {
-						if (this.ape_status == 0) {
-							uni.navigateTo({
-								url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
-							})
-						} else if (this.ape_status == 1) {
-							this.getDate();
-							this.$refs.popup.open()
-						}
+						uni.request({
+							url:'http://218.67.107.93:9266/Appointment/getScenicSpotByID?CompanyID='+e.companyId,
+							method:'POST',
+							success:(res)=>{
+								console.log(res)
+								if (res.data.data.IsAppointment == false) {
+									uni.navigateTo({
+										url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
+									})
+								} else if (res.data.data.IsAppointment == true) {
+									this.getDate();
+									this.$refs.popup.open()
+								}
+							}
+						})
+						
+						
 					}
 				})
 			},
@@ -255,10 +237,19 @@
 			godetail: function() {
 				// console.log(this.dateArray[this.selectIndex])
 				// console.log(this.apeData[this.radioCurrent].date)
-				uni.navigateTo({
-					url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date=' + this.dateArray[this.selectIndex].longDate +
-						'&ape_week=' + this.dateArray[this.selectIndex].week + '&ape_time=' + this.apeData[this.radioCurrent].ape_time
-				})
+				if(this.radioCurrent == -1 || this.radioCurrent===''){
+					uni.showToast({
+						title:'请选择预约时段',
+						icon:'none'
+					})
+				}else{
+					uni.navigateTo({
+						url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date=' + this.dateArray[this.selectIndex].longDate +
+							'&ape_week=' + this.dateArray[this.selectIndex].week + '&ape_time=' + this.apeData[this.radioCurrent].AppointmentTimeSlot
+							+ '&AID=' + this.apeData[this.radioCurrent].AID
+					})
+				}
+				
 
 			},
 
@@ -295,8 +286,34 @@
 			},
 
 			//--------------------------------时间选择器代码开始（整体直接复制，遇到“必改”2个字根据自身代码实际情况进行微调----------------
+			//-------------------------请求预约时段数据-------------------------------------
+			ape_period:function(e){
+				console.log(e)
+				if(e == ''){
+					uni.request({
+						// url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID='+this.ticketInformation.companyId +'&dateTime='+e,
+						url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID=1' +'&dateTime='+this.currentTime,
+						method:'POST',
+						success:(res)=>{
+							console.log(res)
+							this.apeData = res.data.data;
+						}
+					})
+				}else {
+					uni.request({
+						// url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID='+this.ticketInformation.companyId +'&dateTime='+this.currentTime,
+						url:'http://218.67.107.93:9266/Appointment/getAppointmentLogByID?CompanyID=1' +'&dateTime='+this.currentTime,
+						method:'POST',
+						success:(res)=>{
+							console.log(res)
+							this.apeData = res.data.data;
+						}
+					})
+				}
+
+			},
 			//-------------------------点击时间选择器发生事件-------------------------------------
-			viewClick: function(e, item) {
+			viewClick: function(e, item) { 
 				this.selectIndex = e;
 				this.date = item.longDate;
 				console.log(item)
@@ -309,7 +326,7 @@
 				console.log(typeof(this.currentTime))
 				console.log(typeof(this.date))
 				// console.log(this.setOutDate)
-				// this.GetSchedule(); //必改，GetSchedule为请求班次的方法
+				this.ape_period(); //必改
 			},
 			//-------------------------------显示日期-------------------------------
 			onShowDatePicker() { //显示
@@ -320,7 +337,7 @@
 			onSelected: function(e) {
 				this.date = e.fulldate;
 				this.currentTime = e.fulldate; //必改，currentTime为你要请求的时间
-				// this.GetSchedule();  //必改，GetSchedule为请求班次的方法
+				this.ape_period();  //必改，GetSchedule为请求班次的方法
 				var IsExist = false;
 				for (var i = 0; i < this.dateArray.length; i++) {
 					if ((new Date(this.dateArray[i].longDate)).getTime() == (new Date(this.date)).getTime()) {
@@ -364,8 +381,10 @@
 				month = month > 9 ? month : '0' + month;;
 				day = day > 9 ? day : '0' + day;
 				this.currentTime = `${year}/${month}/${day}`;
+				var dateTime = `${year}-${month}-${day}`
 				console.log(this.currentTime)
 				this.loadDate(this.currentTime); //初始化时间轴
+				this.ape_period(dateTime); //获取预约时段数据
 			},
 
 			//-------------------------------初始化时间轴-------------------------------
@@ -466,14 +485,25 @@
 
 			radioChange: function(e) {
 				console.log(e)
-				if(this.apeData[e].ape_numberStatus=='已满'){
+				if(this.apeData[e].AppointmentQuota==0){
+					console.log('已满')
 					uni.showToast({
 						title:'该时段预约人数已满，请选择其他时段',
 						icon:'none'
 					})
 					// this.radioCurrent = '';
-				}else if(this.apeData[e].ape_numberStatus=='空闲'){
-					this.radioCurrent = e;
+				}else if(this.apeData[e].AppointmentQuota!==0){
+					if(this.radioCurrent == e){
+						console.log('重点')
+						this.radioCurrent = -1;
+						console.log(this.radioCurrent)
+					}else{
+						console.log('未满')
+						this.radioCurrent = e;
+						console.log(this.radioCurrent)
+					}
+					
+					
 				}
 
 			}
