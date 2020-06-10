@@ -243,11 +243,19 @@
 						icon:'none'
 					})
 				}else{
-					uni.navigateTo({
-						url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date=' + this.dateArray[this.selectIndex].longDate +
-							'&ape_week=' + this.dateArray[this.selectIndex].week + '&ape_time=' + this.apeData[this.radioCurrent].AppointmentTimeSlot
-							+ '&AID=' + this.apeData[this.radioCurrent].AID
-					})
+					if(this.apeData[this.radioCurrent].AppointmentTimeSlot ==undefined){
+						uni.showToast({
+							title:'请选择预约时段',
+							icon:'none'
+						})
+					}else{
+						uni.navigateTo({
+							url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=1&ape_date=' + this.dateArray[this.selectIndex].longDate +
+								'&ape_week=' + this.dateArray[this.selectIndex].week + '&ape_time=' + this.apeData[this.radioCurrent].AppointmentTimeSlot
+								+ '&AID=' + this.apeData[this.radioCurrent].AID
+						})
+					}
+					
 				}
 				
 
@@ -486,7 +494,7 @@
 			radioChange: function(e) {
 				console.log(e)
 				if(this.apeData[e].AppointmentQuota==0){
-					console.log('已满')
+					// console.log('已满')
 					uni.showToast({
 						title:'该时段预约人数已满，请选择其他时段',
 						icon:'none'
@@ -494,13 +502,13 @@
 					// this.radioCurrent = '';
 				}else if(this.apeData[e].AppointmentQuota!==0){
 					if(this.radioCurrent == e){
-						console.log('重点')
+						// console.log('重点')
 						this.radioCurrent = -1;
-						console.log(this.radioCurrent)
+						// console.log(this.radioCurrent)
 					}else{
-						console.log('未满')
+						// console.log('未满')
 						this.radioCurrent = e;
-						console.log(this.radioCurrent)
+						// console.log(this.radioCurrent)
 					}
 					
 					

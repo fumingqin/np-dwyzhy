@@ -201,9 +201,13 @@
 				this.dateReminder = options.ape_week;
 				this.ape_time = options.ape_time;
 				this.AID = options.AID;
-				console.log(this.ape_entry)
+				console.log(this.ape_date)
+				console.log(this.ape_week)
+				console.log(this.ape_time)
+				console.log(this.AID)
 				this.lyfwData();
 			}else{
+				this.ape_entry = 0;
 				this.getDate();
 				this.lyfwData();
 			}
@@ -471,6 +475,10 @@
 							})
 						}
 						console.log(a)
+						console.log(that.dateReminder)
+						console.log(that.date)
+						console.log(that.AID)
+						console.log(that.ape_time)
 						if (a == '') {
 							// #ifdef H5
 							uni.getStorage({
@@ -525,23 +533,23 @@
 												})
 												that.submissionState = false;
 											} else if (res.data.msg == '下单成功') {
-												if(that.ape_entry==0){
+												if(that.ape_entry=='1'){
 													uni.setStorage({
 														key: 'submitH5Data',
 														data: res.data.data,
 														success: function() {
 															uni.redirectTo({
-																url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
+																url:'successfulPayment'
 															})
 														}
 													})
-												}else if(that.ape_entry==1){
+												}else{
 													uni.setStorage({
 														key: 'submitH5Data',
 														data: res.data.data,
 														success: function() {
 															uni.redirectTo({
-																url:'successfulPayment2'
+																url: '/pages/LYFW/scenicSpotTickets/selectivePayment2?orderNumber=' + res.data.data.orderNumber
 															})
 														}
 													})
@@ -568,6 +576,7 @@
 							// #endif
 
 							// #ifdef APP-PLUS
+							
 							uni.request({
 								url: 'http://218.67.107.93:9210/api/app/scenicSpotSetOrder',
 								data: {
@@ -597,7 +606,7 @@
 								//向服务器发送订单数据，返回订单编号
 								success: (res) => {
 									uni.hideLoading()
-									// console.log(res)
+									console.log(res)
 									if (res.data.msg == '无可售门票！') {
 										uni.showToast({
 											title: '该景区无可售门票！',
@@ -611,13 +620,16 @@
 										})
 										that.submissionState = false;
 									} else if (res.data.msg == '下单成功') {
-										if(that.ape_entry==0){
+										console.log('下单成功')
+										if(that.ape_entry == '1'){
+											console.log('跳转预约成功')
 											uni.redirectTo({
-												url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
+												url:'successfulPayment'
 											})
-										}else if(that.ape_entry==1){
+										}else{
+											console.log('跳转支付成功')
 											uni.redirectTo({
-												url:'successfulPayment2'
+												url: '/pages/LYFW/scenicSpotTickets/selectivePayment2?orderNumber=' + res.data.data.orderNumber
 											})
 										}
 										
