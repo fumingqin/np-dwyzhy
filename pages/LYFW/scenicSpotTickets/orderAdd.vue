@@ -479,6 +479,7 @@
 						console.log(that.date)
 						console.log(that.AID)
 						console.log(that.ape_time)
+						console.log(that.userInfo.phoneNumber)
 						if (a == '') {
 							// #ifdef H5
 							uni.getStorage({
@@ -505,7 +506,8 @@
 											orderActualPayment: that.actualPayment,
 											sellerCompanyCode: '南平旅游H5',
 											tppId: res.data,
-											AID : that.AID,
+											appointmentId : that.AID,
+											tel:that.userInfo.phoneNumber,
 										},
 									
 										method: 'POST',
@@ -597,7 +599,7 @@
 									orderActualPayment: this.actualPayment,
 									sellerCompanyCode: '南平旅游APP',
 									tppId: 0,
-									AID : that.AID,
+									appointmentId : that.AID,
 								},
 
 								method: 'POST',
@@ -636,7 +638,7 @@
 
 								}
 							})
-							// #endif
+							// #endifA
 
 
 						} else if (a.length > 0) {
