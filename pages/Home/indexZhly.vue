@@ -169,7 +169,7 @@
 						method: 'POST',
 						success: (e) => {
 							this.goodsList = e.data.data;
-							console.log(e)
+							//console.log(e)
 						}
 					})
 					setTimeout(()=>{

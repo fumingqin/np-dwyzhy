@@ -224,19 +224,19 @@
 					that.mapHeight = (res.windowHeight -78) + 'px';
 				}
 			});
-			// if(this.timer){
-			// 	clearInterval(this.timer);
-			// }
-			// else{
-			// 	this.timer =setInterval(()=>{
+			if(this.timer){
+				clearInterval(this.timer);
+			}
+			else{
+				this.timer =setInterval(()=>{
 					
-			// 		console.log('ok!!!!');
-			// 		that.carInfo();         //车辆实时动态
-			// 		// that.getNearstation();
-			// 		that.getCarDetaile(that.inStationIndex,that.inStationIndexlat,that.inStationIndexlon);  //获取最近站点
-			// 		// that.setCarmarkers()
-			// 	},5000);
-			// }
+					console.log('ok!!!!');
+					that.carInfo();         //车辆实时动态
+					// that.getNearstation();
+					that.getCarDetaile(that.inStationIndex,that.inStationIndexlat,that.inStationIndexlon);  //获取最近站点
+					// that.setCarmarkers()
+				},5000);
+			}
 		},
 		methods: {
 			getGaoDeKey: function() {
@@ -382,7 +382,7 @@
 						resolve('suc');
 						if(that.direction==0){
 						that.getCarDetaile(b,lat,lon);
-						console.log(b,lat,lon);
+						//console.log(b,lat,lon);
 						that.$refs['bottomPopup'].open();
 						}
 						if(that.direction==1){
@@ -404,7 +404,7 @@
 				that.inStationIndexlon=that.list1[stationIndex-1].lon;
 				that.inStationIndexlat=that.list1[stationIndex-1].lat;
 				that.carSta=999;
-				console.log(that.carList.length);
+				//console.log(that.carList.length);
 				that.inStation=that.list1[stationIndex-1].stationName;
 				// console.log(stationIndex,lat,lon);
 				// console.log(JSON.stringify(that.carList));
@@ -413,7 +413,7 @@
 						// console.log(stationIndex,that.carList[i].stationIndex,stationIndex>that.carList[i].stationIndex)
 						// if(stationIndex>that.carList[i].stationIndex){
 							s=stationIndex-that.carList[i].stationIndex;
-							console.log(that.carList[i].stationIndex);
+							//console.log(that.carList[i].stationIndex);
 							if(that.direction==1){
 								s=stationIndex-(that.carList[i].stationIndex-that.list1.length);
 							}
@@ -448,7 +448,7 @@
 					that.carSta='等待发车';
 					
 				}
-				console.log(that.carSta);
+				//console.log(that.carSta);
 			},
 			//计算距离公式
 			distance: function (la1, lo1, la2, lo2) {
@@ -525,19 +525,23 @@
 						
 						that.points = [];
 						that.polyline = [];
+						
 						that.polylineArr=res.data;
 						var polylineArr = [];
 						var points = [];
 						that.polylineArr = res.data;
+						//console.log(res);
 						//根据文件建设对象经纬度数组
-						for (var i = 0; i < polylineArr.length; i++) {
+						for (var i = 0; i < that.polylineArr.length; i++) {
 							// var arr = points[i].split(',');
 							var obj = {
-								longitude: polylineArr[i].lon,
-								latitude: polylineArr[i].lat
+								longitude: that.polylineArr[i].lon,
+								latitude: that.polylineArr[i].lat
 							}
 							that.points.push(obj);
+							
 						};
+						//console.log(that.points);
 						var obj = {
 							points: that.points,
 							width: 10,
@@ -548,7 +552,10 @@
 							// arrowIconPath:
 						};
 						that.polyline.push(obj);
-
+                        //console.log(JSON.stringify(that.polyline));
+					},
+					fail:function(info){
+						console.log(info);
 					}
 				});
 
@@ -563,7 +570,7 @@
 					},
 					success:function(res){
 						that.list1=JSON.parse(JSON.stringify(res.data));
-						// console.log(that.list1)
+						//console.log(that.list1)
 						that.forwardDirection=res.data;
 						that.startlongitude=that.list1[0].lon;
 						that.startlatitude=that.list1[0].lat;
@@ -653,13 +660,13 @@
 			setMarkers: function(lis) { //设置始末标点
 			
 				var that = this;
-				uni.createMapContext("map").getScale({
-				    success: (e) => {  
-						that.scale1=JSON.stringify(e.scale);
-				        // console.log(JSON.stringify(that.scale1));
-				    }  
-				}) 
-				// console.log(lis);
+				// uni.createMapContext("map").getScale({
+				//     success: (e) => {  
+				// 		that.scale1=JSON.stringify(e.scale);
+				//         // console.log(JSON.stringify(that.scale1));
+				//     }  
+				// }) 
+				console.log('lis');
 				that.stationMarkers = [];
 				 var startmarker = { //起点
 				 	id: 0,
@@ -715,6 +722,7 @@
 				 };
 				 that.stationMarkers.push(startmarker);
 				 that.stationMarkers.push(endmarker);
+				 console.log(that.stationMarkers);
 				 // if(that.scale1>13){
 				for(var i=1;i<lis.length-1;i++){
 					var obj={
@@ -745,7 +753,7 @@
 					};
 					that.stationMarkers.push(obj);
 				};
-				// console.log(that.stationMarkers);
+				console.log(that.stationMarkers);
 
 			},
 		}
