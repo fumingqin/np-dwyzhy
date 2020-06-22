@@ -184,7 +184,7 @@
 					this.orderInfo = res.data.data;
 					this.screenUser();
 					this.getDate();
-					uni.hideLoading()
+					uni.hideLoading() 
 				}
 			})
 
@@ -288,17 +288,14 @@
 				
 				
 				if(e <= 0){
-				uni.showToast({
-					title: '订单已超时',
-					icon: 'none',
-					success: ()=>{
-						this.countDown()
-						uni.switchTab({
-							url:'../../order/OrderList'
-						})
-					}
-				})
-				
+					uni.showToast({
+						title: '订单已超时',
+						icon: 'none',
+					})
+					this.countDown()
+					uni.switchTab({
+						url:'../../order/OrderList'
+					})
 				}else{
 					this.countDown();
 				}
@@ -388,13 +385,7 @@
 				uni.showLoading({
 					title: '拉起支付中...'
 				})
-				// 查看服务商
-				// uni.getProvider({
-				// 	service: 'payment',
-				// 	success: function(res) {
-				// 		console.log(res)
-				// 	}
-				// })
+
 				
 					// #ifdef H5
 					if (that.channeIndex == 0) {

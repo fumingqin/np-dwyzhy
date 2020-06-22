@@ -128,7 +128,8 @@
 							success(res) {
 								if(captcha==res.data.code&&phone==res.data.phone){
 									uni.request({
-										url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+phone,
+										// url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+phone,
+										url:that.$Grzx.Interface.login.url+'?phoneNumber='+phone,
 										method:"POST",
 										success(res) {
 											uni.hideLoading();

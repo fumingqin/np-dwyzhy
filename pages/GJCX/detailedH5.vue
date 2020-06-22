@@ -91,13 +91,13 @@
 			
 			</view>
 			<!-- 底部操作 -->
-			<view class="box4" v-if="lineInfo.segments.length>2">
+			<!-- <view class="box4" v-if="lineInfo.segments.length>2">
 				<view class="areaLeft" @click="changeLine()">
 					<image class="exchange" src="../../static/GCJX/detailedBus/exchange.png"></image>
 					<text class="huanxiang">切换{{lineName}}></text>
 				</view>
 				
-			</view>
+			</view> -->
 	</view>
 </template>
 
@@ -148,7 +148,7 @@
 				arriveTime:'',
 			}
 		},
-		onLoad(options) {
+		async onLoad(options) {
 			
 			
 			this.nList = JSON.parse(options.nList);//解析得到集合
@@ -159,19 +159,20 @@
 			// console.log(options)
 			//   that.nList = JSON.parse(options.nList);//解析得到集合
 			// that.busIndex();
-			this.lineDetaile();
-			this.getCarList();
-			// if(this.timer){
-			// 	clearInterval(this.timer);
-			// }
-			// else{
-			// 	this.timer =setInterval(()=>{
+			await this.lineDetaile();
+			await this.getCarList();
+			this.getNearstation();
+			if(this.timer){
+				clearInterval(this.timer);
+			}
+			else{
+				this.timer =setInterval(()=>{
 					
-			// 		console.log('ok!!!!');
-			// 		this.getCarList();
-			// 		this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
-			// 	},5000);
-			// }
+					console.log('ok!!!!');
+					this.getCarList();
+					this.getCarDetaile(this.inStationIndex,this.inStationIndexlat,this.inStationIndexlon);  //获取最近站点
+				},5000);
+			}
 
 		},
 		onUnload() {
@@ -183,8 +184,8 @@
 			// console.log(this.timer);
 			// clearInterval(this.timer);
 		},
-		onShow() {
-			this.getNearstation();
+		onReady() {
+			
 		},
 		components: {
 			
@@ -205,6 +206,7 @@
 			},
 			
 			getCarList:function(){
+				return new Promise((resolve, reject) => {
 				var that=this;
 				uni.request({
 					url:gjcx.InterfaceAddress[3],
@@ -215,13 +217,17 @@
 					},
 					success:function(res){
 						that.carList=res.data;
-						console.log(JSON.parse(JSON.stringify(res.data)));
+						// console.log(JSON.parse(JSON.stringify(res.data)));
+						resolve('suc');
 					}
+				});
 				});
 			},
 			lineDetaile:function(){
-				var that=this;
+				
 				// console.log(that.selectList[0].lineID);
+				return new Promise((resolve, reject) => {
+					var that=this;
 				uni.request({
 					url:gjcx.InterfaceAddress[2],
 					data:{
@@ -231,10 +237,11 @@
 					},
 					success:function(res){
 						that.list1=res.data;
-						
+						resolve('suc');
 						// console.log(that.list1);
 					}
 				});
+				})
 			},
 			changeLine:function(){
 				var that=this;
@@ -275,7 +282,7 @@
 				// else{
 				// 	s=s+'米';
 				// }
-				console.log(s,that.arriveTime);
+				// console.log(s,that.arriveTime);
 				that.arriveTime=Math.ceil((s*1000)/400);
 			    return s;
 			},
@@ -292,10 +299,11 @@
 					var myLocation=res.longitude +','+res.latitude;
 					that.nearStastion=999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999;
 					// console.log(myLocation);
-					// console.log(JSON.stringify(that.list1));
+					console.log(JSON.stringify(that.list1));
+					
 					for(let i in that.list1){
 						s=that.getDistance(res.latitude,res.longitude,that.list1[i].lat,that.list1[i].lon);
-						 console.log(that.nearStastion>s,that.nearStastion>s,s);
+						 // console.log(that.nearStastion>s,that.nearStastion>s,s);
 						 if(that.nearStastion>s){
 							 
 							 that.nearStastion=s;
@@ -374,7 +382,7 @@
 					that.carSta='等待发车';
 					
 				}
-				// console.log(that.carSta);
+				console.log(that.carSta);
 			},
 			
 			
