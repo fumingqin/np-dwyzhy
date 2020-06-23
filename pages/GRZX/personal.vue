@@ -368,7 +368,7 @@
 		.an{
 			width: 90%;
 			height: 104upx;
-			line-height: 104upx;
+			line-height: 96upx;
 			padding-top: 12upx;
 			font-size: 40upx;
 			margin-top: 48upx; 

@@ -85,10 +85,29 @@
 				</view>
 			</view>
 		</view>
+		
+		<!-- 服务协议和隐私政策 -->
+		<uni-popup ref="centerPopup" type="center">
+			<view class="centerClass">
+				<view class="pTitleClass">服务协议和隐私政策</view>
+				<view class="pTextClass">
+					<text>请你务必审慎阅读，充分理解"软件许可及服务协议"和"隐私政策"各条款。</br>你可阅读</text>
+					<text style="color: #2F9BFE;" @click="agreementClick">《软件许可及服务协议》</text>
+					<text>和</text>
+					<text style="color: #2F9BFE;" @click="privacyClick">《隐私政策》</text>
+					<text>了解详细信息。如你同意，请点击"同意"开始接受我们的服务。</text>
+				</view>
+				<view class="btnBox">
+					<view class="btnClass1" @click="closeApp">暂不使用</view>
+					<view class="btnClass2" @click="confirm">同意</view>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
+	import uniPopup from "@/components/HOME/uni-popup/uni-popup.vue";
 	import {
 		mapState,
 	    mapMutations  
@@ -133,7 +152,11 @@
 				}
 			})
 			//#endif
+			// #ifdef  APP-PLUS	|| MP-WEIXIN
+			this.loadService();
+			//#endif
 		},
+		components: { uniPopup },  //注册为子组件
 		onShow() {
 		},
 		onPullDownRefresh:function(){
@@ -298,7 +321,8 @@
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
 				let local = "http://wxsp.npzhly.com/#/";
-				if (code == null || code === "") {
+				var indexCode=uni.getStorageSync('indexCode');
+				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
 					window.location.href =
 						"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
@@ -370,6 +394,54 @@
 				  }  
 			},
 			 //#endif  
+			 
+			 //-----------加载是否服务------------
+			 loadService:function(){
+			 	var that=this;
+			 	uni.getStorage({
+			 		key:'acceptService',
+			 		success(res) {
+			 			console.log(res)
+			 			if(!res.data){
+			 				that.openPopup('centerPopup');
+			 			}
+			 		},
+			 		fail(err) {
+			 			that.openPopup('centerPopup');
+			 		}
+			 	})
+			 },
+			 //-----------开启弹窗------------
+			 openPopup: function(value) {
+			 	this.$nextTick(function() {
+			 		this.$refs[value].open();
+			 	});
+			 },
+			 //-----------关闭弹窗------------
+			 closePopup: function(value) {
+			 	this.$nextTick(function() {
+			 		this.$refs[value].close();
+			 	});
+			 },
+			 confirm:function(){
+			 	uni.setStorageSync('acceptService',true);
+			 	this.closePopup('centerPopup');
+			 },
+			 closeApp(){
+				// #ifdef APP-PLUS  
+				plus.runtime.quit();  
+				// #endif 
+			 },
+			agreementClick(){
+				uni.navigateTo({
+					url:'/pages/GRZX/privacyService?title=软件许可及服务协议',
+				})
+			},
+			privacyClick(){
+				uni.navigateTo({
+					url:'/pages/GRZX/privacyService?title=隐私政策',
+				})
+			},
 		},
 		
 		// #ifndef MP
@@ -744,4 +816,49 @@
 		background: #fff;
 
 	}
+	
+	//弹框start
+	.centerClass{  //弹框的样式
+		width: 78%;
+		margin-left: 11%;
+		// height: 550upx;
+		background-color: #FFFFFF;
+		border-radius: 20upx;
+	}
+	.pTitleClass{
+		padding-top: 15upx;
+		text-align: center;
+		font-size: 38upx;
+		color: #333333;
+		padding: 40upx 0 20upx 0;
+	}
+	.pTextClass{
+		width: 80%;
+		margin-left: 10%;
+		font-size: 34upx;
+	}
+	.btnBox{
+		width: 100%;
+		border-top: 1upx solid #EAEAEA;
+		// height: 80upx;
+		margin-top: 80upx;
+		display: flex;
+		flex-direction: row; //column纵向，row横向
+	}
+	.btnClass1{
+		color: #333333;
+		text-align: center;
+		width: 50%;
+		font-size: 38upx;
+		padding: 25upx 0;
+		border-right: 1upx solid #EAEAEA;
+	}
+	.btnClass2{
+		color: #2F9BFE;
+		text-align: center;
+		width: 50%;
+		font-size: 38upx;
+		padding: 25upx 0;
+	}
+	//弹框end
 </style>

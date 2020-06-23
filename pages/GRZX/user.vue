@@ -158,10 +158,12 @@
 								}
 							})
 						}else{
+							//#ifdef H5
 							uni.showToast({
 								title:'该用户未绑定手机号',
 								icon:'none'
 							})
+							//#endif
 						}
 					},
 					fail() {
@@ -263,7 +265,15 @@
 				})
 			},
 			QQClick(){
+				//#ifdef APP-PLUS
 				plus.runtime.openURL('mqq://im/chat?chat_type=wpa&uin=' + this.QQ + '&version=1&src_type=web ');
+				//#endif
+				//#ifndef APP-PLUS
+				uni.showToast({
+					title:'该功能只能在app上使用',
+					icon:'none',
+				})
+				//#endif
 			},
 			//------------判断是否为base64格式-----------
 			isBase64:function(str) {

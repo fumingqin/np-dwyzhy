@@ -82,7 +82,7 @@
 						    content: '确定要退出登录么',
 						    success: (e)=>{
 						    	if(e.confirm){
-						    		this.logout();
+						    		uni.removeStorageSync('userInfo');
 						    		setTimeout(()=>{
 						    			uni.switchTab({
 						    				url:'/pages/GRZX/user'

@@ -260,16 +260,13 @@
 			"path": "pages/GRZX/infoList", //常用信息设置
 			"style": {
 				"navigationStyle": "custom"
-				// "navigationBarTitleText": "常用信息设置"
-				// "buttons": [{
-				// 		"fontSrc": "/static/GRZX/jdticon.ttf",
-				// 		"text": "\ue60f",
-				// 		"fontSize": "24",
-				// 		"color": "#303133",
-				// 		"width": "46px",
-				// 		"background": "rgba(0,0,0,0)",
-				// 		"float": "left"
-				// 	}]
+			}
+		},
+		{
+			"path": "pages/GRZX/privacyService", //软件许可及服务协议
+			"style": {
+				"navigationBarTitleText": "软件许可及服务协议",
+				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		},
 		//个人中心模块结束

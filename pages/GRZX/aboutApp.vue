@@ -15,8 +15,8 @@
 			</view>
 		</view>
 		<view class="boxClass2">
-			<!-- <text class="agreementClass" @click="agreementClick">{{agreement}}</text>
-			<text class="privacyClass" @click="privacyClick">{{privacy}}</text> -->
+			<text class="agreementClass" @click="agreementClick">{{agreement}}</text>
+			<text class="privacyClass" @click="privacyClick">{{privacy}}</text>
 			<text class="copyrightClass">{{copyright1}}</text>
 			<text class="copyrightClass">{{copyright2}}</text>
 			<text class="copyrightClass">{{copyright3}}</text>
@@ -34,7 +34,7 @@
 				functionIntroduction:'功能介绍',
 				checkVersion:'检查新版本',
 				agreement:'《软件许可及服务协议》',
-				privacy:'《隐私保护指引》',
+				privacy:'《隐私政策》',
 				copyright1:'今点通旅游 版权所有',
 				copyright2:'Copyright©2020 Journey',
 				copyright3:'All Rights Reserved',
@@ -76,15 +76,13 @@
 				})
 			},
 			agreementClick(){
-				uni.showToast({
-					icon:'none',
-					title:'软件许可及服务协议'
+				uni.navigateTo({
+					url:'/pages/GRZX/privacyService?title=软件许可及服务协议',
 				})
 			},
 			privacyClick(){
-				uni.showToast({
-					icon:'none',
-					title:'隐私保护指引'
+				uni.navigateTo({
+					url:'/pages/GRZX/privacyService?title=隐私政策',
 				})
 			},
 		}
@@ -160,6 +158,7 @@
 		width: 335upx;
 		height: 30upx;
 		line-height: 30upx;
+		margin-bottom: 15upx;
 	}
 	.privacyClass{
 		color: #96a0b4;
@@ -168,10 +167,12 @@
 		width: 335upx;
 		height: 30upx;
 		line-height: 30upx;
+		margin-bottom: 10upx;
 	} 
 	.copyrightClass{
 		color: #bababa;
 		font-size: 26upx;
+		margin-bottom: 5upx;
 	}
 	.imgClass1{
 		width: 45upx;
