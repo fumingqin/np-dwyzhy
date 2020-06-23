@@ -42,7 +42,9 @@
 			}
 		},
 		onLoad(){
+			//#ifdef APP-PLUS
 			this.version=plus.runtime.version;
+			//#endif
 		},
 		methods:{
 			functionClick(){
@@ -54,9 +56,10 @@
 			checkClick(){
 				var that=this;
 				uni.request({
-					url:'http://27.148.155.9:9055/CTKY/getAppVersion?systemName='+that.systemName,
-					method:'POST',
+					url:that.$Grzx.Interface.getAppVersion.url+'?systemName='+that.systemName,
+					method:that.$Grzx.Interface.getAppVersion.method,
 					success(res) {
+						console.log(res)
 						if(that.version!=res.data.VersionCode){
 							uni.showModal({
 							    content: '是否下载新版本',

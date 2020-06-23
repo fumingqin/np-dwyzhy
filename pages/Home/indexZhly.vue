@@ -103,6 +103,21 @@
 				</view>
 			</view>
 		</uni-popup>
+		
+		<!-- 检查新版本-->
+		<uni-popup ref="versionPopup" type="center">
+			<view class="versionClass">
+				<view class="vTitleClass">检查新版本</view>
+				<view class="vTextClass">
+					检查到新版本，是否立即更新？
+				</view>
+				<view class="vbtnBox">
+					<view class="btnClass1 fs" @click="neverUpdateApp">不再提醒</view>
+					<view class="btnClass1 fs" @click="notUpdateApp">暂不更新</view>
+					<view class="btnClass2 fs" @click="updateApp">更新</view>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -139,10 +154,16 @@
 					ticketName: '',
 					ticketImage: '',
 				}],
+				
+				DownLoadUrl:'',//app下载地址
+				version:'',//当前app的版本号
+				systemName:'大武夷智慧游',//系统名称
 			}
 		},
 		onLoad() {
 			this.loadData();
+			
+			//-------------H5授权登录------------
 			// #ifdef  H5	
 			var that=this;
 			uni.getStorage({
@@ -152,9 +173,18 @@
 				}
 			})
 			//#endif
-			// #ifdef  APP-PLUS	|| MP-WEIXIN
-			this.loadService();
+			
+			//-------------app服务协议和隐私政策------------
+			// #ifdef  APP-PLUS ||MP-WEIXIN
+				this.loadService();
 			//#endif
+			
+			//-------------app检查新版本------------
+			// #ifdef  APP-PLUS ||MP-WEIXIN
+				// this.loadVersion();
+				this.version=plus.runtime.version;
+			//#endif
+			
 		},
 		components: { uniPopup },  //注册为子组件
 		onShow() {
@@ -404,7 +434,9 @@
 			 			console.log(res)
 			 			if(!res.data){
 			 				that.openPopup('centerPopup');
-			 			}
+			 			}else{
+							that.loadVersion();
+						}
 			 		},
 			 		fail(err) {
 			 			that.openPopup('centerPopup');
@@ -426,6 +458,7 @@
 			 confirm:function(){
 			 	uni.setStorageSync('acceptService',true);
 			 	this.closePopup('centerPopup');
+				this.loadVersion(); //app检查新版本
 			 },
 			 closeApp(){
 				// #ifdef APP-PLUS  
@@ -441,6 +474,47 @@
 				uni.navigateTo({
 					url:'/pages/GRZX/privacyService?title=隐私政策',
 				})
+			},
+			
+			//-------------app检查新版本------------
+			loadVersion:function(){
+				var that=this;
+				uni.getStorage({
+					key:'tipVersion',
+					success(res) {
+						console.log(res)
+						if(!res.data){
+							that.checkVersion();
+						}
+					},
+					fail(err) {
+						that.checkVersion();
+					}
+				})
+			},
+			checkVersion:function(){
+				var that=this;
+				uni.request({
+					url:that.$Grzx.Interface.getAppVersion.url+'?systemName='+that.systemName,
+					method:that.$Grzx.Interface.getAppVersion.method,
+					success(res) {
+						console.log(res)
+						if(that.version!=res.data.VersionCode){
+							that.DownLoadUrl=res.data.DownLoadUrl;
+							that.openPopup('versionPopup');
+						}
+					}
+				})
+			},
+			updateApp:function(){
+				plus.runtime.openURL(this.DownLoadUrl);
+			},
+			notUpdateApp:function(){
+				this.closePopup('versionPopup');
+			},  
+			neverUpdateApp:function(){
+				uni.setStorageSync('tipVersion',true);
+				this.closePopup('versionPopup');
 			},
 		},
 		
@@ -817,11 +891,10 @@
 
 	}
 	
-	//弹框start
+	//服务协议的弹框start
 	.centerClass{  //弹框的样式
 		width: 78%;
 		margin-left: 11%;
-		// height: 550upx;
 		background-color: #FFFFFF;
 		border-radius: 20upx;
 	}
@@ -840,7 +913,6 @@
 	.btnBox{
 		width: 100%;
 		border-top: 1upx solid #EAEAEA;
-		// height: 80upx;
 		margin-top: 80upx;
 		display: flex;
 		flex-direction: row; //column纵向，row横向
@@ -860,5 +932,34 @@
 		font-size: 38upx;
 		padding: 25upx 0;
 	}
-	//弹框end
+	//服务协议的弹框end
+	
+	//检查新版本的弹框start
+	.versionClass{  //弹框的样式
+		background-color: #FFFFFF;
+		border-radius: 20upx;
+	}
+	.vTitleClass{
+		padding-top: 15upx;
+		text-align: center;
+		font-size: 38upx;
+		color: #333333;
+		padding: 40upx 180upx 40upx 180upx;
+	}
+	.vTextClass{
+		width: 100%;
+		text-align: center;
+		font-size: 34upx;
+	}
+	.vbtnBox{
+		width: 100%;
+		border-top: 1upx solid #EAEAEA;
+		margin-top: 70upx;
+		display: flex;
+		flex-direction: row; //column纵向，row横向
+	}
+	.fs{
+		font-size: 34upx;
+	}
+	//检查新版本的弹框end
 </style>
