@@ -249,10 +249,10 @@
 					type:'wgs84',
 					geocode:true,
 					success: function(res) {
-						//console.log(res.data);
+						//console.log(res);
 							uni.setStorage({
 								key: 'app_position',
-								data:res.address,
+								data:res,
 							})
 							
 						},
@@ -267,9 +267,9 @@
 			      // console.log(myAmapFun);
 			      myAmapFun.getRegeo({
 			        success:(data) =>{
-						console.log(data)
+						//console.log(data)
 						this.position =data[0].regeocodeData.addressComponent.city
-						console.log(this.position);
+						//console.log(this.position);
 			          uni.setStorage({
 			          	key: 'wx_position',
 			          	data:this.position

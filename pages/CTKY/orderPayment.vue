@@ -402,7 +402,6 @@
 						totalPrice: that.totalPrice, //总价格
 					},
 					success: (res) => {
-						let that = this;
 						console.log('订单返回数据', res);
 						if (res.data.msg == '下单成功！') {
 							uni.setStorage({

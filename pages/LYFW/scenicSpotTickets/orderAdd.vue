@@ -479,6 +479,7 @@
 						console.log(that.date)
 						console.log(that.AID)
 						console.log(that.ape_time)
+						console.log(that.userInfo.phoneNumber)
 						if (a == '') {
 							// #ifdef H5
 							uni.getStorage({
@@ -505,7 +506,8 @@
 											orderActualPayment: that.actualPayment,
 											sellerCompanyCode: '南平旅游H5',
 											tppId: res.data,
-											AID : that.AID,
+											appointmentId : that.AID,
+											tel:that.userInfo.phoneNumber,
 										},
 									
 										method: 'POST',
@@ -548,7 +550,7 @@
 														data: res.data.data,
 														success: function() {
 															uni.redirectTo({
-																url: '/pages/LYFW/scenicSpotTickets/selectivePayment2?orderNumber=' + res.data.data.orderNumber
+																url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
 															})
 														}
 													})
@@ -597,7 +599,8 @@
 									orderActualPayment: this.actualPayment,
 									sellerCompanyCode: '南平旅游APP',
 									tppId: 0,
-									AID : that.AID,
+									appointmentId : that.AID,
+									tel:that.userInfo.phoneNumber,
 								},
 
 								method: 'POST',
@@ -627,7 +630,7 @@
 										}else{
 											console.log('跳转支付成功')
 											uni.redirectTo({
-												url: '/pages/LYFW/scenicSpotTickets/selectivePayment2?orderNumber=' + res.data.data.orderNumber
+												url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
 											})
 										}
 										
@@ -636,7 +639,7 @@
 
 								}
 							})
-							// #endif
+							// #endifA
 
 
 						} else if (a.length > 0) {

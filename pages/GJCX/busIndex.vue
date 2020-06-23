@@ -10,6 +10,7 @@
 			<text class="locationTxt" @click="oncity">{{regionApp}}<text class="icon jdticon icon-xia"></text></text>
 			<!-- #endif -->
 			<!-- #ifdef H5 -->
+			<!-- <web-view src="../../common/HTML/gjcx.html"></web-view> -->
 			<text class="locationTxt" @click="oncity">{{regionH5}}<text class="icon jdticon icon-xia"></text></text>
 			<!-- #endif -->
 			<view class="searchBoxRadius">
@@ -39,7 +40,13 @@
 			<view class="box">
 				<view class="searchBoxRadius2">
 					<image class="searchImage2" src="../../static/GCJX/busIndex/green.png" />
+					<!-- #ifdef H5 -->
+					<input class="inputIocale2" placeholder="我的位置" @click="selectInitialH5" v-model="initialPoint" />
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
 					<input class="inputIocale2" placeholder="我的位置" @click="selectInitial" v-model="initialPoint" />
+					<!-- #endif -->
+					
 				</view>
 				<!-- 虚线 -->
 				<view class="xuxian"></view>
@@ -49,10 +56,13 @@
 				</view>
 				<view class="searchBoxRadius2">
 					<image class="searchImage2" src="../../static/GCJX/busIndex/red.png" />
-
+					<!-- #ifdef H5 -->
+					<input class="inputIocale2" placeholder="输入终点" @click="selectDestinationH5" v-model="destination" />
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
 					<input class="inputIocale2" placeholder="输入终点" @click="selectDestination" v-model="destination" />
-
-
+					<!-- #endif -->
+					
 				</view>
 			</view>
 
@@ -69,30 +79,30 @@
 				<view v-for="(item,index) in showdetailList" :key="index">
 					<!-- #ifdef APP-PLUS -->
 					<view v-if="item.lineDirection==0" class="area2" @click="goDetail(item.lineName,item.endName,index)">
-					<!-- #endif -->
-					<!-- #ifdef H5 -->
-					<view v-if="item.lineDirection==0" class="area2" @click="goDetailH5(item.lineName,item.endName,index)">
 						<!-- #endif -->
-						<view style="display: flex; position: relative;">
-							<text class="text3">{{item.lineName}}</text>
-							<text class="text4">{{item.carSta}}<text v-if="item.carSta!=='等待发车'&&item.carSta!=='即将到站'" style="font-size: 36upx;font-weight: lighter;">站</text></text>
-						</view>
-						<view class="area3">
-							<text class="text5">方向 {{item.endName}}</text>
-
-							<text class="text6" v-if="item.carSta!=='等待发车'">{{item.distance}}
-								<text v-if="item.carSta!=='等待发车'">米 /</text>
-								<text v-if="item.carSta!=='等待发车'">{{item.arriveTime}}分</text>
-							</text>
-
-
-						</view>
 						<!-- #ifdef H5 -->
+						<view v-if="item.lineDirection==0" class="area2" @click="goDetailH5(item.lineName,item.endName,index)">
+							<!-- #endif -->
+							<view style="display: flex; position: relative;">
+								<text class="text3">{{item.lineName}}</text>
+								<text class="text4">{{item.carSta}}<text v-if="item.carSta!=='等待发车'&&item.carSta!=='即将到站'" style="font-size: 36upx;font-weight: lighter;">站</text></text>
+							</view>
+							<view class="area3">
+								<text class="text5">方向 {{item.endName}}</text>
+
+								<text class="text6" v-if="item.carSta!=='等待发车'">{{item.distance}}
+									<text v-if="item.carSta!=='等待发车'">米 /</text>
+									<text v-if="item.carSta!=='等待发车'">{{item.arriveTime}}分</text>
+								</text>
+
+
+							</view>
+							<!-- #ifdef H5 -->
+						</view>
+						<!-- #endif -->
+						<!-- #ifdef APP-PLUS -->
 					</view>
 					<!-- #endif -->
-					<!-- #ifdef APP-PLUS -->
-				</view>
-				<!-- #endif -->
 				</view>
 				<view class="more" v-if="linedata1.length>3" @click="more">{{btustatu?"展开":"收起"}}</view>
 			</view>
@@ -119,7 +129,6 @@
 </template>
 
 <script>
-	
 	import citySelect from '../../components/HOME/uni-location/linzq-citySelect/linzq-citySelect.vue';
 	import popupLayer from '../../components/HOME/uni-location/popup-layer/popup-layer.vue';
 	import QSTabs from '../../components/GJCX/QS-tabs2/QS-tabs.vue'
@@ -135,7 +144,7 @@
 			QSTabs,
 			inputSearch,
 			// miMap
-		}, 
+		},
 		computed: {},
 		data() {
 			return {
@@ -185,6 +194,9 @@
 				successNum: 0,
 				successNum1: 0,
 				historyList: [],
+				addressinfo:[],
+				choosetime:0,
+				choosetype:0,
 			}
 		},
 		created() {},
@@ -223,30 +235,37 @@
 			}
 		},
 		onLoad() {
-			var that=this;
-			// uni.getLocation({
-			// 	type: 'wgs84',
-			// 	success:function(res){
-			// 		console.log(res);
-			// 		console.log('定位成功');
-			// 	}
-			// });
+			var that = this;
+			uni.getLocation({
+				type: 'gcj02',
+				geocode:true,
+				success:function(res){
+					console.log(res);
+					console.log('定位成功');
+				}
+			});
 			that.Getpostion();
 			that.getAllLine();
 			// this.Encryption();
 			that.getNearbysites();
-			
+
 		},
 		onShow() {
-			if(this.timer){
-				clearInterval(this.timer);
-			}
-			else{
-				this.timer =setInterval(()=>{
-					this.getNearbysites();
-					console.log('ok!!!!')
-				},15000);
-			}
+			// if(this.timer){
+			// 	clearInterval(this.timer);
+			// }
+			// else{
+			// 	this.timer =setInterval(()=>{
+			// 		this.getNearbysites();
+			// 		console.log('ok!!!!')
+			// 	},15000);
+			// }
+			// let pages = getCurrentPages(); 
+			//     let currPage = pages[pages.length-1]; 
+			console.log(this.addressinfo);
+			//     this.addressinfo=currPage.data.addressinfo;//这就是传递的参数
+			this.getAddressInfo();
+				
 		},
 		onHide() {
 			clearInterval(that.timer);
@@ -296,10 +315,28 @@
 					this.$refs.popupRef.close();
 				}
 			},
+			getAddressInfo(){
+				var that=this;
+				if(that.choosetime!==0&&that.choosetype==0){
+				that.initialPoint = that.addressinfo.title;
+				that.startLonLat = that.addressinfo.location.lng + "," + that.addressinfo.location.lat;
+				that.startlongitude = that.addressinfo.location.lng;
+				that.startlatitude = that.addressinfo.location.lat;
+				console.log(that.initialPoint);
+				}
+				else if(that.choosetime!==0&&that.choosetype==1){
+					that.destination = that.addressinfo.title;
+					that.endLonLat = that.addressinfo.location.lng + "," + that.addressinfo.location.lat;
+					that.endlongitude = that.addressinfo.location.lng;
+					that.endtlatitude = that.addressinfo.location.lat;
+					console.log(that.initialPoint);
+				}
+				
+			},
 			historyLine(i) {
 				var that = this;
 				that.nList = that.historyList[i];
-				console.log(that.nList);
+				//console.log(that.nList);
 				uni.navigateTo({
 					url: 'detailedH5?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1,
 					success() {
@@ -307,7 +344,7 @@
 					}
 				});
 			},
-			handleChange(data){
+			handleChange(data) {
 				var that = this;
 				var Isrepeat = true;
 				// that.nList=that.dataSource[i];
@@ -366,16 +403,16 @@
 					}
 				})
 			},
-			textlon(){
+			textlon() {
 				uni.navigateTo({
-					url:'./text'
+					url: './text'
 				})
 			},
 			getAllLine() {
 				var that = this;
 				uni.request({
 					url: gjcx.InterfaceAddress[7], //获取所有线路
-					method:'GET',
+					method: 'GET',
 					header: {
 						'content-type': 'application/x-www-form-urlencoded'
 					},
@@ -408,25 +445,26 @@
 			Getpostion() {
 				setTimeout(() => {
 					uni.getStorage({
-							key: 'wx_position',
-							success: (res) => {
-								// console.log(res);
-								this.regionWeixin = res.data;
-								this.regionH5 = res.data;
-							},
-							complete: () => {
-								// this.lyfwData(); //请求接口数据
-							}
-						}),
+						key: 'wx_position',
+						success: (res) => {
+							// console.log(res);
+							this.regionWeixin = res.data;
+							this.regionH5 = res.data;
+							this.regionApp = res.data;
+						},
+						complete: () => {
+							// this.lyfwData(); //请求接口数据
+						}
+					})
 
-						uni.getStorage({
-							key: 'app_position',
-							success: (res) => {
-								//console.log(res)
-								this.regionApp = res.data.city;
-								// this.regionH5=res.data.city;
-							},
-						})
+					// uni.getStorage({
+					// 	key: 'app_position',
+					// 	success: (res) => {
+					// 		console.log(res)
+					// 		this.regionApp = res.data.city;
+					// 		// this.regionH5=res.data.city;
+					// 	},
+					// })
 				}, 500)
 			},
 			//搜索事件
@@ -475,6 +513,13 @@
 			},
 			more() {
 				this.btustatu = !this.btustatu;
+			},
+			selectInitialH5:function(){
+				this.choosetime=1;
+				this.choosetype=0;
+				uni.navigateTo({
+					url:'index'
+				})
 			},
 			selectInitial: function() { //选择起点
 				var that = this;
@@ -527,7 +572,13 @@
 				});
 
 			},
-
+            selectDestinationH5:function(){
+				this.choosetime=1;
+				this.choosetype=1;
+				uni.navigateTo({
+					url:'index'
+				})
+			},
 			exchange: function() { //始末位置交换
 				var that = this;
 				// var newinitialPoint = that.initialPoint;
@@ -559,66 +610,29 @@
 				// that.initialPoint='高铁北';
 				// that.destination='南源岭';
 				// that.city='南平';
-				if(that.initialPoint==''||that.destination==''){
+				if (that.initialPoint == '' || that.destination == '') {
 					uni.showToast({
-							title: '请输入起点或终点',
-							duration: 2000,
-							icon: 'none',
-						});
-						return;
-				}
-				else{
+						title: '请输入起点或终点',
+						duration: 2000,
+						icon: 'none',
+					});
+					return;
+				} else {
 					uni.navigateTo({
 						url: '/pages/GJCX/selectRoute?startLonLat=' + that.startLonLat + '&endLonLat=' + that.endLonLat +
 							'&initialPoint=' + that.initialPoint + '&destination=' + that.destination + '&city=' + that.regionWeixin,
-							success() {
-								clearInterval(that.timer);
-							}
+						success() {
+							clearInterval(that.timer);
+						}
 					});
 				}
-				
+
 			},
 			//进入详情页
 			goDetail: function(lineName, endName, i) {
-			    uni.showLoading({
-				      title: '加载中'
-				               });
-				var that = this;
-				that.nList = that.carList[i];
-			
-				var list = that.nList;
-				if (!that.historyList.includes(list)) {
-					that.historyList.unshift(list);
-					uni.setStorage({
-						key: 'history',
-						data: that.historyList
-					})
-					// localStorage.setItem("that.historyList", JSON.stringify(that.historyList));
-				} else {
-					//有搜索记录，删除之前的旧记录，将新搜索值重新push到数组首位
-					let i = that.historyList.indexOf(list);
-					that.historyList.splice(i, 1)
-					that.historyList.unshift(list);
-					uni.setStorage({
-						key: 'history',
-						data: that.historyList
-					})
-				};
-			    
-				uni.navigateTo({
-					url: 'detailed?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1,
-					success() {
-						uni.hideLoading();
-						clearInterval(that.timer);
-					}
-				})
-			
-			},
-			//进入详情页
-			goDetailH5: function(lineName, endName, i) {
-                uni.showLoading({
-				      title: '加载中'
-				               });
+				uni.showLoading({
+					title: '加载中'
+				});
 				var that = this;
 				that.nList = that.carList[i];
 
@@ -640,7 +654,43 @@
 						data: that.historyList
 					})
 				};
-                
+
+				uni.navigateTo({
+					url: 'detailed?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1,
+					success() {
+						uni.hideLoading();
+						clearInterval(that.timer);
+					}
+				})
+
+			},
+			//进入详情页
+			goDetailH5: function(lineName, endName, i) {
+				uni.showLoading({
+					title: '加载中'
+				});
+				var that = this;
+				that.nList = that.carList[i];
+
+				var list = that.nList;
+				if (!that.historyList.includes(list)) {
+					that.historyList.unshift(list);
+					uni.setStorage({
+						key: 'history',
+						data: that.historyList
+					})
+					// localStorage.setItem("that.historyList", JSON.stringify(that.historyList));
+				} else {
+					//有搜索记录，删除之前的旧记录，将新搜索值重新push到数组首位
+					let i = that.historyList.indexOf(list);
+					that.historyList.splice(i, 1)
+					that.historyList.unshift(list);
+					uni.setStorage({
+						key: 'history',
+						data: that.historyList
+					})
+				};
+
 				uni.navigateTo({
 					url: 'detailedH5?nList=' + JSON.stringify(that.nList) + '&nearstaion1=' + that.nearstaion1,
 					success() {
@@ -659,7 +709,7 @@
 			//获取附近站点信息并计算我的位置到附近站点的距离
 			getNearbysites() {
 				var that = this;
-				
+
 				uni.getLocation({
 					type: 'gcj02',
 					success: function(res) {
@@ -667,7 +717,7 @@
 						//console.log(res);
 						uni.request({
 							url: gjcx.InterfaceAddress[1], //调用最近站点方法
-							method:'GET',
+							method: 'GET',
 							header: {
 								'content-type': 'application/x-www-form-urlencoded'
 							},
@@ -683,24 +733,24 @@
 								that.distance = parseInt(sta.data[0].distance * 1000);
 								that.getLinedata(that.nearstaion1)
 							},
-							fail:function(info){
+							fail: function(info) {
 								uni.hideLoading();
 								uni.showToast({
-										title: '获取数据失败，请检查网络是否打开',
-										duration: 2000,
-										
-									});
+									title: '获取数据失败，请检查网络是否打开',
+									duration: 2000,
+
+								});
 								console.log(info);
 							}
 						})
 					},
-					fail:function(info){
+					fail: function(info) {
 						uni.hideLoading();
 						uni.showToast({
-								title: '获取定位失败,请检查GPS是否打开',
-								duration: 2000,
-								
-							});
+							title: '获取定位失败,请检查GPS是否打开',
+							duration: 2000,
+
+						});
 						console.log(info);
 					}
 				})
