@@ -75,32 +75,30 @@
 			},
 			//退出登录
 			toLogout(){
-			/* 	console.log(this.hasLogin,"00000") */
-				if(this.hasLogin){
-					uni.showModal({
-					    content: '确定要退出登录么',
-					    success: (e)=>{
-					    	if(e.confirm){
-					    		this.logout();
-					    		setTimeout(()=>{
-					    			uni.switchTab({
-					    				url:'/pages/GRZX/user'
-					    			})
-					    		}, 200)
-					    	}
-					    }
-					});
-				}else{
-					uni.showToast({
-						title : '请先登录',
-						icon : 'none',
-					})
-					/* setTimeout(function(){
-						uni.navigateTo({
-							url  : '/pages/GRZX/userLogin'
-						}) 
-					},1500); */
-				}
+				uni.getStorage({
+					key:'userInfo',
+					success(res) {
+						uni.showModal({
+						    content: '确定要退出登录么',
+						    success: (e)=>{
+						    	if(e.confirm){
+						    		this.logout();
+						    		setTimeout(()=>{
+						    			uni.switchTab({
+						    				url:'/pages/GRZX/user'
+						    			})
+						    		}, 200)
+						    	}
+						    }
+						});
+					},
+					fail(err){
+						uni.showToast({
+							title : '请先登录',
+							icon : 'none',
+						})
+					}
+				})
 				
 			},
 			clearStorage(){

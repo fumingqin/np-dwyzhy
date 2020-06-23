@@ -170,6 +170,10 @@
 						that.portrait='';
 					}
 				})
+				// #ifdef APP-PLUS
+				// 获取设备的imei
+				console.log("IMEI: "+plus.device.imei);
+				// #endif
 			},
 			orderClick(){
 				uni.switchTab({
