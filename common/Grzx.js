@@ -4,6 +4,8 @@ const Url = 'http://218.67.107.93:9210'; //http请求
 
 const VersionUrl='http://27.148.155.9:9055'; //检查系统版本
 
+const IMEIUrl='http://www.npzhly.com:9266'; //上传IMEI
+
 const Interface={
 	login:{
 		url:Url+'/api/app/login',
@@ -36,6 +38,12 @@ const Interface={
 		method:'POST',
 		pages: [],
 	},
+	setDownload:{
+		url:IMEIUrl+'/Home/setDownload',
+		name:'上传IMEI',
+		method:'POST',
+		pages: [],
+	}
 }
 
 // 接口声明区

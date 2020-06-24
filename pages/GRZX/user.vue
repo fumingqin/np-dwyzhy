@@ -80,9 +80,13 @@
 				QQ:'2482549389',
 				portrait:'',
 				nickname:'',
+				userInfo:'',
 			}
 		},
 		onLoad(){
+			// #ifdef APP-PLUS
+			this.updateIMEI();
+			//#endif
 		},
 		onShow(){
 			this.loadData();
@@ -120,6 +124,34 @@
 			
 		},
 		methods:{
+			//--------------------------上传IMEI----------------------
+			updateIMEI:function(){
+				// #ifdef APP-PLUS
+				var that=this;
+				// 获取设备的imei
+				var imei=plus.device.imei;
+				uni.getStorage({
+					key:'userInfo',
+					success:function(res){
+						// console.log(res.data.phoneNumber)
+						// console.log(imei)
+						// console.log(that.$Grzx.Interface.setDownload.url)
+						// console.log(that.$Grzx.Interface.setDownload.method)
+						uni.request({
+							url:that.$Grzx.Interface.setDownload.url,
+							method:that.$Grzx.Interface.setDownload.method,
+							data:{
+								phoneNumber:res.data.phoneNumber,
+								IMEI:imei,
+							},
+							success(data) {
+								console.log(data,"data1144")
+							}
+						})
+					}
+				})
+				// #endif
+			},
 			loadData(){
 				var that=this;
 				uni.showLoading({
@@ -129,14 +161,14 @@
 					key:'userInfo',
 					success(res){
 						uni.hideLoading();
-						console.log(res,"222")
+						// console.log(res,"222")
 						if(res.data.phoneNumber!=""&&res.data.phoneNumber!=null){
 							uni.request({
 								//url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
 								url:that.$Grzx.Interface.login.url+'?phoneNumber='+res.data.phoneNumber,
 								method:'POST',
 								success(res1) {
-									console.log(res1,"111")
+									// console.log(res1,"111")
 									uni.setStorageSync('userInfo',res1.data.data)
 									if(res1.data.data.nickname==""||res1.data.data.nickname==null){
 										that.nickname="请输入昵称";
@@ -172,10 +204,6 @@
 						that.portrait='';
 					}
 				})
-				// #ifdef APP-PLUS
-				// 获取设备的imei
-				console.log("IMEI: "+plus.device.imei);
-				// #endif
 			},
 			orderClick(){
 				uni.switchTab({
