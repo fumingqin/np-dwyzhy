@@ -84,9 +84,6 @@
 			}
 		},
 		onLoad(){
-			// #ifdef APP-PLUS
-			this.updateIMEI();
-			//#endif
 		},
 		onShow(){
 			this.loadData();
@@ -124,34 +121,6 @@
 			
 		},
 		methods:{
-			//--------------------------上传IMEI----------------------
-			updateIMEI:function(){
-				// #ifdef APP-PLUS
-				var that=this;
-				// 获取设备的imei
-				var imei=plus.device.imei;
-				uni.getStorage({
-					key:'userInfo',
-					success:function(res){
-						// console.log(res.data.phoneNumber)
-						// console.log(imei)
-						// console.log(that.$Grzx.Interface.setDownload.url)
-						// console.log(that.$Grzx.Interface.setDownload.method)
-						uni.request({
-							url:that.$Grzx.Interface.setDownload.url,
-							method:that.$Grzx.Interface.setDownload.method,
-							data:{
-								phoneNumber:res.data.phoneNumber,
-								IMEI:imei,
-							},
-							success(data) {
-								console.log(data,"data1144")
-							}
-						})
-					}
-				})
-				// #endif
-			},
 			loadData(){
 				var that=this;
 				uni.showLoading({

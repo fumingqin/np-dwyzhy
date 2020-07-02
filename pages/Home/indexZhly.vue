@@ -162,7 +162,6 @@
 		},
 		onLoad() {
 			this.loadData();
-			
 			//-------------H5授权登录------------
 			// #ifdef  H5	
 			var that=this;
@@ -175,12 +174,12 @@
 			//#endif
 			
 			//-------------app服务协议和隐私政策------------
-			// #ifdef  APP-PLUS ||MP-WEIXIN
+			// #ifdef  APP-PLUS
 				this.loadService();
 			//#endif
 			
 			//-------------app检查新版本------------
-			// #ifdef  APP-PLUS ||MP-WEIXIN
+			// #ifdef  APP-PLUS 
 				// this.loadVersion();
 				this.version=plus.runtime.version;
 			//#endif
@@ -188,6 +187,9 @@
 		},
 		components: { uniPopup },  //注册为子组件
 		onShow() {
+			// #ifdef  APP-PLUS 
+			this.updateIMEI(); //上传IMEI
+			//#endif
 		},
 		onPullDownRefresh:function(){
 			this.loadData(); //请求接口数据
@@ -515,6 +517,29 @@
 			neverUpdateApp:function(){
 				uni.setStorageSync('tipVersion',true);
 				this.closePopup('versionPopup');
+			},
+			
+			//--------------------------上传IMEI----------------------
+			updateIMEI:function(){
+				var that=this;
+				// 获取设备的imei
+				var imei=plus.device.imei;
+				uni.getStorage({
+					key:'userInfo',
+					success:function(res){
+						uni.request({
+							url:that.$Grzx.Interface.setDownload.url,
+							method:that.$Grzx.Interface.setDownload.method,
+							data:{
+								phoneNumber:res.data.phoneNumber,
+								IMEI:imei,
+							},
+							success(data) {
+								console.log(data,"data1144")
+							}
+						})
+					}
+				})
 			},
 		},
 		
