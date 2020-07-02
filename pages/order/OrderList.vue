@@ -91,8 +91,8 @@
 							<view class="at_button at_btToPay" @click="topay(item.orderNumber)">去支付</view>
 						</view>
 						
-						<!-- 审核中 -->
-						<view class="at_buttonView" v-if="item.orderType=='审核中'">
+						<!-- 待确认 -->
+						<view class="at_buttonView" v-if="item.orderType=='待确认'">
 							<view class="at_button at_btDelete" @click="open3(item.orderNumber)">取消</view>
 							<view class="at_button at_btDetails" @click="details(item.orderNumber)">详情</view>
 						</view>
@@ -454,8 +454,8 @@
 								<view class="at_button at_btToPay" @click="topay(item.orderNumber)">去支付</view>
 							</view>
 							
-							<!-- 审核中 -->
-							<view class="at_buttonView" v-if="item.orderType=='审核中'">
+							<!-- 待确认 -->
+							<view class="at_buttonView" v-if="item.orderType=='待确认'">
 								<view class="at_button at_btDelete" @click="open3(item.orderNumber)">取消</view>
 								<view class="at_button at_btDetails" @click="details(item.orderNumber)">详情</view>
 							</view>
@@ -1134,7 +1134,7 @@
 												that.finishArr.push(that.info[i]);
 											} else if (that.info[i].orderType == '待使用') {
 												that.goingArr.push(that.info[i]);
-											} else if (that.info[i].orderType == '待支付'|| that.info[i].orderType == '审核中') {
+											} else if (that.info[i].orderType == '待支付'|| that.info[i].orderType == '待确认') {
 												that.unfinishArr.push(that.info[i]);
 											} else if (that.info[i].orderType == '已取消' || that.info[i].orderType == '已退票') {
 												that.cancelArr.push(that.info[i]);

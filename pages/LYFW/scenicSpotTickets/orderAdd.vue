@@ -471,7 +471,7 @@
 						var a = '';
 						if(res.data.msg =='获取订单列表成功！'){
 							a = res.data.data.filter(item => {
-								return item.orderType == '待支付' || item.orderType == '审核中';
+								return item.orderType == '待支付' || item.orderType == '待确认';
 							})
 						}
 						console.log(a)
