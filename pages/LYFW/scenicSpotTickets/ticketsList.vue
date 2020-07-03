@@ -17,7 +17,7 @@
 
 		<!-- 搜索内容 -->
 		<view :hidden="searchIndex==0" v-for="(item,index) in searchData" :key="index">
-			<view class="Tk_scrollview" @click="godetail(item.ticketId)">
+			<view class="Tk_scrollview" @click="godetail(item)">
 				<view class="Tk_item">
 					<image class="Tk_image" :src="item.ticketImage" />
 					<view class="Tk_bacg">
@@ -34,7 +34,7 @@
 		<!-- 命名：six -->
 		<view class="currencyTitle">热门景点</view>
 		<view class="sixBackground">
-			<view v-for="(item,index) in sixPalaceList" v-if="index < 6" :key="index" @click="godetail(item.ticketId)">
+			<view v-for="(item,index) in sixPalaceList" v-if="index < 6" :key="index" @click="godetail(item)">
 				<view class="darkCurtain"></view>
 				<image :src="item.ticketImage"></image>
 				<view class="sixView">
@@ -65,7 +65,7 @@
 	
 		<!-- 景区列表 -->
 		<view :hidden="screenIndex == 3">
-			<view class="Tk_scrollview" v-for="(item,index) in scenicList" :key="index" v-if="index < scenicListIndex " @click="godetail(item.ticketId)">
+			<view class="Tk_scrollview" v-for="(item,index) in scenicList" :key="index" v-if="index < scenicListIndex " @click="godetail(item)">
 				<view class="Tk_item">
 					<image class="Tk_image" :src="item.ticketImage" />
 					<view class="Tk_bacg">
@@ -82,7 +82,7 @@
 		
 		<!-- 筛选的景区列表 -->
 		<view :hidden="screenIndex !== 3 ">
-			<view class="Tk_scrollview" v-for="(item,index) in scenicListCate" :key="index" @click="godetail(item.ticketId)">
+			<view class="Tk_scrollview" v-for="(item,index) in scenicListCate" :key="index" @click="godetail(item)">
 				<view class="Tk_item">
 					<image class="Tk_image" :src="item.ticketImage" />
 					<view class="Tk_bacg">
@@ -412,9 +412,25 @@
 
 			//路由整合
 			godetail: function(e) {
-				uni.navigateTo({
-					url: '/pages/LYFW/scenicSpotTickets/ticketsDetails?ticketId='+JSON.stringify(e)
-				})
+				if(e.ticketTitle == '武夷山风景名胜区'){
+					// #ifdef H5
+					uni.navigateTo({
+						url:'specificPage'
+					})
+					// #endif
+					// #ifdef APP-PLUS
+					uni.navigateTo({
+						url:'specificPage?data=0'
+					})
+					// #endif
+					
+				}else{
+					uni.navigateTo({
+						url: '/pages/LYFW/scenicSpotTickets/ticketsDetails?ticketId='+JSON.stringify(e.ticketId)
+					})
+				}
+				
+				
 			},
 
 			//筛选点击
