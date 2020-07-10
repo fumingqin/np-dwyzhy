@@ -279,6 +279,7 @@
 							let wuzhi2 = sc.filter(item => {
 								return item.type == '物质';
 							})
+							console.log(wuzhi2);
 							if(feiyi2==''){
 								this.disStatus = 1;
 							}else{
