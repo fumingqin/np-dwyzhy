@@ -88,7 +88,7 @@
 				</view>
 			</view>
 			<swiper style="height: 560upx; padding: 0 8rpx;" circular="circular" autoplay="autoplay">
-				<swiper-item style="display: flex;" v-for="(item,index) in itText" :key="index"  @click="natTo(item.fy_Id)">
+				<swiper-item style="display: flex;" v-for="(item,index) in itText2" :key="index"  @click="natTo(item.fy_Id)">
 					<view class="fa_listBarView"  >
 						<image class="fa_listBarImage" mode="aspectFill" :src="item.fy_imageUrl"></image>
 						<text class="fa_listBarText1">{{item.fy_title}}</text>
@@ -228,7 +228,7 @@
 					url:'http://218.67.107.93:9210/api/app/getFyCultureList?regionWeixin='+this.regionList[this.screenIndex],
 					method:'POST',
 					success: (res) => {
-						console.log(res)
+						console.log('打印1',res)
 						if (res.data.msg == '非遗文化列表信息成功！') {
 							let feiyi = res.data.data.filter(item => {
 								return item.type == '非遗';
@@ -236,6 +236,7 @@
 							let wuzhi = res.data.data.filter(item => {
 								return item.type == '物质';
 							})
+							console.log('物质1',wuzhi)
 							this.itText = feiyi; //非遗数组
 							this.itText2 = wuzhi; //物质数组
 							uni.hideLoading()
@@ -269,7 +270,7 @@
 					url:'http://218.67.107.93:9210/api/app/getFyCultureList?regionWeixin='+this.regionList[this.screenIndex],
 					method:'POST',
 					success: (res) => {
-						console.log(res)
+						console.log('打印2',res)
 						if (res.data.msg == '非遗文化列表信息成功！') {
 							var sc = res.data.data;;
 							sc.sort((a, b) => a.id - b.id)
@@ -279,7 +280,7 @@
 							let wuzhi2 = sc.filter(item => {
 								return item.type == '物质';
 							})
-							console.log(wuzhi2);
+							console.log('物质2',wuzhi2);
 							if(feiyi2==''){
 								this.disStatus = 1;
 							}else{

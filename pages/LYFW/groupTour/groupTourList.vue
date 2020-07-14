@@ -3,12 +3,7 @@
 		<view class="topSearch">
 			<!-- 搜索栏 -->
 			<view class="searchTopBox">
-				<!-- #ifdef MP -->
-				<text  class="locationTxt" @click="oncity">{{regionWeixin}}<text class="icon jdticon icon-xia"></text></text>
-				<!-- #endif -->
-				<!-- #ifdef APP-PLUS -->
-				<text  class="locationTxt" @click="oncity">{{regionApp.city}}<text class="icon jdticon icon-xia"></text></text>
-				<!-- #endif -->
+			<text  class="locationTxt" @click="oncity">{{regionWeixin}}<text class="icon jdticon icon-xia"></text></text>
 				<view class="searchBoxRadius">
 					<input class="inputIocale" type="search" v-model="searchValue" @confirm="searchNow" placeholder="搜索景区名称" />
 					<image class="searchImage" src="../../../static/LYFW/currency/search.png" />
@@ -118,7 +113,6 @@
 			return {
 				searchValue: '', //搜索框值
 				regionWeixin: '请选择', //微信地区数值
-				regionApp : '请选择',//APP地区数值
 				
 				content:[],
 				
@@ -136,6 +130,13 @@
 		},
 
 		onLoad(options) {
+			// #ifdef H5
+			uni.showToast({
+				title:'公众号当前定位无法启用，已默认定位南平市',
+				icon:'none'
+			})
+			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
+			// #endif
 			// this.routeInit();
 			this.Getpostion();
 			this.routeData();
@@ -173,19 +174,17 @@
 			Getpostion:function(){
 				setTimeout(()=>{
 					uni.getStorage({
-						key:'wx_position',
-						success:(res)=>{
-							// console.log(res)
-							this.regionWeixin = res.data;
-						}
-					}),
-					
-					uni.getStorage({
-						key:'app_position',
+						key: 'wx_position',
 						success: (res) => {
 							// console.log(res)
-							this.regionApp = res.data;
-						}
+							this.regionWeixin = res.data;
+						},
+						fail: (res) => {
+							uni.showToast({
+								title:'请选择地区',
+								icon:'none'
+							})
+						},
 					})
 				},500)
 				
@@ -208,17 +207,11 @@
 					this.searchIndex = 0;
 				} else if(e == 'yes'){
 					uni.getStorage({
-						key:'wx_position',
-						success:(res)=>{
-							// console.log(res)
-							this.regionWeixin = res.data;
-						}
-					}),
-					uni.getStorage({
-						key:'app_position',
+						key: 'wx_position',
 						success: (res) => {
 							// console.log(res)
-							this.regionApp = res.data;
+							this.regionWeixin = res.data;
+							// this.lyfwData(); //请求接口数据
 						}
 					})
 					this.$refs.popupRef.close();

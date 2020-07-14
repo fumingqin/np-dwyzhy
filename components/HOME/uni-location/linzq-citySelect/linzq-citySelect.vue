@@ -245,18 +245,17 @@
 			getWarpweft() {
 				var that = this
 				that.po_tips = '定位中...'
-				uni.getLocation({
-					type:'wgs84',
-					geocode:true,
-					success: function(res) {
-						//console.log(res);
-							uni.setStorage({
-								key: 'app_position',
-								data:res,
-							})
-							
-						},
-				}),
+				// uni.getLocation({
+				// 	type:'wgs84',
+				// 	geocode:true,
+				// 	success: function(res) {
+				// 		console.log(res);
+				// 			uni.setStorage({
+				// 				key: 'app_position',
+				// 				data:res,
+				// 			})
+				// 		},
+				// }),
 				that.loadCity();//小程序-调用高德
 			},
 			//把当前位置的经纬度传给高德地图，调用高德API获取当前地理位置
@@ -267,9 +266,9 @@
 			      // console.log(myAmapFun);
 			      myAmapFun.getRegeo({
 			        success:(data) =>{
-						//console.log(data)
+						// console.log(data)
 						this.position =data[0].regeocodeData.addressComponent.city
-						//console.log(this.position);
+						// console.log(this.position);
 			          uni.setStorage({
 			          	key: 'wx_position',
 			          	data:this.position

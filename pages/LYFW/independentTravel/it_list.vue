@@ -200,36 +200,21 @@
 			//获取定位数据
 			Getpostion: function() {
 				setTimeout(() => {
-						uni.getStorage({
-							key: 'wx_position',
-							success: (res) => {
-								// console.log(res)
-								this.regionWeixin = res.data;
-								this.textData(); //请求接口数据
-							},
-							fail: (res) => {
-								uni.showToast({
-									title:'请选择地区',
-									icon:'none'
-								})
-							},
-						}),
-						uni.getStorage({
-							key: 'app_position',
-							success: (res) => {
-								// console.log(res)
-								if (res.data !== undefined) {
-									this.regionWeixin = res.data.city;
-									this.textData(); //请求接口数据
-								}
-							},
-							fail: (res) => {
-								uni.showToast({
-									title:'请选择地区',
-									icon:'none'
-								})
-							},
-						})
+					uni.getStorage({
+						key: 'wx_position',
+						success: (res) => {
+							// console.log(res)
+							this.regionWeixin = res.data;
+							this.textData(); //请求接口数据
+						},
+						fail: (res) => {
+							uni.showToast({
+								title:'请选择地区',
+								icon:'none'
+							})
+							this.textData(); //请求接口数据
+						},
+					})
 				}, 500)
 			},
 
@@ -248,28 +233,14 @@
 					this.screenIndex = 0;
 					this.searchIndex = 0;
 				} else if (e == 'yes') {
-					// #ifndef APP-PLUS
 					uni.getStorage({
 						key: 'wx_position',
 						success: (res) => {
-							// console.log(res)
+							console.log(res)
 							this.regionWeixin = res.data;
 							this.textData(); //请求接口数据
 						}
-					}),
-					// #endif
-					// #ifdef APP-PLUS
-					uni.getStorage({
-						key: 'app_position',
-						success: (res) => {
-							// console.log(res)
-							if (res.data !== undefined) {
-								this.regionWeixin = res.data.city;
-								this.textData(); //请求接口数据
-							}
-						}
 					})
-					// #endif
 					this.$refs.popupRef.close();
 				} else {
 					this.$refs.popupRef.close();

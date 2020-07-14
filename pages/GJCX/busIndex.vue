@@ -3,16 +3,7 @@
 		<view class="bgColor"></view>
 		<view :style="{height:statusBarHeight+'px'}" style="width: 100%;"></view>
 		<view class="searchTopBox">
-			<!-- #ifdef MP -->
-			<text class="locationTxt" @click="oncity">{{regionWeixin}}<text class="icon jdticon icon-xia"></text></text>
-			<!-- #endif -->
-			<!-- #ifdef APP-PLUS -->
-			<text class="locationTxt" @click="oncity">{{regionApp}}<text class="icon jdticon icon-xia"></text></text>
-			<!-- #endif -->
-			<!-- #ifdef H5 -->
-			<!-- <web-view src="../../common/HTML/gjcx.html"></web-view> -->
-			<text class="locationTxt" @click="oncity">{{regionH5}}<text class="icon jdticon icon-xia"></text></text>
-			<!-- #endif -->
+			<text  class="locationTxt" @click="oncity">{{regionWeixin}}<text class="icon jdticon icon-xia"></text></text>
 			<view class="searchBoxRadius">
 				<!-- <input class="inputIocale" type="search" v-model="ipt" @confirm="searchNow" placeholder="查线路/站点/地点" /> -->
 				<!-- #ifdef APP-PLUS -->
@@ -155,8 +146,6 @@
 				btustatu: true, //展开收起状态
 				statusBarHeight: this.statusBarHeight, //状态栏高度，在main.js里
 				regionWeixin: '请选择', //微信地区数值
-				regionApp: '请选择', //APP地区数值
-				regionH5: '请选择', //H5
 				ipt: '', //搜索默认值
 				tabs_2: ['去哪', '历史'], //选项标题
 				current_2: 0, //标题下标
@@ -235,6 +224,13 @@
 			}
 		},
 		onLoad() {
+			// #ifdef H5
+			uni.showToast({
+				title:'公众号当前定位无法启用，已默认定位南平市',
+				icon:'none'
+			})
+			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
+			// #endif
 			var that = this;
 			uni.getLocation({
 				type: 'gcj02',
@@ -285,31 +281,20 @@
 			},
 			back_city(e) {
 				if (e !== 'no' && e !== 'yes') {
-					// console.log(e);
-					this.regionWeixin = e.cityName;
-					this.regionApp = e.cityName;
-					this.regionH5 = e.cityName;
-					// console.log(this.regionApp);
+					this.regionWeixin = e.cityName
 					this.$refs.popupRef.close();
-					// this.lyfwData();
+					// this.textData();
 					this.screenIndex = 0;
 					this.searchIndex = 0;
 				} else if (e == 'yes') {
 					uni.getStorage({
-							key: 'wx_position',
-							success: (res) => {
-								// console.log(res)
-								this.regionWeixin = res.data;
-								// this.lyfwData(); //请求接口数据
-							}
-						}),
-						uni.getStorage({
-							key: 'app_position',
-							success: (res) => {
-								console.log(res);
-								this.regionApp = res;
-							}
-						})
+						key: 'wx_position',
+						success: (res) => {
+							console.log(res)
+							this.regionWeixin = res.data;
+							// this.textData(); //请求接口数据
+						}
+					})
 					this.$refs.popupRef.close();
 				} else {
 					this.$refs.popupRef.close();
@@ -447,24 +432,16 @@
 					uni.getStorage({
 						key: 'wx_position',
 						success: (res) => {
-							// console.log(res);
+							// console.log(res)
 							this.regionWeixin = res.data;
-							this.regionH5 = res.data;
-							this.regionApp = res.data;
 						},
-						complete: () => {
-							// this.lyfwData(); //请求接口数据
-						}
+						fail: (res) => {
+							uni.showToast({
+								title:'请选择地区',
+								icon:'none'
+							})
+						},
 					})
-
-					// uni.getStorage({
-					// 	key: 'app_position',
-					// 	success: (res) => {
-					// 		console.log(res)
-					// 		this.regionApp = res.data.city;
-					// 		// this.regionH5=res.data.city;
-					// 	},
-					// })
 				}, 500)
 			},
 			//搜索事件
