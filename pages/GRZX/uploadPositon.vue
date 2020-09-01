@@ -94,16 +94,21 @@ export default{
 					url: this.$Grzx.Interface.setAppLocation.url + "?passengerId="
 					+ this.unid + "&longitude=" + this.longitude + "&latitude=" 
 					+ this.latitude + "&phoneNumber=" + this.phoneNumber 
-					+ "&contactNumber=" + this.emergency,
+					+ "&contactNumber=" + this.emergency +"&locationExplain=" + this.reason,
 					method: this.$Grzx.Interface.setAppLocation.method,
 					success: res => {
-						if(res.statusCode==200){
+						console.log(res);
+						if(res.statusCode==200 && res.data=="上传定位成功。"){
 							uni.showToast({
-								title: '上传成功！'
+								title: res.data,
 							});
 							setTimeout(function(){
 								uni.navigateBack();
 							},300)
+						}else{
+							uni.showToast({
+								title: res.data,
+							});
 						}
 					},
 					fail: () => {
