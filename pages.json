@@ -269,6 +269,12 @@
 				"navigationBarBackgroundColor": "#FFFFFF"
 			}
 		},
+		{
+			"path": "pages/GRZX/uploadPositon", //上传定位
+			"style": {
+				"navigationBarTitleText": "上传定位"
+			}
+		},
 		//个人中心模块结束
 
 		{

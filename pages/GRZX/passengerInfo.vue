@@ -39,11 +39,11 @@
 			</view>
 		</view>	
 		<view v-if="submitType == 1 || submitType == 2" class="btnBox">  <!--非个人中心页面进入 -->
-			<button type="warn" @click="addPassenger" class="btnAdd1">+添加乘客</button>
+			<button @click="addPassenger" class="btnAdd1">+添加乘客</button>
 			<button type="primary" @click="definite" class="btnDefinite">确定</button>
 		</view>
 		<view v-if="submitType == 0" class="btnBox">  <!--个人中心页面进入-->
-			<button type="warn" @click="addPassenger" class="btnAdd2">+添加乘客</button>
+			<button @click="addPassenger" class="btnAdd2">+添加乘客</button>
 		</view>	
 		<view class="returnBox" @click="returnPages">
 			<image class="returnClass" src="../../static/GRZX/btnReturn.png"></image>
@@ -100,8 +100,6 @@
 					success(res2) {
 						console.log("6666")
 						for(var j=0;j<res2.data.length;j++){
-							// console.log(data1.userID,"5555")
-							// console.log(res2.data[j].userID,"4444")
 							list.push(res2.data[j].userID);
 						}
 					}
@@ -275,6 +273,8 @@
 		height: 90upx;
 		line-height: 90upx;
 		margin-top: 30upx;
+		background-color: #007AFF;
+		color: #FFFFFF;
 	}
 	.btnDefinite{
 		border-radius: 12upx;
@@ -288,7 +288,8 @@
 		height: 90upx;
 		line-height: 90upx;
 		border-radius: 12upx;
-		background-color: #FC4646;
+		background-color: #007AFF;
+		color: #FFFFFF;
 		margin-top: 30upx;
 	}
 	.boxClass{
@@ -378,9 +379,9 @@
 		height: 40upx;
 		line-height: 40upx;
 		font-size: 24upx;
-		color: #ff0000;
+		color: #007AFF;
 		margin-left: 20upx;
-		border: 1upx solid #ff0000;
+		border: 1upx solid #007AFF;
 		border-radius: 10upx;
 		text-align: center;
 	}

@@ -6,12 +6,9 @@
 			<image src="../../static/GRZX/set.png" class="setClass" @click="navTo('/pages/GRZX/set')"></image>
 			<image src="../../static/GRZX/info.png" class="infoClass" @click="navTo('/pages/GRZX/myNews')"></image>
 			<!-- #endif -->
-			<!-- <image src="../../static/GRZX/scan.png" class="scanClass" @click="scanClick"></image>
-			 -->
 			<view class="userInfoClass" @click="checkLogin">
 				<image class="portraitClass" :src="portrait || '/static/GRZX/missing-face.png'"></image>
 				<text class="usernameClass">{{nickname || '游客'}}</text>
-				<!-- <image src="../../static/GRZX/edit.png" class="editClass"></image> -->
 			</view>
 			
 			<view class="typeBox">
@@ -44,24 +41,9 @@
 	
 		<view class="serviceBox">
 			<text class="moreClass">更多服务</text>
-			<!-- <view class="boxClass marginTop" @click="navTo('电子发票')">
-				<image src="../../static/GRZX/tubiao_fapiao.png" class="iconClass1"></image>
-				<text class="fontStyle">电子发票</text>
-				<image src="../../static/GRZX/tubiao_Right.png" class="btnClass"></image>
-			</view> -->
-			<view class="boxClass" @click="QQClick">
-				<image src="../../static/GRZX/tubiao_kefu.png" class="iconClass2"></image>
-				<text class="fontStyle">QQ客服</text>
-				<image src="../../static/GRZX/tubiao_Right.png" class="btnClass"></image>
-			</view>
-			<view class="boxClass borderTop" @click="infoClick">
-				<image src="../../static/GRZX/tubiao_zhengzhao.png" class="iconClass3"></image>
-				<text class="fontStyle">信息管理</text>
-				<image src="../../static/GRZX/tubiao_Right.png" class="btnClass"></image>
-			</view>
-			<view class="boxClass borderTop" @click="complaintClick">
-				<image src="../../static/GRZX/tubiao_tousu.png" class="iconClass4"></image>
-				<text class="fontStyle">我要投诉</text>
+			<view class="boxClass" v-for="(item,index) in serviceList" :key="index" @click="clickService(item.title)" :class="index==0?'':'borderTop'">
+				<image :src="item.src" :class="item.style"></image>
+				<text class="fontStyle">{{item.title}}</text>
 				<image src="../../static/GRZX/tubiao_Right.png" class="btnClass"></image>
 			</view>
 		</view>
@@ -81,6 +63,27 @@
 				portrait:'',
 				nickname:'',
 				userInfo:'',
+				
+				serviceList:[{
+					title:'信息管理',
+					style:'iconClass1',
+					src:'../../static/GRZX/tubiao_zhengzhao.png',
+				},
+				{
+					title:'QQ客服',
+					style:'iconClass2',
+					src:'../../static/GRZX/tubiao_kefu.png',
+				},
+				{
+					title:'我要投诉',
+					style:'iconClass3',
+					src:'../../static/GRZX/tubiao_tousu.png',
+				},
+				{
+					title:'上传定位',
+					style:'iconClass4',
+					src:'../../static/GRZX/tubiao_dingwei.png',
+				}]
 			}
 		},
 		onLoad(){
@@ -130,14 +133,11 @@
 					key:'userInfo',
 					success(res){
 						uni.hideLoading();
-						// console.log(res,"222")
 						if(res.data.phoneNumber!=""&&res.data.phoneNumber!=null){
 							uni.request({
-								//url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
 								url:that.$Grzx.Interface.login.url+'?phoneNumber='+res.data.phoneNumber,
 								method:'POST',
 								success(res1) {
-									// console.log(res1,"111")
 									uni.setStorageSync('userInfo',res1.data.data)
 									if(res1.data.data.nickname==""||res1.data.data.nickname==null){
 										that.nickname="请输入昵称";
@@ -179,23 +179,34 @@
 					url:'/pages/order/OrderList'
 				})
 			},
-			navTo(url){
+			navTo(e){
 				uni.navigateTo({
-					url
-				})
-				console.log(url)
-			},
-			//信息管理
-			infoClick(){
-				uni.navigateTo({
-					url:'/pages/GRZX/infoList'
+					url:e,
 				})
 			},
-			// 投诉
-			complaintClick(){
-				uni.navigateTo({
-					url:'/pages/GRZX/complaint'
-				})  
+			clickService(e){
+				switch (e){
+					case '信息管理':
+						uni.navigateTo({
+							url:'/pages/GRZX/infoList'
+						})
+						break;
+					case 'QQ客服':
+						this.QQClick();
+						break;
+					case '我要投诉':
+						uni.navigateTo({
+							url:'/pages/GRZX/complaint'
+						}) 
+						break;
+					case '上传定位':
+						uni.navigateTo({
+							url:'/pages/GRZX/uploadPositon'
+						}) 
+						break;
+					default:
+						return '';
+				}
 			},
 			checkLogin(){
 				uni.getStorage({
@@ -319,7 +330,6 @@
 		width: 47upx;
 		height: 42upx;
 		position: absolute;
-		//left: 87.73%;
 		left: 20%;
 		top: 74upx;
 	}
@@ -329,7 +339,6 @@
 		top:161upx;
 		height: 127upx;
 		width: 68.4%;
-		// background-color: #06B4FD;
 		display: flex;
 		flex-direction: row;
 	}
@@ -339,8 +348,6 @@
 		height: 127upx;
 	}
 	.usernameClass{		//昵称
-		// height: 60upx;
-		// line-height: 44upx;
 		font-size: 48upx;
 		color: #FFFFFF;
 		margin-top: 20upx;
@@ -350,7 +357,6 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
-		// border: 1upx solid #007AFF;
 	}
 	.grzyClass{  		//个人主页
 		width: 20%;
@@ -467,8 +473,6 @@
 	}
 	.serviceBox{		//更多服务
 		width:91.47%;
-		//height: 510upx;
-		height: 390upx;
 		background-color: #FFFFFF;
 		border-radius: 12upx;
 		margin-top: 10upx;
@@ -493,32 +497,32 @@
 	.marginTop{
 		margin-top: 18upx;
 	}
-	.iconClass1{  //电子发票图标
-		width: 38upx;
-		height: 37upx;
-		position: absolute;
-		left: 11upx;
-		top:34upx;
-		/* margin-top: 34upx;
-		margin-left: 11upx; */
-	}
-	.iconClass2{  //在线客服图标
-		width: 40upx;
-		height: 38upx;
-		margin-top: 34upx;
-		margin-left: 9upx;
-	}
-	.iconClass3{  //证照信息图标
+	
+	.iconClass1{  //证照信息图标
 		width: 42upx;
 		height: 34upx;
 		margin-top: 34upx;
 		margin-left: 8upx;
 	}
-	.iconClass4{  //我的投诉图标
+	.iconClass2{  //客服图标
+		width: 40upx;
+		height: 38upx;
+		margin-top: 34upx;
+		margin-left: 9upx;
+	}
+	
+	.iconClass3{  //我的投诉图标
 		width: 36upx;
 		height: 39upx;
 		margin-top: 29upx;
 		margin-left: 13upx;
+	}
+	.iconClass4{  //上传定位图标
+		width: 40upx;
+		height: 40upx;
+		position: absolute;
+		left: 11upx;
+		top:31upx;
 	}
 	.btnClass{
 		width: 11upx;

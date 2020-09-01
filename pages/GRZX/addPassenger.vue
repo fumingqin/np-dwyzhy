@@ -10,7 +10,7 @@
 					<view class="fontStyle">性别</view>
 					<radio-group class="inputClass" name="userSex">
 						<label v-for="(item, index) in sexMode" :key="index" @click="radioClick(index)" > 
-							<radio style="transform: scale(0.7)" :value="user.userSex" :checked="index===user.userSex" />{{item.title}}
+							<radio style="transform: scale(0.7)" :value="user.userSex" :checked="index===user.userSex" color="#007AFF" />{{item.title}}
 						</label>  
 					</radio-group>
 				</view>
@@ -104,7 +104,7 @@
 				<view class="checkBox">
 					<checkbox-group name="userDefault" @change="checkChange">
 						<label>
-							<checkbox :checked="user.userDefault" :value="user.userDefault"  />
+							<checkbox :checked="user.userDefault" :value="user.userDefault" color="#007AFF" />
 						</label>
 					</checkbox-group>
 				</view>
@@ -115,7 +115,7 @@
 				<view class="checkBox">
 					<checkbox-group name="userEmergencyContact">
 						<label>
-							<checkbox :checked="user.userEmergencyContact" :value="user.userEmergencyContact" />
+							<checkbox :checked="user.userEmergencyContact" :value="user.userEmergencyContact" color="#007AFF" />
 						</label>
 					</checkbox-group>
 				</view>
@@ -644,7 +644,7 @@
 		width: 40%;
 		height: 108upx;
 		background-color: #FFFFFF;
-		color: #F75674;
+		color: #007AFF;
 		position: fixed;
 		bottom: 0upx;
 		left: 0%;
@@ -656,7 +656,7 @@
 	.btnsubmit{		//保存
 		width: 60%;
 		height: 108upx;
-		background-color: #FC4B4B;
+		background-color: #007AFF;
 		color: #FFFFFF;
 		position: fixed;
 		bottom: 0upx;
@@ -680,19 +680,6 @@
 		position: absolute;
 		right: 9%;
 	}
-	//checkBox样式
-	/* #ifdef APP-PLUS*/
-	// uni-checkbox-group{ 
-	// 	width:50% !important; 
-	// }
-	// uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked{
-	// 	//background: #ff0000;
-	// 	border-color:#ff0000;
-	// }
-	// uni-checkbox .uni-checkbox-input.uni-checkbox-input-checked::before{
-	// 	border-color:#ff0000 ;
-	// }
-	/* #endif */
 	.borderTop{  
 		border-top: 1upx solid #F5F5F5;
 	}
@@ -701,7 +688,6 @@
 		height: 440upx;
 		margin-top: 20upx;
 		margin-left: 3.47%;
-		// border: 1upx solid #EAEAEA;
 		background-color: #FFFFFF;
 		border-radius: 25upx;
 		position: relative;
@@ -711,7 +697,6 @@
 		height:	440upx;
 		margin-top: 20upx;
 		margin-left: 3.47%;
-		// border: 1upx solid #EAEAEA;
 		background-color: #FFFFFF;
 		border-radius: 25upx;
 		position: relative;
@@ -735,9 +720,6 @@
 		font-size: 32upx;
 		height: 108upx;
 		line-height: 108upx;
-		// margin-top: -53upx;
-		// margin-left: 39%;
-		//color: #ff0000;
 		text-align: center;
 	}
 	.imgClass{
@@ -760,6 +742,6 @@
 		height: 52upx;
 		line-height: 52upx;
 		font-size: 32upx;
-		color: #ff0000;
+		color: #007AFF;
 	}
 </style>

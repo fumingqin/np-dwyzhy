@@ -52,7 +52,7 @@
 					<text class="dhText">联系电话&nbsp;(加密保护)</text>
 					<input class="dhTitle" name="mobile" placeholder-style="#AAAAAA" placeholder="请输入" v-model="detailInfo.mobile" adjust-position="" />
 				</view>
-				<button class="tjButton" type="primary" :color="'#2b9df2'" form-type="submit" >提交</button>
+				<button class="tjButton" type="primary" form-type="submit" >提交</button>
 			</view>
 		</form>
 	</view>
@@ -61,9 +61,6 @@
 <script>
 	import pickerAddress from '../../components/GRZX/wangding-pickerAddress/wangding-pickerAddress.vue'
 	import robbyImageUpload from '@/components/GRZX/robby-image-upload/robby-image-upload.vue'
-	import {
-		mapState
-	} from 'vuex';
 	export default {
 		components: {
 			pickerAddress,
@@ -114,10 +111,6 @@
 			this.routeInit();
 			this.loadUserInfo();
 			
-		},
-		
-		computed:{
-			...mapState(['userInfo']),
 		},
 		
 		methods: {
@@ -372,7 +365,8 @@
 		}
 		.tjButton{
 			width: 90%;
-			height: 104upx;
+			height: 90upx;
+			line-height: 90upx;
 			font-size: 40upx;
 			margin-top: 55upx;
 			margin-bottom: 48upx;

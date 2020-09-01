@@ -23,7 +23,7 @@
 			</view>
 		</view>
 		<view v-if="type==1 && state==1" class="btnBox">
-			<button type="warn" @click="addPassenger" class="btnAdd">+添加乘客</button>
+			<button @click="addPassenger" class="btnAdd">+添加乘客</button>
 		</view>	
 		
 		<view v-if="type==1 && state==2" class="mt">
@@ -51,7 +51,7 @@
 			</view>
 		</view>
 		<view v-if="type==1 && state==2" class="btnBox">
-			<button type="warn" @click="deletePassenger" class="btnAdd">删除</button>
+			<button @click="deletePassenger" class="btnAdd">删除</button>
 		</view>
 		
 		<!-- <view v-if="type==1" class="navClass" >
@@ -81,7 +81,7 @@
 			</view>
 		</view>	
 		<view v-if="type==2 && state==1" class="btnBox"> 
-			<button type="warn" @click="addAddress" class="btnAdd">+添加邮寄地址</button>
+			<button @click="addAddress" class="btnAdd">+添加邮寄地址</button>
 		</view>	
 		
 		<view v-if="type==2 && state==2" class="m-l">
@@ -104,7 +104,7 @@
 			</view>
 		</view>	
 		<view v-if="type==2 && state==2" class="btnBox">
-			<button type="warn" @click="deleteAddress" class="btnAdd">删除</button>
+			<button @click="deleteAddress" class="btnAdd">删除</button>
 		</view>
 		<view v-if="type==2" class="navClass" >
 			<view class="passengerClass2" @click="passengerClick"><text class="textClass">常用出行人</text></view>
@@ -397,7 +397,7 @@
 		font-size:32upx ;
 	}
 	.passengerClass1{
-		color: #ff0000;
+		color: #007AFF;
 		width: 50%;
 		text-align: center;
 	}
@@ -412,14 +412,14 @@
 		text-align: center;
 	}
 	.addressClass2{
-		color: #ff0000;
+		color: #007AFF;
 		width: 50%;
 		text-align: center;
 	}
 	.lineClass{
 		height: 5upx;
 		width: 100%;
-		background-color: #ff0000;
+		background-color: #007AFF;
 	}
 	//乘车人管理
 	.mt{
@@ -453,7 +453,12 @@
 		position: absolute;
 		left: 4%;
 		top:30upx;
+		width: 18%;
 		font-weight: bold;
+		display: block;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
 	}
 	.sexClass{
 		position: absolute;
@@ -503,9 +508,9 @@
 		height: 40upx;
 		line-height: 40upx;
 		font-size: 24upx;
-		color: #ff0000;
+		color: #007AFF;
 		margin-left: 20upx;
-		border: 1upx solid #ff0000;
+		border: 1upx solid #007AFF;
 		border-radius: 10upx;
 		text-align: center;
 	}
@@ -532,8 +537,9 @@
 		height: 90upx;
 		line-height: 90upx;
 		border-radius: 12upx;
-		background-color: #FC4646;
+		background-color: #007AFF;
 		margin-top: 30upx;
+		color: #FFFFFF;
 	}
 	
 	//地址管理
@@ -591,7 +597,6 @@
 		left: 80%;
 		height: 282upx;
 		width: 20%;
-		/* background-color: #007AFF; */
 	}
 	.boxClass1{
 		background-color: #FFFFFF;

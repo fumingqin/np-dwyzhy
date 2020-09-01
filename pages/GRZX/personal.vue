@@ -33,11 +33,7 @@
 					:timeout="true"
 				></w-picker>
 			</view>
-		<!-- 	<view class="Cr_slk2">
-				<text class="bz">签&nbsp;名：</text>
-				<input class="slk" name="autograph" placeholder="你想要说的话"  v-model="autograph" />
-			</view> -->
-			<button class="an" type="primary" form-type="submit">保存</button>
+			<text class="fontStyle" @click="submit">保存</text>
 			
 		</form>
 	</view>
@@ -100,7 +96,6 @@
 					key:'userInfo',
 					success(res){
 						uni.request({
-							// url:'http://218.67.107.93:9210/api/app/login?phoneNumber='+res.data.phoneNumber,
 							url:theself.$Grzx.Interface.login.url+'?phoneNumber='+res.data.phoneNumber,
 							method:"POST",
 							success(res1) {
@@ -151,7 +146,6 @@
 				})	
 			},
 			genderChange : function(e){
-				//console.log(e.detail.value,"sex")
 				if(e.detail.value==0){
 					this.selector="请选择";
 				}else{
@@ -211,60 +205,58 @@
 					}
 				})
 			},
-			formSubmit: function(e) {
+			submit: function(e) {
 				uni.showLoading({					title:'保存中...'				})
-				// console.log(this.portrait)
-				// console.log(this.port)
-				console.log(this.unid)
-				console.log(this.openId_qq)
-				console.log(this.openId_wx)
-				console.log(this.selector)
-				console.log(this.address)
-				console.log(this.nickname)
-				console.log(this.birthday)
-				console.log(this.backImg)
-				console.log(this.phoneNumber)
-				console.log(this.username)
-				uni.request({
-					// url:'http://218.67.107.93:9210/api/app/changeInfo',
-					url:this.$Grzx.Interface.changeInfo.url,
-					data:{
-						portrait:this.port,
-						unid:this.unid,
-						openId_qq:this.openId_qq,
-						openId_wx:this.openId_wx,
-						gender:this.selector,
-						address:this.address,
-						nickname:this.nickname,
-						birthday:this.birthday,
-						backImg:this.backImg,
-						phoneNumber:this.phoneNumber,
-						username:this.username,
-					},
-					method:'POST',
-					success(res) {
-						console.log(res,'res')
-					},
-					fail(err) {
-						console.log(err,"err")
-					}
-				})
-				var list={
-						portrait:this.portrait,
-						unid:this.unid,
-						openId_qq:this.openId_qq,
-						openId_wx:this.openId_wx,
-						gender:this.gender,
-						address:this.address,
-						nickname:this.nickname,
-						birthday:this.birthday,
-						backImg:this.backImg,
-						phoneNumber:this.phoneNumber,
-						username:this.username,
-					};
-				uni.setStorageSync('userInfo',list);
-				uni.hideLoading();
-				uni.navigateBack();
+				// console.log(this.unid)
+				// console.log(this.openId_qq)
+				// console.log(this.openId_wx)
+				// console.log(this.selector)
+				// console.log(this.address)
+				// console.log(this.nickname)
+				// console.log(this.birthday)
+				// console.log(this.backImg)
+				// console.log(this.phoneNumber)
+				// console.log(this.username)
+				if(this.nickname==''){
+					uni.showToast({
+						title: '请填写昵称',
+						icon:'none',
+					});
+				}else{
+					uni.request({
+						url:this.$Grzx.Interface.changeInfo.url,
+						data:{
+							portrait:this.port,
+							unid:this.unid,
+							openId_qq:this.openId_qq,
+							openId_wx:this.openId_wx,
+							gender:this.selector,
+							address:this.address,
+							nickname:this.nickname,
+							birthday:this.birthday,
+							backImg:this.backImg,
+							phoneNumber:this.phoneNumber,
+							username:this.username,
+						},
+						method:'POST',
+						success(res) {
+							console.log(res,'res')
+							uni.hideLoading();
+							uni.showToast({
+								title: res.data.msg,
+								icon:'none',
+							});
+							if(res.data.msg='信息保存成功！'){
+								setTimeout(function(){
+									uni.navigateBack();
+								},300)
+							}
+						},
+						fail(err) {
+							console.log(err,"err")
+						}
+					})	
+				}
 			},
 			getPhoto(){
 				var that=this;
@@ -375,5 +367,16 @@
 			margin-bottom: 48upx;
 		}
 	}
-
+	
+	.fontStyle{
+		padding: 30upx 0;
+		width: 90%;
+		bottom: 20upx;
+		left: 5%;
+		position: fixed;
+		text-align: center;
+		background-color: #0055ff;
+		color: #FFFFFF;
+		border-radius: 20upx;
+	}
 </style>

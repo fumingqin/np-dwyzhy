@@ -6,6 +6,8 @@ const VersionUrl='http://27.148.155.9:9055'; //检查系统版本
 
 const IMEIUrl='http://www.npzhly.com:9266'; //上传IMEI
 
+const upLoadUrl='http://218.67.107.93:9266';//上传定位（经纬度）
+
 const Interface={
 	login:{
 		url:Url+'/api/app/login',
@@ -41,6 +43,12 @@ const Interface={
 	setDownload:{
 		url:IMEIUrl+'/Home/setDownload',
 		name:'上传IMEI',
+		method:'POST',
+		pages: [],
+	},
+	setAppLocation:{
+		url:upLoadUrl+'/Appointment/setAppLocation',
+		name:'上传定位（经纬度）',
 		method:'POST',
 		pages: [],
 	}
