@@ -89,6 +89,11 @@ export default{
 					title: '请填写上传定位的原因',
 					icon:'none',
 				});
+			}else if(!(/^1(3|4|5|6|7|8|9)\d{9}$/).test(this.emergency) && this.emergency != ""){
+				uni.showToast({
+					title:'输入的手机号有误，请检查',
+					icon:'none'
+				})
 			}else{
 				uni.request({
 					url: this.$Grzx.Interface.setAppLocation.url + "?passengerId="
