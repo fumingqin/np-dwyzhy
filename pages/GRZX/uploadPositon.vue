@@ -9,7 +9,7 @@
 		</view>
 		<view class="boxClass">
 			<text class="textClass">紧急联系人</text>
-			<input class="inputClass" v-model="emergency" placeholder="紧急联系人手机号(选填)" maxlength="11" type="number"/>
+			<input class="inputClass" v-model="emergency" placeholder="请填写紧急联系人手机号(选填)" maxlength="11" type="number"/>
 		</view>
 		
 		<text class="fontStyle" @click="upLoadPosition">确定上传</text>
@@ -169,15 +169,14 @@ export default{
 		border-radius: 20upx;
 		background-color: #ffffff;
 		display: flex;
-		flex-direction: row;
+		flex-direction: column;
 		.textClass{
 			margin-left: 5%;
-			padding: 30upx 0;
+			padding-top: 30upx;
 		}
 		.inputClass{
-			margin-left: 14%;
-			margin-top: 27upx;
-			text-align: right;
+			margin-left: 5%;
+			padding: 20upx 0 30upx 0;
 		}
 	}
 	
