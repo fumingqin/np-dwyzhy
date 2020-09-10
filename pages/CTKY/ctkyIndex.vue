@@ -300,7 +300,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
 				  	Appid +
 				  	"&redirect_uri=" +
-				  	encodeURIComponent(local) +
+				  	encode.UrlEncode(local) +
 				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
@@ -330,6 +330,9 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				let code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
 				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
+				console.log(local,"地址1");
+				let local_encode = encodeURIComponent(local);
+				console.log(local_encode,"地址2");
 				var indexCode=uni.getStorageSync('indexCode');
 				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
@@ -337,7 +340,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
 				  	Appid +
 				  	"&redirect_uri=" +
-				  	encodeURIComponent(local) +
+				  	local_encode +
 				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				}else{
 					uni.request({
