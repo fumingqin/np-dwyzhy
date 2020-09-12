@@ -555,6 +555,12 @@
 		    "style" : {
 				"navigationBarTitleText": "必看必玩详情"
 			}
+		},
+		{
+		    "path" : "pages/TravelGuide/SelectAddress",
+		    "style" : {
+				"navigationBarTitleText": "选择景点"
+			}
 		}
     ],
 	"globalStyle": {
