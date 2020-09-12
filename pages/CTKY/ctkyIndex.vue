@@ -289,10 +289,13 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			//获取code
 			getOpenid() {
 				var that=this;
-			    let Appid = "wxef946aa6ab5788a3";//售票appid
-				let code = this.getUrlParam('code'); //是否存在code
+			    var Appid = "wxef946aa6ab5788a3";//售票appid
+				var code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
+				var local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
+				console.log(local,"地址1");
+				var local_encode = encodeURIComponent(local);
+				console.log(local_encode,"地址2");
 				var indexCode=uni.getStorageSync('indexCode');
 				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
@@ -300,7 +303,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 				  	"https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
 				  	Appid +
 				  	"&redirect_uri=" +
-				  	encode.UrlEncode(local) +
+				  	local_encode +
 				  	"&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"; 
 				} else {
 				  //存在则通过code传向后台调用接口返回微信的个人信息
@@ -326,13 +329,13 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			//获取用户信息，重新授权登录
 			getUserinfo(params) {
 				var that=this;
-			    let Appid = "wx4f666a59748ab68f";//appid
-				let code = this.getUrlParam('code'); //是否存在code
+			    var Appid = "wx4f666a59748ab68f";//appid
+				var code = this.getUrlParam('code'); //是否存在code
 				console.log(code);
-				let local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
-				console.log(local,"地址1");
-				let local_encode = encodeURIComponent(local);
-				console.log(local_encode,"地址2");
+				var local = "http://wxsp.npzhly.com/#/pages/CTKY/ctkyIndex";
+				console.log(local,"地址3");
+				var local_encode = encodeURIComponent(local);
+				console.log(local_encode,"地址4");
 				var indexCode=uni.getStorageSync('indexCode');
 				if (code == indexCode||code == null || code === "") {
 				  //不存在就打开上面的地址进行授权
@@ -353,7 +356,7 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 							console.log(res,"res")
 							uni.setStorageSync('scenicSpotOpenId',res.data.openid)
 							uni.setStorageSync('res',res.data)
-							let user=res.data;
+							var user=res.data;
 							uni.request({
 								url:'http://218.67.107.93:9210/api/app/changeInfo',
 								data:{
@@ -398,8 +401,8 @@ import MxDatePicker from "../../components/CTKY/mx-datepicker/mx-datepicker.vue"
 			//判断code信息是否存在
 			getUrlParam(name) {
 				  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')  
-				  let url = window.location.href.split('#')[0]   
-				  let search = url.split('?')[1]  
+				  var url = window.location.href.split('#')[0]   
+				  var search = url.split('?')[1]  
 				  if (search) {  
 				    var r = search.substr(0).match(reg)  
 				    if (r !== null) return unescape(r[2])  
