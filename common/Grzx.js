@@ -8,6 +8,7 @@ const IMEIUrl='http://www.npzhly.com:9266'; //上传IMEI
 
 const upLoadUrl='http://218.67.107.93:9266';//上传定位（经纬度）
 
+
 const Interface={
 	login:{
 		url:Url+'/api/app/login',
@@ -51,7 +52,20 @@ const Interface={
 		name:'上传定位（经纬度）',
 		method:'POST',
 		pages: [],
-	}
+	},
+	
+	get_bkbw_list:{
+		url:Url+'/api/app/get-bkbw-list',
+		name:'获取必看必玩列表',
+		method:'GET',
+		pages: [],
+	},
+	get_bkbw_detail:{
+		url:Url+'/api/app/get-bkbw-detail',
+		name:'根据id获取必看必玩详情',
+		method:'GET',
+		pages: [],
+	},
 }
 
 // 接口声明区
