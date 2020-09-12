@@ -558,7 +558,19 @@
         ,{
             "path" : "pages/LYFW/scenicSpotTickets/specificPage",
             "style" : {}
-        }
+        },
+		{
+		    "path" : "pages/BKBW/seeAndPlayList",
+		    "style" : {
+				"navigationBarTitleText": "必看必玩"
+			}
+		},
+		{
+		    "path" : "pages/BKBW/seeAndPlayDetail",
+		    "style" : {
+				"navigationBarTitleText": "必看必玩详情"
+			}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
