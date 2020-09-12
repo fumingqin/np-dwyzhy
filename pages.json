@@ -102,6 +102,21 @@
 			}
 		},
 		{
+		
+			"path": "pages/LYFW/currency/travelDetails2",
+			"style": {
+				"navigationBarTitleText": "详情页",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},
+		{
 			"path": "pages/LYFW/scenicSpotTickets/selectivePayment",
 			"style": {
 				"navigationBarTitleText": "选择支付 ",
