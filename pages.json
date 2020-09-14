@@ -563,6 +563,10 @@
 			}
 		},
 		{
+		    "path" : "pages/TravelGuide/SelectAddress",
+		    "style" : {}
+		},
+		{
 		    "path" : "pages/TravelGuide/tr_strategyList",
 		    "style" : {
 				"navigationBarTitleText": "攻略列表"
