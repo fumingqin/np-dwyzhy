@@ -562,6 +562,10 @@
 				"navigationBarTitleText": "选择景点"
 			}
 		}
+        ,{
+            "path" : "pages/TravelGuide/ScenicDetail",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
