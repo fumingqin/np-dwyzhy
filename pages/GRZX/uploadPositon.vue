@@ -96,11 +96,16 @@ export default{
 				})
 			}else{
 				uni.request({
-					url: this.$Grzx.Interface.setAppLocation.url + "?passengerId="
-					+ this.unid + "&longitude=" + this.longitude + "&latitude=" 
-					+ this.latitude + "&phoneNumber=" + this.phoneNumber 
-					+ "&contactNumber=" + this.emergency +"&locationExplain=" + this.reason,
+					url: this.$Grzx.Interface.setAppLocation.url,
 					method: this.$Grzx.Interface.setAppLocation.method,
+					data:{
+						passengerId:this.unid,
+						longitude:this.longitude,
+						latitude:this.latitude,
+						phoneNumber:this.phoneNumber,
+						contactNumber:this.emergency,
+						locationExplain:this.reason,
+					},
 					success: res => {
 						console.log(res);
 						if(res.statusCode==200 && res.data=="上传定位成功。"){
