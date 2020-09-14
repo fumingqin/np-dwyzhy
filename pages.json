@@ -574,6 +574,10 @@
 				"navigationBarTitleText": "攻略列表"
 			}
 		}
+        ,{
+            "path" : "pages/TravelGuide/ScenicDetail",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
