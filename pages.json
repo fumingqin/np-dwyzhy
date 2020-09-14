@@ -557,14 +557,16 @@
 			}
 		},
 		{
+		    "path" : "pages/TravelGuide/SelectAddress",
+		    "style" : {
+				"navigationBarTitleText": "选择景点"
+			}
+		},
+		{
 		    "path" : "pages/TravelGuide/tr_strategyDetails",
 		    "style" : {
 				"navigationBarTitleText": "攻略详情"
 			}
-		},
-		{
-		    "path" : "pages/TravelGuide/SelectAddress",
-		    "style" : {}
 		},
 		{
 		    "path" : "pages/TravelGuide/tr_strategyList",
