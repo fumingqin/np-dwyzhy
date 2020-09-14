@@ -255,7 +255,7 @@
 				// display: flex;
 				.contentImage {
 					width: 228upx;
-					height: 190upx;
+					height: 148upx;
 					border-radius: 8px;
 				}
 			}
