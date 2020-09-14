@@ -102,21 +102,6 @@
 			}
 		},
 		{
-		
-			"path": "pages/LYFW/currency/travelDetails2",
-			"style": {
-				"navigationBarTitleText": "详情页",
-				// #ifdef APP-PLUS
-				"navigationStyle": "custom",
-				// #endif
-				"app-plus": {
-					"titleNView": {
-						"type": "transparent"
-					}
-				}
-			}
-		},
-		{
 			"path": "pages/LYFW/scenicSpotTickets/selectivePayment",
 			"style": {
 				"navigationBarTitleText": "选择支付 ",
@@ -569,6 +554,18 @@
 		    "path" : "pages/BKBW/seeAndPlayDetail",
 		    "style" : {
 				"navigationBarTitleText": "必看必玩详情"
+			}
+		},
+		{
+		    "path" : "pages/TravelGuide/tr_strategyDetails",
+		    "style" : {
+				"navigationBarTitleText": "攻略详情"
+			}
+		},
+		{
+		    "path" : "pages/TravelGuide/tr_strategyList",
+		    "style" : {
+				"navigationBarTitleText": "攻略列表"
 			}
 		}
     ],
