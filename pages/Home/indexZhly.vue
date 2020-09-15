@@ -27,7 +27,7 @@
 			</view>
 		</view>
 		<!-- 分类 -->
-		<view class="cate-section">
+		<!-- <view class="cate-section">
 			<view class="cate-item" @click="route1">
 				<image src="../../static/Home/indexzhly/fujin.png" mode="aspectFit"></image>
 				<text>自由行</text>
@@ -47,8 +47,20 @@
 			<view class="cate-item" @click="route5">
 				<image src="../../static/Home/indexzhly/chepiao.png" mode="aspectFit"></image>
 				<text>车票订购</text>
-			</view>
-		</view>
+			</view>  
+		</view> -->
+		<swiper class="zl_swi" circular>
+			<swiper-item class="swiItem" style="display: flex;align-items: center;" v-for="(item,index) in swiperItem" :key="index">
+				<view style="display: flex;width: 20%;justify-content: center;margin-bottom: 12upx;" v-for="(ArrItem,index1) in item.ItemArr"
+				 :key="index1">
+					<view style="display: flex;justify-content: center;flex-direction: column;align-items: center;font-size: 26upx;" @click="TitleJump(ArrItem.ItemTitle,ArrItem.clickURL)">
+						<image mode="aspectFit" :src="ArrItem.ImageURL" lazy-load="true" class="imgClass"></image>
+						<text>{{ArrItem.ItemTitle}}</text>
+					</view>
+				</view>
+			</swiper-item>
+		</swiper>
+		
 		<!-- #ifdef H5 -->
 		<!-- <view style="margin-top: 24upx;width: 90%;border: 1upx solid #007AFF;height: 500upx;word-break:break-all;">测试url：{{cod}}</view> -->
 		<!-- #endif -->
@@ -158,6 +170,58 @@
 				DownLoadUrl:'',//app下载地址
 				version:'',//当前app的版本号
 				systemName:'大武夷智慧游',//系统名称
+				
+				swiperItem:[{
+						ItemArr: [{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/fujin.png',
+								ItemTitle:'自由行',
+								clickURL:'/pages/LYFW/independentTravel/it_list',
+							},
+							{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/luxian.png',
+								ItemTitle:'跟团游',
+								clickURL:'/pages/LYFW/groupTour/groupTourList',
+							},
+							{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/gongJiao.png',
+								ItemTitle:'公交查询',
+								clickURL:'/pages/GJCX/busIndex',
+							},
+							{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/menpiao.png',
+								ItemTitle:'景区门票',
+								clickURL:'/pages/LYFW/scenicSpotTickets/ticketsList',
+							},
+							{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/chepiao.png',
+								ItemTitle:'车票订购',
+								clickURL:'/pages/CTKY/ctkyIndex',
+							},
+						],
+					},{
+						ItemArr: [
+							{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/lydl.png',
+								ItemTitle:'旅游导览',
+								clickURL:'',
+							},{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/bkbw.png',
+								ItemTitle:'必看必玩',
+								clickURL:'/pages/BKBW/seeAndPlayList',
+							},{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/lygl.jpg',
+								ItemTitle:'旅游攻略',
+								clickURL:'',
+							}]
+				}]
 			}
 		},
 		onLoad() {
@@ -337,6 +401,31 @@
 						})
 					}
 				})
+			},
+			
+			//页面跳转
+			TitleJump(e,url){
+				 switch(e){
+					case '自由行':
+						this.route1();
+					break;
+					case '跟团游':
+						this.route2();
+					break;
+					case '公交查询':
+						this.route3();
+					break;
+					case '景区门票':
+						this.route4();
+					break;
+					case '车票订购':
+						this.route5();
+					break;
+					default:
+						uni.navigateTo({
+							url:url
+						})
+				}
 			},
 			
 			//小程序-搜索框点击事件
@@ -581,7 +670,6 @@
 			}
 		},
 		// #endif
-		 
 	}
 </script>
 
@@ -987,4 +1075,151 @@
 		font-size: 34upx;
 	}
 	//检查新版本的弹框end
+	
+	.zl_swi {
+		height: 200upx;
+		width: 100%;
+		padding-bottom: 4upx;
+	
+		.swiItem {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background-color: #FFFFFF;
+	
+			.zl_topClick {
+				display: flex;
+				top: 0;
+	
+				// 车票订购
+				.zl_ticketOrdering {
+					width: 20%;
+					height: 178upx;
+					text-align: center;
+					align-items: center;
+	
+					.zl_toImage {
+						width: 60rpx;
+						height: 60rpx;
+						margin-top: 50upx;
+					}
+	
+					.zl_toText {
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						font-family: Source Han Sans SC;
+						font-weight: 400;
+						color: #333333;
+						display: block;
+					}
+				}
+	
+				//网络约车
+				.zl_carAppointment {
+					width: 20%;
+					height: 178upx;
+					text-align: center;
+					align-items: center;
+	
+					.zl_caImage {
+						width: 80rpx;
+						height: 60rpx;
+						margin-top: 50upx;
+					}
+	
+					.zl_caText {
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						font-family: Source Han Sans SC;
+						font-weight: 400;
+						color: #333333;
+						display: block;
+					}
+				}
+	
+				//公交查询
+				.zl_transit {
+					width: 20%;
+					height: 178upx;
+					text-align: center;
+					align-items: center;
+	
+					.zl_tsImage {
+						width: 60rpx;
+						height: 60rpx;
+						margin-top: 50upx;
+					}
+	
+					.zl_tsText {
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						font-family: Source Han Sans SC;
+						font-weight: 400;
+						color: #333333;
+						display: block;
+					}
+				}
+	
+				//包车服务
+				.zl_charterService {
+					width: 20%;
+					height: 178upx;
+					text-align: center;
+					align-items: center;
+	
+					.zl_csImage {
+						width: 60rpx;
+						height: 60rpx;
+						margin-top: 50upx;
+					}
+	
+					.zl_csText {
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						font-family: Source Han Sans SC;
+						font-weight: 400;
+						color: #333333;
+						display: block;
+					}
+				}
+	
+				//旅游服务
+				.zl_tourismServices {
+					width: 20%;
+					height: 178upx;
+					text-align: center;
+					align-items: center;
+	
+					.zl_teImage {
+						width: 60rpx;
+						height: 60rpx;
+						margin-top: 50upx;
+					}
+	
+					.zl_teText {
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						font-family: Source Han Sans SC;
+						font-weight: 400;
+						color: #333333;
+						display: block;
+					}
+				}
+			}
+		}
+	}
+	
+	.imgClass{
+		width: 56upx;
+		height: 56upx;
+		margin-bottom: 16upx;
+		opacity: .7;
+	}
+	.itemText {
+		margin-top: 10rpx;
+		font-size: 30rpx;
+		font-family: Source Han Sans SC;
+		color: #333333;
+		display: block;
+	}
 </style>
