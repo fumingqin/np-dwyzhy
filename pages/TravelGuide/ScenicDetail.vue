@@ -19,7 +19,7 @@
 			<view>
 				<view style="margin: 20rpx 0;display: flex;justify-content: space-between;align-items: center;">
 					<text style="font-size: 40rpx;font-weight: bold">介绍</text>
-					<view style="display: flex;">
+					<view style="display: flex;" v-if="DataArr.ScenicDetails!=''">
 						<view style="padding:10rpx 20rpx;font-size: 32rpx;background-color: #007AFF;color: #FFFFFF;border-radius: 12rpx;"
 						 hover-class="active" @click="VoicePlay" v-if="!IsPlay">语音播放</view>
 						<view style="padding:10rpx 20rpx;font-size: 32rpx;background-color: #E3424B;color: #FFFFFF;border-radius: 12rpx;margin-left: 10rpx;"
