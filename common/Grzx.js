@@ -66,6 +66,19 @@ const Interface={
 		method:'GET',
 		pages: [],
 	},
+	
+	colleague_list:{
+		url:Url+'/api/app/colleague-list',
+		name:'同行列表',
+		method:'GET',
+		pages: [],
+	},
+	colleague_cancel:{
+		url:Url+'/api/app/colleague-cancel',
+		name:'取消同行',
+		method:'GET',
+		pages: [],
+	},
 }
 
 // 接口声明区

@@ -275,6 +275,18 @@
 				"navigationBarTitleText": "上传定位"
 			}
 		},
+		{
+			"path": "pages/GRZX/peers/myPeers", //我的同行
+			"style": {
+				"navigationBarTitleText": "我的同行"
+			}
+		},
+		{
+			"path": "pages/GRZX/peers/peersDetail", //行程详情
+			"style": {
+				"navigationBarTitleText": "行程详情"
+			}
+		},
 		//个人中心模块结束
 
 		{
