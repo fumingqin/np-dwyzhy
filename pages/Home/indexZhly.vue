@@ -209,7 +209,7 @@
 								IsUse: true,
 								ImageURL:'../../static/Home/indexzhly/lydl.png',
 								ItemTitle:'旅游导览',
-								clickURL:'',
+								clickURL:'/pages/TravelGuide/SelectAddress',
 							},{
 								IsUse: true,
 								ImageURL:'../../static/Home/indexzhly/bkbw.png',

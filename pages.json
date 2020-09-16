@@ -590,6 +590,10 @@
             "path" : "pages/TravelGuide/ScenicDetail",
             "style" : {}
         }
+        ,{
+            "path" : "pages/TravelGuide/LookAround",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
