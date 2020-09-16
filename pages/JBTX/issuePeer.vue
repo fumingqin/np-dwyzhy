@@ -1,14 +1,39 @@
 <template>
 	<view>
+		<scroll-view style="height: 1020rpx;" :scroll-y='true'>
 		<view v-if="print_number==''">
 			<view class="ps_view">
-				<view class="dl_choice">标题</view>
+				<!-- <view class="dl_choice">标题</view>
 				<view class="lineClass">
 				<view class="uni-form-item uni-column">
 					 <input class="li_input" v-model="title" placeholder="输入标题" />
 				</view>
+				</view> -->
+				<view style="margin-left: 40rpx;">
+					<view style="padding-top: 20rpx ;">
+						<text class="titleFont">标题</text>
+					</view>
+					<view style="padding: 20rpx 0;border-bottom: #EAEAEA 1px solid;display: flex;flex-direction: row;width: 90%;">
+						<input class="contentFont" v-model="title" placeholder="请输入标题" />
+					</view>
 				</view>
-				<view class="dl_choice">同行人数</view>
+				<view style="margin-left: 40rpx;">
+					<view style="padding-top: 20rpx ;">
+						<text class="titleFont">同行人数</text>
+					</view>
+					<view style="padding: 20rpx 0;border-bottom: #EAEAEA 1px solid;display: flex;flex-direction: row;width: 90%;">
+						<input class="contentFont" type="number" v-model="people_number" placeholder="请输入可同行人数" maxlength="2" />
+					</view>
+				</view>
+				<view style="margin-left: 40rpx;">
+					<view style="padding-top: 20rpx ;">
+						<text class="titleFont">预算费用</text>
+					</view>
+					<view style="padding: 20rpx 0;border-bottom: #EAEAEA 1px solid;display: flex;flex-direction: row;width: 90%;">
+						<input class="contentFont" type="number" v-model="cost" placeholder="请输入预算人均费用" maxlength="5" />
+					</view>
+				</view>
+				<!-- <view class="dl_choice">同行人数</view>
 				<view class="lineClass">
 				<view class="uni-form-item uni-column">
 					 <input class="li_input" type="number" v-model="people_number" placeholder="输入可同行人数" maxlength="2" />
@@ -19,8 +44,8 @@
 				<view class="uni-form-item uni-column">
 					 <input class="li_input" type="number" v-model="cost" placeholder="输入预算人均费用" maxlength="5" />
 				</view>
-				</view>
-				<view class="dl_choice">行程时间</view>
+				</view> -->
+				<view style="margin-left: 40rpx;margin-top: 30rpx;" class="titleFont">行程时间</view>
 				   <view class="test">
 				            {{range[0]}} - {{range[1]}}
 				            <button type="primary" @click="onShowDatePicker('range')">选择日期范围</button>
@@ -33,7 +58,7 @@
 					<image class="add-img-del" @click="delImg(index)" src="../../static/GRZX/delete.png"></image>
 				</view>
 				<view v-if="imgList.length < 1 " class="add-img-item" @click="openCamera">
-					<image class="add-img" src="../../static/GRZX/add.png"></image>
+					<image class="add-img" src="../../static/GRZX/addImg.png"></image>
 				</view>
 			</view>
 			</view>
@@ -105,6 +130,7 @@
 				</view>
 				<t-color-picker ref="colorPicker" :color="color" @confirm="confirm" @cancel="cancel"></t-color-picker>
 		</view>
+		</scroll-view>
 		<view class="tjButton" @click="submitState">提交</view>
 	</view>
 </template>
@@ -474,14 +500,30 @@
 
 <style lang="scss">
 	@import "./editor.css";
+	
 	page {
-		background-color: #F5F5F5;
+		background-color: #F5F7F9;
+	}
+	
+	.titleFont {
+		font-size: 36rpx;
+		font-family: Source Han Sans SC;
+		font-weight: bold;
+		color: #333333;
+	}
+	
+	.contentFont {
+		font-size: 34rpx;
+		font-family: Source Han Sans SC;
+		font-weight: 400;
+		color: #2C2D2D;
 	}
 
 	.ps_view {
 		width: 100%;
 		height:120%;
 		background: #FFFFFF;
+		
 
 		.dl_choice {
 			display: flex;
@@ -526,6 +568,7 @@
 				padding-left: 10rpx;
 				flex-direction: row;
 				flex-wrap: wrap;
+				margin-bottom: 40rpx;
 			}
 		
 			.add-img-item {
@@ -577,7 +620,7 @@
 
 	.tjButton {
 		position: fixed;
-		bottom: 100upx;
+		bottom: 50upx;
 		left: 0;
 		right: 0;
 		padding: 24upx 0;

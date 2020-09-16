@@ -34,9 +34,9 @@
 	padding: 10px;
 	height: 130px;
 	width: 100%;
-	position: fixed;
+	/* position: fixed; */
 	left: 0;
-	top: 0;
+	/* top: 0; */
 	background: #fff;
 	right: 100%;
 	display: flex;
