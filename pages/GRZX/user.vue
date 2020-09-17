@@ -41,7 +41,7 @@
 	
 		<view class="serviceBox">
 			<text class="moreClass">更多服务</text>
-			<view class="boxClass" v-for="(item,index) in serviceList" :key="index" @click="clickService(item.title)" :class="index==0?'':'borderTop'">
+			<view class="boxClass" v-for="(item,index) in serviceList" :key="index" @click="clickService(item.title,item.clickUrl)" :class="index==0?'':'borderTop'">
 				<image :src="item.src" :class="item.style"></image>
 				<text class="fontStyle">{{item.title}}</text>
 				<image src="../../static/GRZX/tubiao_Right.png" class="btnClass"></image>
@@ -68,21 +68,31 @@
 					title:'信息管理',
 					style:'iconClass1',
 					src:'../../static/GRZX/tubiao_zhengzhao.png',
+					clickUrl:'/pages/GRZX/infoList',
 				},
 				{
 					title:'QQ客服',
 					style:'iconClass2',
 					src:'../../static/GRZX/tubiao_kefu.png',
+					clickUrl:'',
 				},
 				{
 					title:'我要投诉',
 					style:'iconClass3',
 					src:'../../static/GRZX/tubiao_tousu.png',
+					clickUrl:'/pages/GRZX/complaint',
 				},
 				{
 					title:'上传定位',
 					style:'iconClass4',
 					src:'../../static/GRZX/tubiao_dingwei.png',
+					clickUrl:'/pages/GRZX/uploadPositon',
+				},
+				{
+					title:'我的同行',
+					style:'iconClass5',
+					src:'../../static/GRZX/tubiao_tongxing.png',
+					clickUrl:'/pages/GRZX/peers/myPeers',
 				}]
 			}
 		},
@@ -184,28 +194,15 @@
 					url:e,
 				})
 			},
-			clickService(e){
+			clickService(e,Url){
 				switch (e){
-					case '信息管理':
-						uni.navigateTo({
-							url:'/pages/GRZX/infoList'
-						})
-						break;
 					case 'QQ客服':
 						this.QQClick();
 						break;
-					case '我要投诉':
-						uni.navigateTo({
-							url:'/pages/GRZX/complaint'
-						}) 
-						break;
-					case '上传定位':
-						uni.navigateTo({
-							url:'/pages/GRZX/uploadPositon'
-						}) 
-						break;
 					default:
-						return '';
+						uni.navigateTo({
+							url:Url
+						})
 				}
 			},
 			checkLogin(){
@@ -475,8 +472,7 @@
 		width:91.47%;
 		background-color: #FFFFFF;
 		border-radius: 12upx;
-		margin-top: 10upx;
-		margin-left: 4.27%;
+		margin: 10upx 0 20upx 4.27%;
 		display: flex;
 		flex-direction: column;
 	}
@@ -518,6 +514,13 @@
 		margin-left: 13upx;
 	}
 	.iconClass4{  //上传定位图标
+		width: 40upx;
+		height: 40upx;
+		position: absolute;
+		left: 11upx;
+		top:31upx;
+	}
+	.iconClass5{  //我的同行
 		width: 40upx;
 		height: 40upx;
 		position: absolute;

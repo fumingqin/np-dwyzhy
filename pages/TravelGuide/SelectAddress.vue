@@ -4,15 +4,15 @@
 		<view style="height: 100%; background-color: #F6F6F6;display: flex;">
 			<view style="width: 250rpx;height: 100%;">
 				<scroll-view scroll-y="true" style="height: 100%;">
-					<view v-for="(item,index) in TravelSiteArr" :key="index" class="item-left"
-					 @click="addressclick(index)" :class="leftIndex==index?'active':''">
+					<view v-for="(item,index) in TravelSiteArr" :key="index" class="item-left" @click="addressclick(index)" :class="leftIndex==index?'active':''">
 						<view style="font-size: 30rpx;">{{item.ZoneName}}</view>
 					</view>
 				</scroll-view>
 			</view>
-			<view style="width: 500rpx; background-color: #FFF;height: 100%;" >
+			<view style="width: 500rpx; background-color: #FFF;height: 100%;">
 				<scroll-view scroll-y="true" style="height: 100%;">
-					<view hover-class="ve_hover" v-for="(item,index) in TravelSiteArr[leftIndex].Data" :key="index" class="item-right" @click="itemClick(item)">
+					<view hover-class="ve_hover" v-for="(item,index) in TravelSiteArr[leftIndex].Data" :key="index" class="item-right"
+					 @click="itemClick(item)">
 						<view style="font-size: 30rpx;">{{item.ScenicName}}</view>
 					</view>
 				</scroll-view>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+	import Voice from '@/components/QS-baiduyy/QS-baiduyy.js';
 	export default {
 		data() {
 			return {
@@ -68,7 +69,10 @@
 			},
 			//-------------------------点击下拉站点-------------------------
 			itemClick(item) {
-				
+				console.log(item)
+				uni.navigateTo({
+					url:"./ScenicDetail?ScenicCode="+item.ScenicCode
+				})
 			},
 		}
 	}
@@ -88,13 +92,14 @@
 		background-color: #DBDBDB;
 		padding-top: 20rpx;
 	}
-	
-	.ve_hover{
-		transition: all .3s;//过度
+
+	.ve_hover {
+		transition: all .3s; //过度
 		opacity: 0.9;
 		background: #eeeeee;
 	}
-	.item-left{
+
+	.item-left {
 		padding: 20rpx;
 		display: flex;
 		justify-content: center;
@@ -102,7 +107,8 @@
 		flex-direction: column;
 		border-bottom: 1rpx solid #F6F6F6;
 	}
-	.item-right{
+
+	.item-right {
 		padding: 20rpx;
 		margin-left: 10rpx;
 		display: flex;
