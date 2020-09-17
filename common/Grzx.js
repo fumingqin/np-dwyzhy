@@ -57,26 +57,26 @@ const Interface={
 	get_bkbw_list:{
 		url:Url+'/api/app/get-bkbw-list',
 		name:'获取必看必玩列表',
-		method:'GET',
+		method:'POST',
 		pages: [],
 	},
 	get_bkbw_detail:{
 		url:Url+'/api/app/get-bkbw-detail',
 		name:'根据id获取必看必玩详情',
-		method:'GET',
+		method:'POST',
 		pages: [],
 	},
 	
 	colleague_list:{
 		url:Url+'/api/app/colleague-list',
 		name:'同行列表',
-		method:'GET',
+		method:'POST',
 		pages: [],
 	},
 	colleague_cancel:{
 		url:Url+'/api/app/colleague-cancel',
 		name:'取消同行',
-		method:'GET',
+		method:'POST',
 		pages: [],
 	},
 }
