@@ -565,6 +565,7 @@
 		{
 		    "path" : "pages/TravelGuide/tr_strategyDetails",
 		    "style" : {
+				"enablePullDownRefresh":true,
 				"navigationBarTitleText": "攻略详情"
 			}
 		},

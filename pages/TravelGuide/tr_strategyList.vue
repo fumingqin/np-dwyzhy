@@ -3,7 +3,7 @@
 		<!-- 内容1 -->
 		<view>
 			<view class="content">
-				<view class="groupTour" v-for="(item,index) in groupTitle" :key="index" @click="details(item.id)">
+				<view class="groupTour" v-for="(item,index) in groupTitle" :key="index" @click="details(item.id)" v-if="item.auditStatus==1">
 					<view class="groupContent">
 						<image class="contentImage" :src="item.imgUrl" mode="aspectFill"></image>
 					</view>
@@ -11,8 +11,10 @@
 						<text class="contentText">{{item.title}}</text>
 						<!-- <text class="contentLabel">{{item2.contentLabelS1}} | {{item2.contentLabelS2}} | {{item2.contentLabelS3}}</text> -->
 						<view class="groupCost">
-							<text class="cost">{{item.updatedTime}}</text>
-							<text class="sellComment">阅读量:{{item.count}}</text>
+							<text class="cost2">阅读量:{{item.count}}</text>
+							<text class="cost">{{(item.updatedTime.substr(0,10))}}</text>
+							<text class="sellComment" style="color: #42e800;" v-if="item.dataState=='Enable'">可同行</text>
+							<text class="sellComment" style="color: #ff0000;" v-if="item.dataState!=='Enable'">不可同行</text>
 						</view>
 					</view>
 				</view>
@@ -46,7 +48,7 @@
 				currentIndex : 0,//弹框默认值
 				groupId:'',
 				screenContent : [],
-				
+				time:'',//年月日
 				tabs: ['推荐', '全部'], //选项标题
 				groupTitle: [], //内容标题
 				cateMaskState: 0, //分类面板展开状态
@@ -94,6 +96,12 @@
 						this.groupTitle = e.data.data;
 					}
 				})
+			},
+			
+			//-------------------------------时间转换-------------------------------
+			turnDate(date) {
+				var setTime = setTime.substr(0, 10);
+				return setTime;
 			},
 			
 			details:function(e){
@@ -246,8 +254,8 @@
 
 		.groupTour {
 			display: flex;
-			padding-top: 40upx;
-			padding-bottom: 40upx;
+			padding-top: 60upx;
+			padding-bottom: 60upx;
 			border-bottom: 1px #F5F5F5 dotted;
 
 			.groupContent {
@@ -268,7 +276,7 @@
 					font-weight: 40;
 					font-family: Source Han Sans SC;
 					overflow: hidden; //超出溢出
-					-webkit-line-clamp: 2; //限制2行
+					-webkit-line-clamp: 1; //限制2行
 					text-overflow: ellipsis;
 					display: -webkit-box;
 					-webkit-box-orient: vertical;
@@ -289,21 +297,22 @@
 					width: 430upx;
 
 					.cost {
+						display: block;
 						font-size: 28upx;
-						color: #FF6600;
-
-						.contentCost {
-							font-size: 36upx;
-							color: #FF6600;
-						}
+						color: #aba9aa;
+						padding-top: 10upx;
 					}
-
+					
+					.cost2 {
+						font-size: 28upx;
+						color: #aba9aa;
+					}
+					
 					.sellComment {
 						position: absolute;
 						font-size: 28upx;
-						line-height: 53upx;
-						color: #aba9aa;
 						right: 0;
+						bottom: 0;
 					}
 				}
 			}

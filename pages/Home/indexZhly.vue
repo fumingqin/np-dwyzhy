@@ -219,7 +219,7 @@
 								IsUse: true,
 								ImageURL:'../../static/Home/indexzhly/lygl.jpg',
 								ItemTitle:'旅游攻略',
-								clickURL:'',
+								clickURL:'/pages/TravelGuide/tr_strategyList',
 							}]
 				}]
 			}
