@@ -1,14 +1,8 @@
 <template>
 	<view>
 		<scroll-view style="height: 1020rpx;" :scroll-y='true'>
-		<view v-if="print_number==''">
+		<view>
 			<view class="ps_view">
-				<!-- <view class="dl_choice">标题</view>
-				<view class="lineClass">
-				<view class="uni-form-item uni-column">
-					 <input class="li_input" v-model="title" placeholder="输入标题" />
-				</view>
-				</view> -->
 				<view style="margin-left: 40rpx;">
 					<view style="padding-top: 20rpx ;">
 						<text class="titleFont">标题</text>
@@ -30,105 +24,94 @@
 						<text class="titleFont">预算费用</text>
 					</view>
 					<view style="padding: 20rpx 0;border-bottom: #EAEAEA 1px solid;display: flex;flex-direction: row;width: 90%;">
-						<input class="contentFont" type="number" v-model="cost" placeholder="请输入预算人均费用" maxlength="5" />
+						<input class="contentFont" type="number" v-model="people_cost" placeholder="请输入预算人均费用" maxlength="5" />
 					</view>
 				</view>
-				<!-- <view class="dl_choice">同行人数</view>
-				<view class="lineClass">
-				<view class="uni-form-item uni-column">
-					 <input class="li_input" type="number" v-model="people_number" placeholder="输入可同行人数" maxlength="2" />
-				</view>
-				</view>
-				<view class="dl_choice">预算费用</view>
-				<view class="lineClass">
-				<view class="uni-form-item uni-column">
-					 <input class="li_input" type="number" v-model="cost" placeholder="输入预算人均费用" maxlength="5" />
-				</view>
-				</view> -->
 				<view style="margin-left: 40rpx;margin-top: 30rpx;" class="titleFont">行程时间</view>
 				   <view class="test">
 				            {{range[0]}} - {{range[1]}}
 				            <button type="primary" @click="onShowDatePicker('range')">选择日期范围</button>
 				        </view>
 				        <mx-date-picker :show="showPicker" :type="type" :value="value" :show-tips="true" :begin-text="'开始'" :end-text="'结束'" :show-seconds="true" @confirm="onSelected" @cancel="onSelected" />
-			<view class="fb_Text2">上传图片</view>
+			<view class="fb_Text2">主页图片</view>
 			<view class="add-img-box">
 				<view class="add-img-item" v-for="(item, index) in imgList" :key="index">
 					<image class="add-img" @click="imgInfo(index)" :src="item.path" mode="aspectFill"></image>
-					<image class="add-img-del" @click="delImg(index)" src="../../static/GRZX/delete.png"></image>
+					<image class="add-img-del" @click="delImg(index)" src="../../static/JBCX/delete.png"></image>
 				</view>
 				<view v-if="imgList.length < 1 " class="add-img-item" @click="openCamera">
-					<image class="add-img" src="../../static/GRZX/addImg.png"></image>
-				</view>
+					<image class="add-img" src="../../static/JBCX/add.png"></image>
+				</view> 
 			</view>
 			</view>
+			<view style="font-weight: bold;font-size: 30upx;padding-left: 34upx;padding-top: 30upx;margin-bottom: 20upx;">同行说明</view>
 			<view class="container">
-					<editor id="editor" show-img-size :read-only="isEdit" show-img-resize show-img-toolbar class="ql-container"
-					 :placeholder="placeholder" @statuschange="onStatusChange" @ready="onEditorReady">
-					</editor>
-				</view>
-				<view class="toolbar" @touchend.stop="format" :style="'bottom: ' + (isIOS ? keyboardHeight : 0) + 'px'">
-					<i class="iconfont icon-charutupian" @touchend.stop="insertImage"></i>
-					<i :class="'iconfont icon-format-header-1 ' + (formats.header === 1 ? 'ql-active' : '')" data-name="header"
-					 :data-value="1"></i>
-					<i :class="'iconfont icon-format-header-2 ' + (formats.header === 2 ? 'ql-active' : '')" data-name="header"
-					 :data-value="2"></i>
-					<i :class="'iconfont icon-format-header-3 ' + (formats.header === 3 ? 'ql-active' : '')" data-name="header"
-					 :data-value="3"></i>
-					<i :class="'iconfont icon-format-header-4 ' + (formats.header === 4 ? 'ql-active' : '')" data-name="header"
-					 :data-value="4"></i>
-					<i :class="'iconfont icon-format-header-5 ' + (formats.header === 5 ? 'ql-active' : '')" data-name="header"
-					 :data-value="5"></i>
-					<i :class="'iconfont icon-format-header-6 ' + (formats.header === 6 ? 'ql-active' : '')" data-name="header"
-					 :data-value="6"></i>
-					<i :class="'iconfont icon-zitijiacu ' + (formats.bold ? 'ql-active' : '')" data-name="bold"></i>
-					<i :class="'iconfont icon-zitishanchuxian ' + (formats.strike ? 'ql-active' : '')" data-name="strike"></i>
-					<i :class="'iconfont icon-zitixieti ' + (formats.italic ? 'ql-active' : '')" data-name="italic"></i>
-					<i :class="'iconfont icon-zuoduiqi ' + (formats.align === 'left' ? 'ql-active' : '')" data-name="align" data-value="left"></i>
-					<i :class="'iconfont icon-juzhongduiqi ' + (formats.align === 'center' ? 'ql-active' : '')" data-name="align"
-					 data-value="center"></i>
-					<i :class="'iconfont icon-youduiqi ' + (formats.align === 'right' ? 'ql-active' : '')" data-name="align" data-value="right"></i>
-					<i :class="'iconfont icon-zuoyouduiqi ' + (formats.align === 'justify' ? 'ql-active' : '')" data-name="align"
-					 data-value="justify"></i>
-					<i :class="'iconfont icon-line-height ' + (formats.lineHeight ? 'ql-active' : '')" data-name="lineHeight" data-value="2"></i>
-					<i :class="'iconfont icon-Character-Spacing ' + (formats.letterSpacing ? 'ql-active' : '')" data-name="letterSpacing"
-					 data-value="2em"></i>
-					<i :class="'iconfont icon-722bianjiqi_duanqianju ' + (formats.marginTop ? 'ql-active' : '')" data-name="marginTop"
-					 data-value="20px"></i>
-					<i :class="'iconfont icon-723bianjiqi_duanhouju ' + (formats.micon-previewarginBottom ? 'ql-active' : '')" data-name="marginBottom"
-					 data-value="20px"></i>
-					<i class="iconfont icon-clearedformat" @tap="removeFormat"></i>
-					<i :class="'iconfont icon-font ' + (formats.fontFamily ? 'ql-active' : '')" data-name="fontFamily" data-value="Pacifico"></i>
-					<i :class="'iconfont icon-fontsize ' + (formats.fontSize === '24px' ? 'ql-active' : '')" data-name="fontSize"
-					 data-value="24px"></i>
-					<i :class="'iconfont icon-text_color ' + (formats.color === fontColor ? 'ql-active' : '')" data-name="color"
-					 :data-value="fontColor" @tap="open"></i>
-					<i :class="'iconfont icon-fontbgcolor ' + (formats.backgroundColor === '#00ff00' ? 'ql-active' : '')" data-name="backgroundColor"
-					 data-value="#00ff00"></i>
-					<!-- 引用黄河浪的color取色器 -->
-					<i class="iconfont icon-date" @tap="insertDate"></i>
-					<i class="iconfont icon-undo" @tap="undo"></i>
-					<i class="iconfont icon-redo" @tap="redo"></i>
-					<i :class="'iconfont icon-zitixiahuaxian ' + (formats.underline ? 'ql-active' : '')" data-name="underline"></i>
-					<i class="iconfont icon--checklist" data-name="list" data-value="check"></i>
-					<i :class="'iconfont icon-youxupailie ' + (formats.list === 'ordered' ? 'ql-active' : '')" data-name="list"
-					 data-value="ordered"></i>
-					<i :class="'iconfont icon-wuxupailie ' + (formats.list === 'bullet' ? 'ql-active' : '')" data-name="list" data-value="bullet"></i>
-					<i class="iconfont icon-outdent" data-name="indent" data-value="-1"></i>
-					<i class="iconfont icon-indent" data-name="indent" data-value="+1"></i>
-					<i class="iconfont icon-fengexian" @tap="insertDivider"></i>
-					<i class="iconfont icon-preview" @tap="store" id="2"></i>
-					<i :class="'iconfont icon-zitixiabiao ' + (formats.script === 'sub' ? 'ql-active' : '')" data-name="script"
-					 data-value="sub"></i>
-					<i :class="'iconfont icon-zitishangbiao ' + (formats.script === 'super' ? 'ql-active' : '')" data-name="script"
-					 data-value="super"></i>
-					<!-- <i class="iconfont icon-quanping"></i> -->
-					<i class="iconfont icon-shanchu" @tap="clear"></i>
-					<i :class="'iconfont icon-direction-rtl ' + (formats.direction === 'rtl' ? 'ql-active' : '')" data-name="direction"
-					 data-value="rtl"></i>
-					<i class="iconfont icon-baocun" @tap="store" id="1"></i>
-				</view>
-				<t-color-picker ref="colorPicker" :color="color" @confirm="confirm" @cancel="cancel"></t-color-picker>
+				<editor id="editor" show-img-size :read-only="isEdit" show-img-resize show-img-toolbar class="ql-container"
+				 :placeholder="placeholder" @statuschange="onStatusChange" @ready="onEditorReady" v-model="text">
+				</editor>
+			</view>
+			<view class="toolbar" @touchend.stop="format" :style="'bottom: ' + (isIOS ? keyboardHeight : 0) + 'px'">
+				<i class="iconfont icon-charutupian" @touchend.stop="insertImage"></i>
+				<i :class="'iconfont icon-format-header-1 ' + (formats.header === 1 ? 'ql-active' : '')" data-name="header"
+				 :data-value="1"></i>
+				<i :class="'iconfont icon-format-header-2 ' + (formats.header === 2 ? 'ql-active' : '')" data-name="header"
+				 :data-value="2"></i>
+				<i :class="'iconfont icon-format-header-3 ' + (formats.header === 3 ? 'ql-active' : '')" data-name="header"
+				 :data-value="3"></i>
+				<i :class="'iconfont icon-format-header-4 ' + (formats.header === 4 ? 'ql-active' : '')" data-name="header"
+				 :data-value="4"></i>
+				<i :class="'iconfont icon-format-header-5 ' + (formats.header === 5 ? 'ql-active' : '')" data-name="header"
+				 :data-value="5"></i>
+				<i :class="'iconfont icon-format-header-6 ' + (formats.header === 6 ? 'ql-active' : '')" data-name="header"
+				 :data-value="6"></i>
+				<i :class="'iconfont icon-zitijiacu ' + (formats.bold ? 'ql-active' : '')" data-name="bold"></i>
+				<i :class="'iconfont icon-zitishanchuxian ' + (formats.strike ? 'ql-active' : '')" data-name="strike"></i>
+				<i :class="'iconfont icon-zitixieti ' + (formats.italic ? 'ql-active' : '')" data-name="italic"></i>
+				<i :class="'iconfont icon-zuoduiqi ' + (formats.align === 'left' ? 'ql-active' : '')" data-name="align" data-value="left"></i>
+				<i :class="'iconfont icon-juzhongduiqi ' + (formats.align === 'center' ? 'ql-active' : '')" data-name="align"
+				 data-value="center"></i>
+				<i :class="'iconfont icon-youduiqi ' + (formats.align === 'right' ? 'ql-active' : '')" data-name="align" data-value="right"></i>
+				<i :class="'iconfont icon-zuoyouduiqi ' + (formats.align === 'justify' ? 'ql-active' : '')" data-name="align"
+				 data-value="justify"></i>
+				<i :class="'iconfont icon-line-height ' + (formats.lineHeight ? 'ql-active' : '')" data-name="lineHeight" data-value="2"></i>
+				<i :class="'iconfont icon-Character-Spacing ' + (formats.letterSpacing ? 'ql-active' : '')" data-name="letterSpacing"
+				 data-value="2em"></i>
+				<i :class="'iconfont icon-722bianjiqi_duanqianju ' + (formats.marginTop ? 'ql-active' : '')" data-name="marginTop"
+				 data-value="20px"></i>
+				<i :class="'iconfont icon-723bianjiqi_duanhouju ' + (formats.micon-previewarginBottom ? 'ql-active' : '')" data-name="marginBottom"
+				 data-value="20px"></i>
+				<i class="iconfont icon-clearedformat" @tap="removeFormat"></i>
+				<i :class="'iconfont icon-font ' + (formats.fontFamily ? 'ql-active' : '')" data-name="fontFamily" data-value="Pacifico"></i>
+				<i :class="'iconfont icon-fontsize ' + (formats.fontSize === '24px' ? 'ql-active' : '')" data-name="fontSize"
+				 data-value="24px"></i>
+				<i :class="'iconfont icon-text_color ' + (formats.color === fontColor ? 'ql-active' : '')" data-name="color"
+				 :data-value="fontColor" @tap="open"></i>
+				<i :class="'iconfont icon-fontbgcolor ' + (formats.backgroundColor === '#00ff00' ? 'ql-active' : '')" data-name="backgroundColor"
+				 data-value="#00ff00"></i>
+				<!-- 引用黄河浪的color取色器 -->
+				<i class="iconfont icon-date" @tap="insertDate"></i>
+				<i class="iconfont icon-undo" @tap="undo"></i>
+				<i class="iconfont icon-redo" @tap="redo"></i>
+				<i :class="'iconfont icon-zitixiahuaxian ' + (formats.underline ? 'ql-active' : '')" data-name="underline"></i>
+				<i class="iconfont icon--checklist" data-name="list" data-value="check"></i>
+				<i :class="'iconfont icon-youxupailie ' + (formats.list === 'ordered' ? 'ql-active' : '')" data-name="list"
+				 data-value="ordered"></i>
+				<i :class="'iconfont icon-wuxupailie ' + (formats.list === 'bullet' ? 'ql-active' : '')" data-name="list" data-value="bullet"></i>
+				<i class="iconfont icon-outdent" data-name="indent" data-value="-1"></i>
+				<i class="iconfont icon-indent" data-name="indent" data-value="+1"></i>
+				<i class="iconfont icon-fengexian" @tap="insertDivider"></i>
+				<i class="iconfont icon-preview" @tap="store" id="2"></i>
+				<i :class="'iconfont icon-zitixiabiao ' + (formats.script === 'sub' ? 'ql-active' : '')" data-name="script"
+				 data-value="sub"></i>
+				<i :class="'iconfont icon-zitishangbiao ' + (formats.script === 'super' ? 'ql-active' : '')" data-name="script"
+				 data-value="super"></i>
+				<!-- <i class="iconfont icon-quanping"></i> -->
+				<i class="iconfont icon-shanchu" @tap="clear"></i>
+				<i :class="'iconfont icon-direction-rtl ' + (formats.direction === 'rtl' ? 'ql-active' : '')" data-name="direction"
+				 data-value="rtl"></i>
+				<i class="iconfont icon-baocun" @tap="store" id="1"></i>
+			</view>
+			<t-color-picker ref="colorPicker" :color="color" @confirm="confirm" @cancel="cancel"></t-color-picker>
 		</view>
 		</scroll-view>
 		<view class="tjButton" @click="submitState">提交</view>
@@ -138,6 +121,7 @@
 <script>
 	import MxDatePicker from '@/components/JBTX/mx-datepicker/mx-datepicker.vue';
 	import tColorPicke from '@/components/JBTX/t-color-picker.vue';
+	var _self;
 	export default {
 		components: {
 			MxDatePicker,
@@ -161,16 +145,14 @@
 				isIOS: false,
 				title:'',
 				people_number:'',
-				datestring: '', //当前日期和时间字符串
-				datestring2: '', //当前日期和时间字符串
+				people_cost:'',
 				type:'range',
+				timer:'',
+				issueText:'',
 				range: [],
 				value: '',
 				showPicker: false,
-				
-				
-				
-				changeText: '',
+				text:'',
 				imgList: [],
 				list: [],
 				cloudimgList: [],
@@ -180,13 +162,31 @@
 				oneImg: '',
 				twoImg: '',
 				threeImg: '',
-				print_number: '',
 			}
 		},
 		onLoad() {
+			uni.getStorage({
+				key:'userInfo',
+				fail() {
+					uni.showToast({
+						icon:'none',
+						title:'暂未登录,请登录后查看'
+					})
+					setTimeout(function(){
+						uni.navigateTo({	
+							//loginType=1,泉运登录界面
+							//loginType=2,今点通登录界面
+							//loginType=3,武夷股份登录界面
+							url  : '/pages/GRZX/userLogin?loginType=4'
+						}) 
+					},500);
+				}
+			});
+			_self = this;
 			this.getTodayDate();
 		},
 		methods: {
+			
 			//---------------------------------获取当前日期---------------------------------
 			getTodayDate: function() {
 				/*
@@ -201,6 +201,7 @@
 				var timer = year + '/' + month + '/' + day; //当前年月日时分
 				this.range.push(timer);
 				this.range.push(timer);
+				this.timer=timer;
 			},
 		
 		
@@ -258,242 +259,249 @@
 					}
 				});
 			},
-			getimgList: function() {
-				var that = this;
+			submitState:function(){
+				var that=this;
+				if (that.title == '') {
+					uni.showToast({
+						title: '标题不能为空',
+						icon: 'none'
+					})
+				}
+				if (that.people_number == '') {
+					uni.showToast({
+						title: '结伴人数不能为空',
+						icon: 'none'
+					})
+				}
+				if (that.people_cost == '') {
+					uni.showToast({
+						title: '人均预算不能为空',
+						icon: 'none'
+					})
+				}
+				if (that.range[0]<=that.timer) {
+					uni.showToast({
+						title: '请选择当前日期之后的时间',
+						icon: 'none'
+					})
+				};
 				console.log(that.imgList);
-				if (that.imgList.length > 0) {
-					uni.saveFile({
-						tempFilePath: that.imgList[0].path,
-						success: function(res1) {
-							console.log(res1);
-							pathToBase64(res1.savedFilePath)
-								.then(base64 => {
-									that.oneImg = base64;
-									if (that.imgList.length == 1) {
-										that.submit();
-									}
-								})
-						},
-					});
+				if (that.imgList.length==0) {
+					uni.showToast({
+						title: '主页图片不能为空',
+						icon: 'none'
+					})
 				};
-				if (that.imgList.length > 1) {
-					uni.saveFile({
-						tempFilePath: that.imgList[1].path,
-						success: function(res2) {
-							console.log(res2);
-							pathToBase64(res2.savedFilePath)
-								.then(base64 => {
-									that.twoImg = base64;
-									if (that.imgList.length == 2) {
-										that.submit();
-									}
-								})
-						},
-					});
+				this.editorCtx.getContents({
+					success: function(res) {
+						that.issueText=res.html;
+						console.log(res.html);
+					}
+				});
+				console.log(that.issueText);
+				
+				if (that.issueText==''||that.issueText=='开始输入') {
+					uni.showToast({
+						title: '请输入同行说明',
+						icon: 'none'
+					})
 				};
-				if (that.imgList.length > 2) {
-					var threeprint = that.imgList[2].path;
-					uni.saveFile({
-						tempFilePath: threeprint,
-						success: function(res3) {
-							console.log(res3);
-							pathToBase64(res3.savedFilePath)
-								.then(base64 => {
-									that.threeImg = base64;
-									if (that.imgList.length == 3) {
-										that.submit();
+				if (this.submissionState == false) {
+					// this.submissionState = true;
+					// this.submit();
+				} else if (this.submissionState == true) {
+					uni.showToast({
+						title: '请勿重复点击提交',
+						icon: 'none',
+						duration: 2000
+					})
+				}
+			},
+			submit: function() {
+				var that = this;
+				
+				uni.showLoading({
+					title: '提交数据中...'
+				});
+					uni.getStorage({
+						key: 'userInfo',
+						success: (res) => {
+							console.log(res)
+							uni.request({
+								url: 'http://218.67.107.93:9210/api/app/publish-strategy',
+								method: 'POST',
+								data: {
+									title: that.title,
+									content: that.issueText,
+									imgUrl: that.imgList[0].path,
+									publisher: res.username,
+									publisherTel: res.phoneNumber,
+									colleagueNum: that.people_number,
+									cost:that.people_cost,
+									startPlayTime:that.range[0],
+									endPlayTime:that.range[1],
+								},
+								success: (res) => {
+									console.log(res)
+									if (res.data.msg == '发布攻略成功，待后台审核！') {
+										uni.hideLoading()
+										uni.showToast({
+											title: '提交成功',
+											success() {
+												uni.navigateBack({
+													url: './pictureList'
+												})
+											}
+										})
+									} else if (res.data.msg == '提交失败2分钟内请勿重复发表照片') {
+										uni.hideLoading()
+										uni.showToast({
+											title: '每次提交请间隔两分钟',
+											icon: 'none'
+										})
+									} else {
+										uni.hideLoading()
+										uni.showToast({
+											title: '提交失败',
+											icon: 'none'
+										})
 									}
-								})
-						},
-					});
-				};
+								},
+								fail: (res) => {
+									console.log(res)
+									uni.hideLoading()
+									uni.showToast({
+										title: '提交失败',
+										icon: 'none'
+									})
+								}
+							})
+						}
+					})
 
 			},
-
-			// submit: function() {
-			// 	var that = this;
-			// 	that.printRoute = that.routeorigin + '-' + that.routedestination;
-			// 	uni.showLoading({
-			// 		title: '提交数据中...'
-			// 	});
-			// 	if (that.oneImg != '') {
-			// 		if (that.twoImg == '') {
-			// 			that.twoImg = 'http';
-			// 		}
-			// 		if (that.threeImg == '') {
-			// 			that.threeImg = 'http';
-			// 		}
-			// 		uni.getStorage({
-			// 			key: 'userInfo',
-			// 			success: (res) => {
-			// 				console.log(res)
-			// 				uni.request({
-			// 					url: $print.Interface.spt_scenicSpotSetOrder.value,
-			// 					method: $print.Interface.spt_scenicSpotSetOrder.method,
-			// 					data: {
-			// 						userId: res.data.userId,
-			// 						printRoute: that.printRoute,
-			// 						printSite: that.printSite,
-			// 						oneImg: that.oneImg,
-			// 						twoImg: that.twoImg,
-			// 						threeImg: that.threeImg,
-
-			// 					},
-			// 					success: (res) => {
-			// 						console.log(res)
-			// 						if (res.data.msg == '发表照片成功') {
-			// 							uni.hideLoading()
-			// 							uni.showToast({
-			// 								title: '提交成功',
-			// 								success() {
-			// 									uni.navigateBack({
-			// 										url: './pictureList'
-			// 									})
-			// 								}
-			// 							})
-			// 						} else if (res.data.msg == '提交失败2分钟内请勿重复发表照片') {
-			// 							uni.hideLoading()
-			// 							uni.showToast({
-			// 								title: '每次提交请间隔两分钟',
-			// 								icon: 'none'
-			// 							})
-			// 						} else {
-			// 							uni.hideLoading()
-			// 							uni.showToast({
-			// 								title: '提交失败',
-			// 								icon: 'none'
-			// 							})
-			// 						}
-			// 					},
-			// 					fail: (res) => {
-			// 						console.log(res)
-			// 						uni.hideLoading()
-			// 						uni.showToast({
-			// 							title: '提交失败',
-			// 							icon: 'none'
-			// 						})
-			// 					}
-			// 				})
-			// 			}
-			// 		})
-
-			// 	}
-			// },
 			
 			//------------------富文本--------------
-			
-				cancel() {
-					this.isEdit = false;
-				},
-				open() {
-					this.$refs.colorPicker.open();
-					this.isEdit = true;
-					// uni.hideKeyboard();
-				},
-				hideKey() {
-					uni.hideKeyboard();
-				},
-				async confirm(e) {
-					this.isEdit = false;
-					this.fontColor = await e.hex;
-					this.onStatusChange({
-						detail: {
-							color: e.hex
-						}
-					});
-					this.$forceUpdate();
-				},
-				readOnlyChange() {
-					this.readOnly = !this.readOnly
-				},
-				onEditorReady() {
-					uni.createSelectorQuery().select('#editor').context(function(res) {
-						this.editorCtx = res.context;
-					}).exec();
-				},
-				undo() {
-					this.editorCtx.undo();
-				},
-			
-				redo() {
-					this.editorCtx.redo();
-				},
-			
-				blur() {
-					this.editorCtx.blur();
-				},
-			
-				format(e) {
-					// this.hideKey();
-					let {
-						name,
-						value
-					} = e.target.dataset;
-					if (!name) return; // console.log('format', name, value)
-					this.editorCtx.format(name, value);
-				},
-			
-				onStatusChange(e) {
-					this.formats = e.detail;
-				},
-			
-				insertDivider() {
-					this.editorCtx.insertDivider({
-						success: function() {
-							console.log('insert divider success');
-						}
-					});
-				},
-			
-				store(e) {
-					this.editorCtx.getContents({
-						success: function(res) {
-							e.currentTarget.id == 1 ? console.log('保存内容:', res.html) : uni.navigateTo({
-								url: `../preview/preview?rich=${encodeURIComponent(res.html)}`
-							});
-						}
-					});
-				},
-			
-				clear() {
-					this.editorCtx.clear({
-						success: function(res) {
-							console.log("clear success");
-						}
-					});
-				},
-			
-				removeFormat() {
-					this.editorCtx.removeFormat();
-				},
-			
-				insertDate() {
-					const date = new Date();
-					const formatDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-					this.editorCtx.insertText({
-						text: formatDate
-					});
-				},
-			
-				insertImage() {
-					// const that = this;
-					uni.chooseImage({
-						count: 1,
-						success: function(res) {
-							this.editorCtx.insertImage({
-								src: res.tempFilePaths[0],
-								data: {
-									id: 'abcd',
-									role: 'god'
-								},
-								width: '80%',
-								success: function() {
-									console.log('insert image success');
-								}
-							});
-						}
-					});
-				}
+
+			cancel() {
+				this.isEdit = false;
+			},
+			open() {
+				this.$refs.colorPicker.open();
+				this.isEdit = true;
+				// uni.hideKeyboard();
+			},
+			hideKey() {
+				uni.hideKeyboard();
+			},
+			async confirm(e) {
+				this.isEdit = false;
+				this.fontColor = await e.hex;
+				this.onStatusChange({
+					detail: {
+						color: e.hex
+					}
+				});
+				this.$forceUpdate();
+			},
+			readOnlyChange() {
+				this.readOnly = !this.readOnly
+			},
+			onEditorReady() {
+				uni.createSelectorQuery().select('#editor').context(function(res) {
+					_self.editorCtx = res.context;
+				}).exec();
+			},
+			undo() {
+				this.editorCtx.undo();
+			},
+
+			redo() {
+				this.editorCtx.redo();
+			},
+
+			blur() {
+				this.editorCtx.blur();
+			},
+
+			format(e) {
+			var	that=this;
+				// this.hideKey();
+				let {
+					name,
+					value
+				} = e.target.dataset;
+				console.log(name);
+				console.log(value);
+				console.log(e.target.dataset);
+				if (!name) return; // console.log('format', name, value)
+				that.editorCtx.format(name, value);
+			},
+
+			onStatusChange(e) {
+				this.formats = e.detail;
+			},
+
+			insertDivider() {
+				this.editorCtx.insertDivider({
+					success: function() {
+						console.log('insert divider success');
+					}
+				});
+			},
+
+			store(e) {
+				
+				this.editorCtx.getContents({
+					success: function(res) {
+						console.log(res);
+						e.currentTarget.id == 1 ? console.log('保存内容:', res.html) : uni.navigateTo({
+							url: `../preview/preview?rich=${encodeURIComponent(res.html)}`
+						});
+					}
+				});
+			},
+
+			clear() {
+				this.editorCtx.clear({
+					success: function(res) {
+						console.log("clear success");
+					}
+				});
+			},
+
+			removeFormat() {
+				this.editorCtx.removeFormat();
+			},
+
+			insertDate() {
+				const date = new Date();
+				const formatDate = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+				this.editorCtx.insertText({
+					text: formatDate
+				});
+			},
+
+			insertImage() {
+				// const that = this;
+				uni.chooseImage({
+					count: 1,
+					success: function(res) {
+						_self.editorCtx.insertImage({
+							src: res.tempFilePaths[0],
+							data: {
+								id: 'abcd',
+								role: 'god'
+							},
+							width: '80%',
+							success: function() {
+								console.log('insert image success');
+							}
+						});
+					}
+				});
+			}
+		
 		}
 	}
 </script>

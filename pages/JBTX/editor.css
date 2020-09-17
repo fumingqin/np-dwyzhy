@@ -9,12 +9,14 @@
 
 .ql-container {
 	box-sizing: border-box;
-	width: 100%;
+	width: 96%;
 	height: 100%;
 	font-size: 16px;
 	line-height: 1.5;
 	overflow: auto;
+	margin: auto;
 	padding: 20px 10px 20px 10px;
+	border: #000000 1px solid;
 }
 
 .ql-active {

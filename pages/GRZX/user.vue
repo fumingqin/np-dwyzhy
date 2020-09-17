@@ -91,8 +91,14 @@
 				{
 					title:'我的同行',
 					style:'iconClass5',
-					src:'../../static/GRZX/tubiao_tongxing.png',
+					src:'../../static/GRZX/tubiao_tongxing.png', 
 					clickUrl:'/pages/GRZX/peers/myPeers',
+				},
+				{
+					title:'发布同行',
+					style:'iconClass5',
+					src:'../../static/GRZX/tubiao_fabu.png',
+					clickUrl:'/pages/JBTX/issuePeer',
 				}]
 			}
 		},
