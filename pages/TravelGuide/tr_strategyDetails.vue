@@ -15,12 +15,10 @@
 				<view class="date">{{(information.updatedTime.substr(0,10))}}&nbsp;&nbsp;浏览数:{{information.count}}</view>
 			</view>
 			<view class="grClass">
-				<image class="txImage" :src="titleClick.image" mode="aspectFill"></image>
 				<view class="grView">
-					<view class="name">{{titleClick.name}}<text class="ladelView" style="background-color: #0CA1DF;">官方</text></view>
-					<text class="number">电话：{{titleClick.number}}</text>
+					<view class="name">发布人:{{information.strategyType}}<text class="ladelView" v-if="information.publisher=='管理员'" style="background-color: #0CA1DF;">官方</text></view>
+					<!-- <text class="number">电话:{{(titleClick.number.substr(0,3))+'*****'+(titleClick.number.substr(8,11))}}</text> -->
 				</view>
-				<text class="address">|&nbsp;&nbsp;&nbsp;{{titleClick.address}}</text>
 			</view>
 		</view>
 
@@ -31,7 +29,8 @@
 				<view class="Tk_item" @click="checkAttention(1)">
 					<view class="Tk_bacg">
 						<text class="Tk_text1">同行人数信息</text>
-						<text class="Tk_text2">同行人数:{{number}}/5</text>
+						<text class="Tk_text2">同行人数:{{colleagueList[0].appColleagueList.length}}/5</text>
+						<text class="Tk_text2" style="color: #FC4646;" v-if="colleagueList[0].appColleagueList.length==5">同行人数:5/5</text>
 						<view class="Tk_butter">></view>
 					</view>
 				</view>
@@ -49,8 +48,11 @@
 		</view>
 
 		<!-- 底部 -->
-		<view class="footer" @click="confirmPeers">
-			<text class="submit">立即预订</text>
+		<view class="footer" v-if="information.colleagueStatus=='enable'" style="background: #06B4FD;" @click="confirmPeers">
+			<text class="submit">我要同行</text>
+		</view>
+		<view class="footer" v-if="information.colleagueStatus=='disable'" style="background: #ffc600;" @click="alreadyPeers">
+			<text class="submit">已同行</text>
 		</view>
 		
 		<!-- 查看须知popup -->
@@ -61,9 +63,10 @@
 					<text class="Nb_text4 jdticon icon-fork" @click="close(1)"></text>
 				</view>
 				<scroll-view class="noticeBox2" scroll-y="ture">
-					<view class="tv_title" v-for="(item,index) in colleagues" :key="index">
+					<view class="tv_title" v-for="(item,index) in colleagueList[0].appColleagueList" :key="index">
 						<view class="ti_name">同行人:{{item.name}}</view>
-						<view class="ti_telephone">联系电话:{{item.telephone}}</view>
+						<view class="ti_telephone" v-if="userInfo.phoneNumber!==item.tel">联系电话:{{(item.tel.substr(0,3))+'*****'+(item.tel.substr(8,11))}}</view>
+						<view class="ti_telephone" v-if="userInfo.phoneNumber==item.tel">联系电话:{{item.tel}}</view>
 					</view>
 				</scroll-view>
 			</view>
@@ -93,26 +96,19 @@
 				reserve: [], //预定须知
 				reserveContent: '', //预定须知内容
 				id: '',
-				colleagues:[{
-					name:'同行人1',
-					telephone:'18859987275'
-				},
-				{
-					name:'同行人2',
-					telephone:'18859987275'
-				},
-				{
-					name:'同行人3',
-					telephone:'18859987275'
-				}],
 				userInfo:[],//用户信息
+				colleagueList:[{
+					appColleagueList:[{
+						name:'',
+						tel:'',
+					}]
+				}],//同行列表
 			}
 		},
 
 		onLoad(options) {
 			this.id = options.id;
 			this.routeInit();
-			this.getArticleInfo();
 			this.getUserInfo();//读取用户信息
 		},
 		
@@ -171,6 +167,7 @@
 						// #ifdef MP-WEIXIN
 						that.weixinOpenId = data.data.openId_xcx;
 						// #endif
+						that.getArticleInfo();
 					}
 				})
 			},
@@ -181,7 +178,8 @@
 					url: 'http://218.67.107.93:9210/api/app/get-strategy-detail',
 					method: "GET",
 					data: {
-						id: this.id
+						id: this.id,
+						colleagueId: this.userInfo.unid
 					},
 					success: (res) => {
 						if(res.data.data.content!==" "){
@@ -199,10 +197,12 @@
 					url: 'http://218.67.107.93:9210/api/app/colleague-list',
 					method: "GET",
 					data: {
-						colleagueId: this.id
+						colleagueId: this.userInfo.unid
 					},
 					success: (res) => {
-						console.log('同行列表', res)
+						// console.log('同行列表', res)
+						this.colleagueList=res.data.data;
+						console.log('同行列表', this.colleagueList)
 					}
 				});
 			},
@@ -224,7 +224,7 @@
 								method: "GET",
 								data: {
 									id: this.id,
-									colleagueId: this.userInfo.username,
+									colleagueId: this.userInfo.unid,
 								},
 								success: (res) => {
 									console.log(res)
@@ -263,7 +263,13 @@
 					}
 				})
 			},
-
+			
+			alreadyPeers:function(){
+				uni.showToast({
+					title:'已同行',
+					icon: 'success'
+				})
+			}
 		}
 	}
 </script>
@@ -341,7 +347,7 @@
 		.grClass {
 			position: relative;
 			display: flex;
-			margin-top: 60upx;
+			margin-top: 30upx;
 			margin-left: 40upx;
 			margin-right: 40upx;
 			padding-bottom: 30upx;
@@ -354,7 +360,7 @@
 			}
 
 			.grView {
-				margin-left: 25upx;
+				// margin-left: 25upx;
 
 				.name {
 					display: flex;
@@ -702,7 +708,6 @@
 		margin-bottom: 30upx;
 		margin-left: 30upx;
 		margin-right: 30upx;
-		background: #06B4FD;
 		justify-content: center;
 
 		.submit {
