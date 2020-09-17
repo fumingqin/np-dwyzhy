@@ -12,10 +12,31 @@
 		<view class="titleClass">
 			<text class="title">{{information.title}}</text>
 			<view class="dateCost">
-				<view class="date">{{information.updatedTime}}&nbsp;&nbsp;浏览数:{{information.count}}</view>
+				<view class="date">{{(information.updatedTime.substr(0,10))}}&nbsp;&nbsp;浏览数:{{information.count}}</view>
+			</view>
+			<view class="grClass">
+				<image class="txImage" :src="titleClick.image" mode="aspectFill"></image>
+				<view class="grView">
+					<view class="name">{{titleClick.name}}<text class="ladelView" style="background-color: #0CA1DF;">官方</text></view>
+					<text class="number">电话：{{titleClick.number}}</text>
+				</view>
+				<text class="address">|&nbsp;&nbsp;&nbsp;{{titleClick.address}}</text>
 			</view>
 		</view>
 
+		<!-- 门票滑块 -->
+		<!-- 模块命名：Tk godetail(item) -->
+		<view>
+			<scroll-view class="Tk_scrollview">
+				<view class="Tk_item" @click="checkAttention(1)">
+					<view class="Tk_bacg">
+						<text class="Tk_text1">同行人数信息</text>
+						<text class="Tk_text2">同行人数:{{number}}/5</text>
+						<view class="Tk_butter">></view>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
 
 		<!-- 景区介绍 -->
 		<view>
@@ -27,16 +48,41 @@
 			</view>
 		</view>
 
+		<!-- 底部 -->
+		<view class="footer" @click="confirmPeers">
+			<text class="submit">立即预订</text>
+		</view>
+		
+		<!-- 查看须知popup -->
+		<popup ref="popup" type="bottom">
+			<view class="boxView2">
+				<view class="titleView2">
+					<text class="Nb_text3">同行信息</text>
+					<text class="Nb_text4 jdticon icon-fork" @click="close(1)"></text>
+				</view>
+				<scroll-view class="noticeBox2" scroll-y="ture">
+					<view class="tv_title" v-for="(item,index) in colleagues" :key="index">
+						<view class="ti_name">同行人:{{item.name}}</view>
+						<view class="ti_telephone">联系电话:{{item.telephone}}</view>
+					</view>
+				</scroll-view>
+			</view>
+		</popup>
 	</view>
 </template>
 
 <script>
+	import popup from "@/components/CZC/uni-popup/uni-popup.vue";
 	export default {
+		components: {
+			popup
+		},
 		data() {
 			return {
 				picList: [], //相册图片数组
 				titleClick: '', //标题,点击量
 				type: 0,
+				number: 2,
 				arrangeText: [], //行程安排标题内容数组
 				information: [{
 					title: '', //标题
@@ -46,7 +92,20 @@
 				costDescription: [], //费用明细
 				reserve: [], //预定须知
 				reserveContent: '', //预定须知内容
-				id:'',
+				id: '',
+				colleagues:[{
+					name:'同行人1',
+					telephone:'18859987275'
+				},
+				{
+					name:'同行人2',
+					telephone:'18859987275'
+				},
+				{
+					name:'同行人3',
+					telephone:'18859987275'
+				}],
+				userInfo:[],//用户信息
 			}
 		},
 
@@ -54,11 +113,15 @@
 			this.id = options.id;
 			this.routeInit();
 			this.getArticleInfo();
-			// this.dayInit();
+			this.getUserInfo();//读取用户信息
 		},
-
+		
+		onPullDownRefresh:function(){
+			this.getArticleInfo();
+		},
+		
 		onNavigationBarButtonTap: function() {
-			this.share();
+			
 		},
 
 		methods: {
@@ -84,103 +147,122 @@
 				})
 			},
 
-			// tabClick(e) {
-			// 	if (e == 0) {
-			// 		this.type = 0;
-			// 	} else if (e == 1) {
-			// 		this.type = 1;
-			// 	} else if (e == 2) {
-			// 		this.type = 2;
-			// 	} else if (e == 3) {
-			// 		this.type = 3;
-			// 	}
-
-			// },
+			//-------------------------------查看须知-----------------------------
+			checkAttention(e) {
+				if (e == 1) {
+					this.$refs.popup.open()
+				}
+			},
+			close(e) {
+				if (e == 1) {
+					this.$refs.popup.close()
+				}
+			},
+			
+			//--------------------------读取用户信息--------------------------
+			getUserInfo() {
+				var that = this;
+				//读取用户ID
+				uni.getStorage({
+					key: 'userInfo',
+					success: function(data) {
+						console.log('用户数据',data)
+						that.userInfo = data.data;
+						// #ifdef MP-WEIXIN
+						that.weixinOpenId = data.data.openId_xcx;
+						// #endif
+					}
+				})
+			},
 
 			getArticleInfo: function() {
 				var that = this;
-				// uni.request({
-				// 	url: 'http://218.67.107.93:9210/api/app/getInformationList?id=' + this.id,
-				// 	method: "POST",
-				// 	success: function(res) {
-				// 		that.information = res.data.data;
-				// 		for (var i = 0; i < res.data.data.length; i++) {
-				// 			that.information[i].content = res.data.data[i].content.replace(/\<img/g,
-				// 				'<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
-				// 		}
-				// 		console.log(res)
-				// 	}
-				// });
-				
-				// uni.request({
-				// 	url: 'http://218.67.107.93:9210/api/app/get-strategy-list',
-				// 	method: "GET",
-				// 	success: (res) => {
-				// 		console.log('攻略', res)
-				// 	}
-				// });
-				
 				uni.request({
 					url: 'http://218.67.107.93:9210/api/app/get-strategy-detail',
 					method: "GET",
-					data:{
-						id:this.id
+					data: {
+						id: this.id
 					},
 					success: (res) => {
-						// console.log('攻略', res)
-						that.information = res.data.data;
-						that.information.content = res.data.data.content.replace(/\<img/g,
-							'<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
-						console.log('攻略', that.information)
+						if(res.data.data.content!==" "){
+							uni.stopPullDownRefresh();
+							console.log('攻略', res)
+							that.information = res.data.data;
+							that.information.content = res.data.data.content.replace(/\<img/g,
+								'<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
+							// console.log('攻略', that.information)
+						}
 					}
 				});
-			},
-
-			//点击跳转付款页面
-			submit: function() {
-				uni.navigateTo({
-					url: '../scenicSpotTickets/orderAdd',
-				})
-			},
-
-			//点击客服
-			godetail: function() {
-				uni.showToast({
-					title: '你点击了' + this.titleClick.scenicName,
-					icon: 'none'
-				})
-				setTimeout(function() {
-					uni.navigateTo({
-						url: ''
-					})
-				}, 500);
-			},
-
-			//分享
-			share() {
-				uni.share({
-					provider: "weixin",
-					scene: "WXSceneSession",
-					type: 0,
-					href: "pages/LYFW/ouristRoute/travelArrange",
-					title: "来自" + this.titleClick.name + "的分享",
-					summary: this.titleClick.scenicName,
-					imageUrl: this.picList[0].ticketImage,
-					success: function() {
-						uni.showToast({
-							title: '分享成功',
-							duration: 3000
-						})
+				
+				uni.request({
+					url: 'http://218.67.107.93:9210/api/app/colleague-list',
+					method: "GET",
+					data: {
+						colleagueId: this.id
 					},
-					fail: function() {
-						uni.showToast({
-							title: '分享失败',
-							duration: 3000
-						})
+					success: (res) => {
+						console.log('同行列表', res)
 					}
 				});
 			},
-
+			
+			
+			// --------------------------------------确认同行------------------
+			confirmPeers: function() {
+				uni.showModal({
+					title: '您确认要同行吗？',
+					success: (res) => {
+						console.log(res)
+						if (res.confirm == true) {
+							// console.log(this.parameter.AID)
+							uni.showLoading({
+								title: '正在请求同行'
+							})
+							uni.request({
+								url: 'http://218.67.107.93:9210/api/app/colleague-apply',
+								method: "GET",
+								data: {
+									id: this.id,
+									colleagueId: this.userInfo.username,
+								},
+								success: (res) => {
+									console.log(res)
+									if (res.data.msg == '申请成功') {
+										uni.hideLoading()
+										uni.showToast({
+											title: '申请成功',
+											icon: 'success'
+										})
+									}else if(res.data.msg == '申请失败，您已申请过！'){
+										uni.hideLoading()
+										uni.showToast({
+											title: '您已申请过！',
+											icon: 'success'
+										})
+									} else {
+										uni.hideLoading()
+										uni.showToast({
+											title: '申请失败',
+											icon: 'success'
+										})
+									}
+			
+								},
+								fail: () => {
+									uni.hideLoading()
+									uni.showToast({
+										title: '服务器异常，请重试',
+										icon: 'success'
+									})
+								}
+							})
+						} else {
+			
+						}
+					}
+				})
+			},
 
 		}
 	}
@@ -553,6 +635,54 @@
 		}
 	}
 
+	//Y轴滚动视图
+	.Tk_scrollview {
+		width: 100%;
+		margin: 0 auto;
+		background: #fff;
+
+		.Tk_item {
+			background: #f9f9f9;
+			margin: 32upx 32upx;
+			border-radius: 16upx;
+			display: flex;
+			box-shadow: 0px 1px 2px 0.1px #aaa;
+
+			.Tk_bacg {
+				position: relative;
+				margin: 32upx 32upx;
+
+				.Tk_text1 {
+					font-size: 34upx;
+					display: flex;
+					text-overflow: ellipsis; //文章超出宽度隐藏并用...表示
+					white-space: nowrap;
+					overflow: hidden;
+					width: 480upx; //内容宽度
+				}
+
+				.Tk_text2 {
+					font-size: 26upx;
+					margin-top: 20upx;
+					display: block; // 让字体换行
+					text-overflow: ellipsis; //文章超出宽度隐藏并用...表示
+					white-space: nowrap;
+					overflow: hidden;
+					width: 400upx; //内容宽度
+				}
+
+				.Tk_butter {
+					position: absolute;
+					bottom: 22upx;
+					right: -158upx;
+					font-size: 36upx;
+					text-align: center;
+				}
+			}
+
+		}
+	}
+
 	//底部
 	.footer {
 		position: fixed;
@@ -561,45 +691,73 @@
 		z-index: 995;
 		display: flex;
 		align-items: center;
-		width: 100%;
-		height: 90upx;
+		width: 92%;
+		height: 100upx;
 		justify-content: space-between;
 		font-size: 30upx;
-		background: #fff;
 		z-index: 998;
-		color: #f85e52;
-		box-shadow: 0 -1px 5px rgba(0, 0, 0, .1);
+		box-shadow: 0 0 20px 0 rgba(0, 18, 251, 0.2);
+		border-radius: 14upx;
+		text-align: center;
+		margin-bottom: 30upx;
+		margin-left: 30upx;
+		margin-right: 30upx;
+		background: #06B4FD;
+		justify-content: center;
 
-		.footerPrice {
-			padding-left: 55upx;
-
-			.kfIcon {
-				// position: relative;
-				width: 40upx;
-				height: 36upx;
-				color: rgba(44, 45, 45, 1);
-				// top: 7upx;
+		.submit {
+			color: #fff;
+			font-size: 32upx;
+		}
+	}
+	
+	//途径点弹框
+	.boxView2 {
+		width: 90%;
+		padding: 16upx 40upx;
+		padding-bottom: 40upx;
+		background: #FFFFFF;
+		z-index: 999;
+	
+		.titleView2 {
+			margin-top: 24upx;
+	
+			//弹框标题
+			.Nb_text3 {
+				position: relative;
+				font-size: 38upx;
+				font-weight: bold;
+				top: 8upx;
 			}
-
-			.zfIcon {
-				padding-left: 50upx;
-				width: 32upx;
-				height: 33upx;
-				color: rgba(44, 45, 45, 1);
+	
+			//弹框关闭按钮
+			.Nb_text4 {
+				margin-top: 8upx;
+				float: right;
+				color: #333;
+				font-size: 32upx;
 			}
 		}
-
-		.submitChange {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 280upx;
-			height: 100%;
-			background: #06B4FD;
-
-			.submit {
-				color: #fff;
-				font-size: 32upx;
+	
+		.noticeBox2 {
+			line-height: 32upx;
+			height: 910upx;
+			margin-top: 26upx;
+	
+			.tv_title {
+				width: 100%;
+				border-bottom: 1px #F5F5F5 dotted;
+				
+				.ti_name{
+					font-size: 30upx;
+					margin-top: 40upx;
+				}
+				
+				.ti_telephone{
+					font-size: 30upx;
+					margin-top: 40upx;
+					margin-bottom: 40upx;
+				}
 			}
 		}
 	}
