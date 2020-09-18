@@ -210,58 +210,61 @@
 			
 			// --------------------------------------确认同行------------------
 			confirmPeers: function() {
-				uni.showModal({
-					title: '您确认要同行吗？',
-					success: (res) => {
-						console.log(res)
-						if (res.confirm == true) {
-							// console.log(this.parameter.AID)
-							uni.showLoading({
-								title: '正在请求同行'
-							})
-							uni.request({
-								url: 'http://218.67.107.93:9210/api/app/colleague-apply',
-								method: "GET",
-								data: {
-									id: this.id,
-									colleagueId: this.userInfo.unid,
-								},
-								success: (res) => {
-									console.log(res)
-									if (res.data.msg == '申请成功') {
+				if(this.userInfo.username!==''){
+					uni.showModal({
+						title: '您确认要同行吗？',
+						success: (res) => {
+							console.log(res)
+							if (res.confirm == true) {
+								// console.log(this.parameter.AID)
+								uni.showLoading({
+									title: '正在请求同行'
+								})
+								uni.request({
+									url: 'http://218.67.107.93:9210/api/app/colleague-apply',
+									method: "GET",
+									data: {
+										id: this.id,
+										colleagueId: this.userInfo.unid,
+									},
+									success: (res) => {
+										console.log(res)
+										if (res.data.msg == '申请成功') {
+											uni.hideLoading()
+											uni.showToast({
+												title: '申请成功',
+												icon: 'success'
+											})
+											uni.startPullDownRefresh();
+										}else if(res.data.msg == '申请失败，您已申请过！'){
+											uni.hideLoading()
+											uni.showToast({
+												title: '您已申请过！',
+												icon: 'success'
+											})
+										} else {
+											uni.hideLoading()
+											uni.showToast({
+												title: '申请失败',
+												icon: 'success'
+											})
+										}
+								
+									},
+									fail: () => {
 										uni.hideLoading()
 										uni.showToast({
-											title: '申请成功',
-											icon: 'success'
-										})
-									}else if(res.data.msg == '申请失败，您已申请过！'){
-										uni.hideLoading()
-										uni.showToast({
-											title: '您已申请过！',
-											icon: 'success'
-										})
-									} else {
-										uni.hideLoading()
-										uni.showToast({
-											title: '申请失败',
+											title: '服务器异常，请重试',
 											icon: 'success'
 										})
 									}
-			
-								},
-								fail: () => {
-									uni.hideLoading()
-									uni.showToast({
-										title: '服务器异常，请重试',
-										icon: 'success'
-									})
-								}
-							})
-						} else {
-			
+								})
+							} else {
+								
+							}
 						}
-					}
-				})
+					})
+				}
 			},
 			
 			alreadyPeers:function(){

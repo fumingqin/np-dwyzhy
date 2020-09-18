@@ -307,8 +307,8 @@
 					})
 				};
 				if (this.submissionState == false) {
-					// this.submissionState = true;
-					// this.submit();
+					this.submissionState = true;
+					this.submit();
 				} else if (this.submissionState == true) {
 					uni.showToast({
 						title: '请勿重复点击提交',
