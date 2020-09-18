@@ -294,11 +294,13 @@
 				};
 				this.editorCtx.getContents({
 					success: function(res) {
+						console.log(res);
 						that.issueText=res.html;
 						console.log(res.html);
+						console.log(that.issueText);
 					}
 				});
-				console.log(that.issueText);
+				
 				
 				if (that.issueText==''||that.issueText=='开始输入') {
 					uni.showToast({
@@ -319,7 +321,7 @@
 			},
 			submit: function() {
 				var that = this;
-				
+				console.log(that.issueText);
 				uni.showLoading({
 					title: '提交数据中...'
 				});
@@ -334,8 +336,8 @@
 									title: that.title,
 									content: that.issueText,
 									imgUrl: that.imgList[0].path,
-									publisher: res.username,
-									publisherTel: res.phoneNumber,
+									publisher: res.data.username,
+									publisherTel: res.data.phoneNumber,
 									colleagueNum: that.people_number,
 									cost:that.people_cost,
 									startPlayTime:that.range[0],
