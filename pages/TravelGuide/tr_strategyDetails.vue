@@ -188,7 +188,7 @@
 							that.information = res.data.data;
 							that.information.content = res.data.data.content.replace(/\<img/g,
 								'<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
-							// console.log('攻略', that.information)
+							// console.log('攻略', that.information.content)
 						}
 					}
 				});
