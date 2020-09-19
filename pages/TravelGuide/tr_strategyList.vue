@@ -39,9 +39,7 @@
 			return {
 				searchValue: '', //搜索框值
 				regionWeixin: '请选择', //微信地区数值
-				
 				content:[],
-				
 				searchIndex: 0, //搜索框是否启用状态值
 				searchData: '', //搜索后的值
 				current: 0, //标题下标

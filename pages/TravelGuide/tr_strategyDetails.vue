@@ -260,10 +260,15 @@
 									}
 								})
 							} else {
-								
+								uni.showToast({
+									title: '请登录',
+									icon: 'success'
+								})
 							}
 						}
 					})
+				}else{
+					
 				}
 			},
 			
