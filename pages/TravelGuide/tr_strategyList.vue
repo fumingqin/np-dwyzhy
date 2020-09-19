@@ -13,8 +13,8 @@
 						<view class="groupCost">
 							<text class="cost2">阅读量:{{item.count}}</text>
 							<text class="cost">{{(item.updatedTime.substr(0,10))}}</text>
-							<text class="sellComment" style="color: #42e800;" v-if="item.dataState=='Enable'">可同行</text>
-							<text class="sellComment" style="color: #ff0000;" v-if="item.dataState!=='Enable'">不可同行</text>
+							<text class="sellComment" style="color: #42e800;" v-if="item.colleagueStatus=='enable'">可同行</text>
+							<text class="sellComment" style="color: #ff0000;" v-if="item.colleagueStatus=='disable'">不可同行</text>
 						</view>
 					</view>
 				</view>
@@ -62,7 +62,6 @@
 			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
 			// #endif
 			// this.routeInit();
-			this.routeData();
 			
 			// #ifdef  H5
 			var that=this;
@@ -73,6 +72,10 @@
 				}
 			})
 			//#endif
+		},
+		
+		onShow() {
+			this.routeData();
 		},
 
 		methods: {
