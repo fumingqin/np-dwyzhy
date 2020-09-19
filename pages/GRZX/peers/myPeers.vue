@@ -35,6 +35,12 @@
 				success:res=>{
 					this.unid = res.data.unid;
 					this.loadList(this.unid);
+				},
+				fail: () => {
+					uni.showToast({
+						title: '您暂未登录',
+						icon:'none',
+					});
 				}
 			})
 			
