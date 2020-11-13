@@ -156,7 +156,8 @@
 			this.loadData();
 		},
 	    methods: {	
-			async loadData(){
+			loadData(){
+				let that = this;
 				var array=[];
 				var list=[];
 				uni.getStorage({
@@ -186,12 +187,19 @@
 									}
 									array.push(data1);
 								}
+								var defaultList=[];
 								var list1=[];
 								for(var i=0;i<array.length;i++){
 									if(array[i].hiddenIndex==1){
 										list1.push(array[i]);
 									}
+									if(array[i].userDefault == 'true'){
+										defaultList.unshift(array[i]);
+									}else{
+										defaultList.push(array[i]);
+									}
 								}
+								that.passengerList=defaultList;
 								uni.setStorage({
 									key:'passengerList',
 									data:list1,
@@ -218,8 +226,6 @@
 				// 		list1.push(array[i]);
 				// 	}
 				// }
-		
-				this.passengerList=array;
 				// this.addressList=address;
 			},
 			//乘车人管理

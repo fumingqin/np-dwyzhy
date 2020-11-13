@@ -584,6 +584,7 @@
 		{
 		    "path" : "pages/TravelGuide/tr_strategyList",
 		    "style" : {
+				"enablePullDownRefresh":true,
 				"navigationBarTitleText": "攻略列表"
 			}
 		}

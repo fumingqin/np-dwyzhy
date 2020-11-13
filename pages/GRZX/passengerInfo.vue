@@ -124,12 +124,19 @@
 									}
 									array.push(data1);
 								}
+								var defaultList=[];
+								for(var n=0;n<array.length;n++){
+									if(array[n].hiddenIndex==1){
+										defaultList.unshift(array[n]);
+									}else{
+										defaultList.push(array[n]);
+									}
+								}
+								that.passengerList=defaultList;
 							}
 						})
 					}
 				})
-				this.passengerList=array;
-				console.log(array)
 			},
 			addPassenger(){
 				uni.getStorage({

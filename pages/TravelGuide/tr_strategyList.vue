@@ -13,8 +13,8 @@
 						<view class="groupCost">
 							<text class="cost2">阅读量:{{item.count}}</text>
 							<text class="cost">{{(item.updatedTime.substr(0,10))}}</text>
-							<text class="sellComment" style="color: #42e800;" v-if="item.dataState=='Enable'">可同行</text>
-							<text class="sellComment" style="color: #ff0000;" v-if="item.dataState!=='Enable'">不可同行</text>
+							<text class="sellComment" style="color: #42e800;" v-if="item.colleagueStatus=='enable'">可同行</text>
+							<text class="sellComment" style="color: #ff0000;" v-if="item.colleagueStatus=='disable'">不可同行</text>
 						</view>
 					</view>
 				</view>
@@ -54,25 +54,21 @@
 		},
 
 		onLoad(options) {
-			// #ifdef H5
-			uni.showToast({
-				title:'公众号当前定位无法启用，已默认定位南平市',
-				icon:'none'
-			})
-			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
-			// #endif
-			// this.routeInit();
-			this.routeData();
 			
-			// #ifdef  H5
-			var that=this;
-			uni.getStorage({
-				key:'userInfo',
-				fail() {
-					that.getCode();	
-				}
+		},
+		
+		onShow() {
+			uni.showLoading({
+				title: '加载列表中...',
 			})
-			//#endif
+			this.routeData();
+		},
+		
+		onPullDownRefresh: function() {
+			uni.showLoading({
+				title: '加载列表中...',
+			})
+			this.routeData();
 		},
 
 		methods: {
@@ -85,13 +81,32 @@
 				// 		this.groupTitle = e.data.data;
 				// 	}
 				// });
-				
 				uni.request({
 					url:'http://218.67.107.93:9210/api/app/get-strategy-list',
 					method:'GET',
 					success: (e) => {
 						console.log(e)
-						this.groupTitle = e.data.data;
+						if(e.data.status==1){
+							// console.log('列表数据',this.groupTitle)
+							uni.stopPullDownRefresh();
+							uni.hideLoading();
+							this.groupTitle = e.data.data;
+						}else{
+							uni.stopPullDownRefresh();
+							uni.hideLoading();
+							uni.showToast({
+								title: '暂无列表信息',
+								icon: 'none'
+							})
+						}
+					},
+					fail(res) {
+						uni.hideLoading();
+						uni.showToast({
+							title: '服务器异常',
+							icon: 'none'
+						})
+						// console.log(res)
 					}
 				})
 			},
