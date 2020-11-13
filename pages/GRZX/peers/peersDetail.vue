@@ -39,6 +39,7 @@
 				},
 				publisher:'', //发布人
 				publisherTel:'',//联系电话
+				Tel:'',//完整的联系电话
 				id : '',
 				imageText : '', //图文
 				unid:'',		//用户id
@@ -63,10 +64,11 @@
 				uni.getStorage({
 					key:'peerDetail',
 					success:res=>{
-						this.information = res.data;
-						this.imageText = res.data.content.replace(/\<img/g, '<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
+						this.information = res.data.strategy;
+						this.imageText = res.data.strategy.content.replace(/\<img/g, '<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
 						this.publisher = this.information.publisher=='管理员'?this.information.publisher:this.formateName(this.information.publisher);
 						this.publisherTel = this.information.publisherTel==null?this.information.publisherTel:this.formatePhone(this.information.publisherTel);
+						this.Tel = this.information.publisherTel;
 					},
 					complete: () => {
 						uni.hideLoading();
@@ -83,8 +85,9 @@
 						icon:'none'
 					});
 				}else{
+					console.log(this.Tel);
 					uni.makePhoneCall({
-						phoneNumber: this.publisherTel, 
+						phoneNumber: this.Tel, 
 					});
 				}
 			},

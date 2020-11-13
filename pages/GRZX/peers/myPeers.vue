@@ -3,12 +3,12 @@
 		<view class="guess-section" v-if="show">
 			<view v-for="(item, index) in peer_list" :key="index" class="guess-item" @click="informationTo(item)">
 				<view class="image-wrapper">
-					<image :src="item.imgUrl" mode="aspectFill"></image>
+					<image :src="item.strategy.imgUrl" mode="aspectFill"></image>
 				</view>
-				<view class="title clamp">{{item.title}}</view>
+				<view class="title clamp">{{item.strategy.title}}</view>
 				<view class="boxClass">
-					<text class="price">{{item.createdTime}}</text>
-					<text class="price-zan">阅读{{item.count}}</text> 
+					<text class="price">{{item.strategy.createdTime}}</text>
+					<text class="price-zan">阅读{{item.strategy.count}}</text> 
 				</view>
 			</view>
 		</view>
@@ -28,46 +28,43 @@
 			}
 		},
 		onLoad() {
+		},
+		onShow() {
 			uni.getStorage({
 				key:'userInfo',
 				success:res=>{
 					this.unid = res.data.unid;
+					this.loadList(this.unid);
+				},
+				fail: () => {
+					uni.showToast({
+						title: '您暂未登录',
+						icon:'none',
+					});
 				}
 			})
-			this.loadList();
+			
 		},
 		methods: {
-			loadList(){
+			loadList(id){
 				uni.showLoading({
 					title: '加载中...',
 					mask: false
 				});
-				// uni.request({
-				// 	url: 'http://218.67.107.93:9210/api/app/get-strategy-list',
-				// 	method: 'GET',
-				// 	success: res => {
-				// 		console.log(res);
-				// 		if(res.data.data.length > 0 && res.statusCode == 200){
-				// 			this.show = true;
-				// 			this.peer_list = res.data.data;
-				// 		}
-				// 	},
-				// 	fail: () => {},
-				// 	complete: () => {
-				// 		uni.hideLoading();
-				// 	}
-				// });
+				this.peer_list = [];
 				uni.request({
 					url: this.$Grzx.Interface.colleague_list.url,
 					method: this.$Grzx.Interface.colleague_list.method,
 					data: {
-						colleagueId:this.unid,//用户id
+						colleagueId:id,//用户id
 					},
 					success: res => {
 						console.log(res);
-						if(res.data.data.length > 0 && res.statusCode == 200){
+						if(res.data.data != null && res.statusCode == 200){
 							this.show = true;
 							this.peer_list = res.data.data;
+						}else{
+							this.show = false;
 						}
 					},
 					fail: () => {},
