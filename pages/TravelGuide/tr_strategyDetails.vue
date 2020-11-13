@@ -8,38 +8,34 @@
 			</swiper-item>
 		</swiper>
 
-		<!-- 标题、发布时间 v-if="strategyType=='custom'"-->
+		<!-- 标题、发布时间-->
 		<view class="titleClass">
 			<text class="title">{{information.title}}</text>
 			<view class="dateCost">
-				<text class="date">{{updatedTime}}&nbsp;&nbsp;浏览数:{{information.count}}</text>
-				<!-- <view class="name">发布人:{{information.publisher}}</view> -->
+				<view class="date">{{(information.updatedTime.substr(0,10))}}&nbsp;&nbsp;浏览数:{{information.count}}</view>
 			</view>
-			<view class="grClass" v-if="strategyType=='custom'">
+			<view class="grClass">
 				<view class="grView">
-					<!-- <view class="name">发布人:{{information.strategyType}}<text class="ladelView" v-if="information.publisher=='管理员'" style="background-color: #0CA1DF;">官方</text></view>
-					<text class="number">电话:{{(titleClick.number.substr(0,3))+'*****'+(titleClick.number.substr(8,11))}}</text> -->
-					<view class="name">发布人:{{information.publisher}}</view>
-					<text class="number">电话:{{(information.publisherTel.substr(0,3))+'*****'+(information.publisherTel.substr(8,11))}}</text>
+					<view class="name">发布人:{{information.strategyType}}<text class="ladelView" v-if="information.publisher=='管理员'" style="background-color: #0CA1DF;">官方</text></view>
+					<text class="number" v-if="information.publisherTel !== null">电话:{{turnDate(information.publisherTel)}}</text>
 				</view>
 			</view>
 		</view>
 
 		<!-- 门票滑块 -->
 		<!-- 模块命名：Tk godetail(item) -->
-		<!-- <view>
+		<view>
 			<scroll-view class="Tk_scrollview">
-				<view class="Tk_item" @click="checkAttention(1)">
+				<view class="Tk_item" @click="checkAttention">
 					<view class="Tk_bacg">
 						<text class="Tk_text1">同行人数信息</text>
-						<text class="Tk_text2" v-if="colleagueList[0].appColleagueList.length==''">同行人数:0/5</text>
 						<text class="Tk_text2">同行人数:{{colleagueList[0].appColleagueList.length}}/5</text>
 						<text class="Tk_text2" style="color: #FC4646;" v-if="colleagueList[0].appColleagueList.length==5">同行人数:5/5</text>
 						<view class="Tk_butter">></view>
 					</view>
 				</view>
 			</scroll-view>
-		</view> -->
+		</view>
 
 		<!-- 景区介绍 -->
 		<view>
@@ -60,11 +56,11 @@
 		</view>
 		
 		<!-- 查看须知popup -->
-		<!-- <popup ref="popup" type="bottom">
+		<popup ref="popup" type="bottom">
 			<view class="boxView2">
 				<view class="titleView2">
 					<text class="Nb_text3">同行信息</text>
-					<text class="Nb_text4 jdticon icon-fork" @click="close(1)"></text>
+					<text class="Nb_text4 jdticon icon-fork" @click="close"></text>
 				</view>
 				<scroll-view class="noticeBox2" scroll-y="ture">
 					<view class="tv_title" v-for="(item,index) in colleagueList[0].appColleagueList" :key="index">
@@ -74,7 +70,7 @@
 					</view>
 				</scroll-view>
 			</view>
-		</popup> -->
+		</popup>
 	</view>
 </template>
 
@@ -111,11 +107,24 @@
 		onLoad(options) {
 			this.id = options.id;
 			this.routeInit();
+		},
+		
+		onShow() {
+			uni.showLoading({
+				title: '加载列表中...',
+			})
 			this.getUserInfo();//读取用户信息
 		},
 		
 		onPullDownRefresh:function(){
-			this.getArticleInfo();
+			uni.showLoading({
+				title: '加载列表中...',
+			})
+			this.getArticleInfo();//读取用户信息
+		},
+		
+		onUnload() {
+			uni.hideLoading();
 		},
 		
 		onNavigationBarButtonTap: function() {
@@ -147,22 +156,18 @@
 			
 			turnDate(date) {
 				if (date) {
-					var setTime = setTime.substr(0,10);
+					var setTime = data.substr(0,3)+'*****'+data.substr(8,11);
 					return setTime;
 				}
 			},
 
 			//-------------------------------查看须知-----------------------------
-			// checkAttention(e) {
-			// 	if (e == 1) {
-			// 		this.$refs.popup.open()
-			// 	}
-			// },
-			// close(e) {
-			// 	if (e == 1) {
-			// 		this.$refs.popup.close()
-			// 	}
-			// },
+			checkAttention() {
+				this.$refs.popup.open()
+			},
+			close() {
+				this.$refs.popup.close()
+			},
 			
 			//--------------------------读取用户信息--------------------------
 			getUserInfo() {
@@ -177,6 +182,18 @@
 						that.weixinOpenId = data.data.openId_xcx;
 						// #endif
 						that.getArticleInfo();
+					},
+					fail: (err) => {
+						uni.hideLoading()
+						uni.showToast({
+							title: '您暂未登录，已为您跳转登录页面',
+							icon: 'none',
+							success: () => {
+								uni.navigateTo({
+									url: '../GRZX/userLogin'
+								})
+							}
+						})
 					}
 				})
 			},
@@ -191,8 +208,10 @@
 						colleagueId: this.userInfo.unid
 					},
 					success: (res) => {
+						console.log(res)
+						uni.stopPullDownRefresh();
+						uni.hideLoading();
 						if(res.data.data.content!==" "){
-							uni.stopPullDownRefresh();
 							console.log('攻略', res)
 							that.information = res.data.data;
 							that.updatedTime = res.data.data.updatedTime.substr(0,10);
@@ -201,6 +220,14 @@
 								'<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
 							// console.log('攻略', that.updatedTime)
 						}
+					},
+					fail(res) {
+						uni.hideLoading();
+						uni.showToast({
+							title: '服务器异常',
+							icon: 'none'
+						})
+						// console.log(res)
 					}
 				});
 				
@@ -212,7 +239,7 @@
 						colleagueId: this.userInfo.unid
 					},
 					success: (res) => {
-						// console.log('同行列表', res)
+						console.log('同行列表', res)
 						this.colleagueList=res.data.data;
 						console.log('同行列表', this.colleagueList)
 					}

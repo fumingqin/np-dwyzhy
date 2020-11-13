@@ -54,27 +54,20 @@
 		},
 
 		onLoad(options) {
-			// #ifdef H5
-			uni.showToast({
-				title:'公众号当前定位无法启用，已默认定位南平市',
-				icon:'none'
-			})
-			this.regionWeixin = '南平市'; //h5无法自动定位，采用手动赋值
-			// #endif
-			// this.routeInit();
 			
-			// #ifdef  H5
-			var that=this;
-			uni.getStorage({
-				key:'userInfo',
-				fail() {
-					that.getCode();	
-				}
-			})
-			//#endif
 		},
 		
 		onShow() {
+			uni.showLoading({
+				title: '加载列表中...',
+			})
+			this.routeData();
+		},
+		
+		onPullDownRefresh: function() {
+			uni.showLoading({
+				title: '加载列表中...',
+			})
 			this.routeData();
 		},
 
@@ -88,13 +81,32 @@
 				// 		this.groupTitle = e.data.data;
 				// 	}
 				// });
-				
 				uni.request({
 					url:'http://218.67.107.93:9210/api/app/get-strategy-list',
 					method:'GET',
 					success: (e) => {
 						console.log(e)
-						this.groupTitle = e.data.data;
+						if(e.data.status==1){
+							// console.log('列表数据',this.groupTitle)
+							uni.stopPullDownRefresh();
+							uni.hideLoading();
+							this.groupTitle = e.data.data;
+						}else{
+							uni.stopPullDownRefresh();
+							uni.hideLoading();
+							uni.showToast({
+								title: '暂无列表信息',
+								icon: 'none'
+							})
+						}
+					},
+					fail(res) {
+						uni.hideLoading();
+						uni.showToast({
+							title: '服务器异常',
+							icon: 'none'
+						})
+						// console.log(res)
 					}
 				})
 			},
