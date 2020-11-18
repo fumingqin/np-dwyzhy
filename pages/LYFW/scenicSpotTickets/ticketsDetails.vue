@@ -176,7 +176,7 @@
 					url: 'http://218.67.107.93:9210/api/app/getScenicspotDetail?ticketId=' + e,
 					method: 'POST',
 					success: (res) => {
-						console.log(res)
+						// console.log(res)
 						uni.stopPullDownRefresh()
 						this.scSpotContent = res.data.data;
 					}
