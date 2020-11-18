@@ -198,6 +198,7 @@
 					url: 'http://218.67.107.93:9210/api/app/getInformationList?id='+this.id,
 					method: "POST",
 					success:function(res){
+						console.log(res)
 						that.information = res.data.data;
 						for(var i=0;i<res.data.data.length;i++){
 							that.information[i].content = res.data.data[i].content.replace(/\<img/g,'<img style="max-width:100%;height:auto;margin: 2px 0px;" ');
