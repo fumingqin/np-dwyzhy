@@ -12,6 +12,7 @@
 			<view class="clicks">
 				<text class="title">{{scSpotContent.ticketName}}</text>
 				<text class="time">开放时间：{{scSpotContent.ticketOpenUp}} </text>
+				<text class="time">当前流量：<text style="color: #09C767;" v-if="scSpotContent.personFlow !== 0">{{visitorsFlowrate(scSpotContent.personFlow)}}</text><text style="color: #FD5745;" v-if="scSpotContent.personFlow == 0">{{visitorsFlowrate(scSpotContent.personFlow)}}</text>    </text>
 			</view>
 		</view>
 		<!-- 门票滑块 -->
@@ -123,13 +124,16 @@
 				ticketInformation : '', //景区信息（点击预定后存）
 				radioCurrent: -1, //时段radio选择参数
 				apeData: [],
-
+				ticketId : '',//景区详情ID
 
 			}
 		},
 		onLoad(options) {
-			this.lyfwData(JSON.parse(options.ticketId));
-
+			this.ticketId = JSON.parse(options.ticketId)
+			this.lyfwData(this.ticketId);
+		},
+		onPullDownRefresh:function(){
+			this.lyfwData(this.ticketId)
 		},
 		onNavigationBarButtonTap: function() {
 			this.share();
@@ -163,17 +167,17 @@
 					method: 'POST',
 					success: (res) => {
 						// console.log(res)
+						uni.stopPullDownRefresh()
 						this.piclist = res.data.data;
-
 					}
 				})
-
 				// 请求景区详情
 				uni.request({
 					url: 'http://218.67.107.93:9210/api/app/getScenicspotDetail?ticketId=' + e,
 					method: 'POST',
 					success: (res) => {
-						// console.log(res)
+						console.log(res)
+						uni.stopPullDownRefresh()
 						this.scSpotContent = res.data.data;
 					}
 				})
@@ -184,10 +188,12 @@
 					method: 'POST',
 					success: (res) => {
 						// console.log(res)
+						uni.stopPullDownRefresh()
 						this.admissionTicket = res.data.data;
 						this.admissionTicketStatus = res.data.msg;
 					}
 				})
+				
 
 			},
 
@@ -511,10 +517,12 @@
 						this.radioCurrent = e;
 						// console.log(this.radioCurrent)
 					}
-					
-					
 				}
-
+			},
+			
+			//人流量转编译
+			visitorsFlowrate : function(e){
+				return  e +'人'
 			}
 
 		}

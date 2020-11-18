@@ -61,6 +61,7 @@
 			"path": "pages/LYFW/scenicSpotTickets/ticketsDetails",
 			"style": {
 				"navigationBarTitleText": "景区详情",
+				"enablePullDownRefresh":true,
 				// #ifdef APP-PLUS
 				"navigationStyle": "custom",
 				// #endif
