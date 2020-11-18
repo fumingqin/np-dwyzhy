@@ -275,6 +275,18 @@
 				"navigationBarTitleText": "上传定位"
 			}
 		},
+		{
+			"path": "pages/GRZX/peers/myPeers", //我的同行
+			"style": {
+				"navigationBarTitleText": "我的同行"
+			}
+		},
+		{
+			"path": "pages/GRZX/peers/peersDetail", //行程详情
+			"style": {
+				"navigationBarTitleText": "行程详情"
+			}
+		},
 		//个人中心模块结束
 
 		{
@@ -561,7 +573,33 @@
 		    "style" : {
 				"navigationBarTitleText": "选择景点"
 			}
+		},
+		{
+		    "path" : "pages/TravelGuide/tr_strategyDetails",
+		    "style" : {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText": "攻略详情"
+			}
+		},
+		{
+		    "path" : "pages/TravelGuide/tr_strategyList",
+		    "style" : {
+				"enablePullDownRefresh":true,
+				"navigationBarTitleText": "攻略列表"
+			}
 		}
+        ,{
+            "path" : "pages/TravelGuide/ScenicDetail",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/TravelGuide/LookAround",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/JBTX/issuePeer",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -369,10 +369,10 @@
 												success(res) {
 													console.log(res,"370")
 													uni.showToast({
-														icon:'success',
-														title:'完成'
+														icon:'none',
+														title:res.data.msg,
 													})
-													if(that.type=="add"){
+													if(that.type == "add" && res.statusCode == 200){
 														uni.getStorage({
 															key:'passengerList',
 															success(list){
@@ -404,8 +404,13 @@
 													setTimeout(function(){
 														uni.navigateBack();
 													},500);
-													// console.log(res,"2111")
 												},
+												fail: () => {
+													uni.showToast({
+														title: '请求失败',
+														icon:'none',
+													});
+												}
 											})
 										}
 									}
