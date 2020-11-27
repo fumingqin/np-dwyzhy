@@ -51,8 +51,8 @@
 		<view class="footer" v-if="information.colleagueStatus=='enable'" style="background: #06B4FD;" @click="confirmPeers">
 			<text class="submit">我要同行</text>
 		</view>
-		<view class="footer" v-if="information.colleagueStatus=='disable'" style="background: #ffc600;" @click="alreadyPeers">
-			<text class="submit">已同行</text>
+		<view class="footer" v-if="information.colleagueStatus=='disable'" style="background: #FF7D43;" @click="alreadyPeers">
+			<text class="submit">已参与同行</text>
 		</view>
 		
 		<!-- 查看须知popup -->
@@ -87,7 +87,9 @@
 				type: 0,
 				number: 2,
 				arrangeText: [], //行程安排标题内容数组
-				information: [],
+				information: {
+					updatedTime : '',
+				},
 				costDescription: [], //费用明细
 				reserve: [], //预定须知
 				reserveContent: '', //预定须知内容
@@ -111,16 +113,13 @@
 		
 		onShow() {
 			uni.showLoading({
-				title: '加载列表中...',
+				title: '加载中...',
 			})
 			this.getUserInfo();//读取用户信息
 		},
 		
 		onPullDownRefresh:function(){
-			uni.showLoading({
-				title: '加载列表中...',
-			})
-			this.getArticleInfo();//读取用户信息
+			this.getArticleInfo();
 		},
 		
 		onUnload() {
@@ -190,7 +189,7 @@
 							icon: 'none',
 							success: () => {
 								uni.navigateTo({
-									url: '../GRZX/userLogin'
+									url: '../GRZX/userLogin?loginType=4&&urlData=1'
 								})
 							}
 						})
@@ -271,14 +270,14 @@
 										if (res.data.msg == '申请成功') {
 											uni.hideLoading()
 											uni.showToast({
-												title: '申请成功',
+												title: '同行成功',
 												icon: 'success'
 											})
 											uni.startPullDownRefresh();
 										}else if(res.data.msg == '申请失败，您已申请过！'){
 											uni.hideLoading()
 											uni.showToast({
-												title: '您已申请过！',
+												title: '您已同行过！',
 												icon: 'success'
 											})
 										} else {
@@ -297,11 +296,6 @@
 											icon: 'success'
 										})
 									}
-								})
-							} else {
-								uni.showToast({
-									title: '请登录',
-									icon: 'success'
 								})
 							}
 						}

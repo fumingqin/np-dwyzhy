@@ -13,8 +13,9 @@
 						<view class="groupCost">
 							<text class="cost2">阅读量:{{item.count}}</text>
 							<text class="cost">{{(item.updatedTime.substr(0,10))}}</text>
-							<text class="sellComment" style="color: #42e800;" v-if="item.colleagueStatus=='enable'">可同行</text>
-							<text class="sellComment" style="color: #ff0000;" v-if="item.colleagueStatus=='disable'">不可同行</text>
+							<text class="sellComment" style="color: #06B4FD;" v-if="item.colleagueStatus=='enable'">可同行</text>
+							<!-- <text class="sellComment" style="color: #ff0000;" v-if="item.colleagueStatus=='disable'">不可同行</text> -->
+							<text class="sellComment" style="color: #FF7D43;" v-if="item.colleagueStatus=='disable'">已参与同行</text>
 						</view>
 					</view>
 				</view>
@@ -244,8 +245,8 @@
 	.content {
 		background-color: #FFFFFF;
 		padding: 0upx 32upx;
-		padding-top: 39upx;
-		margin-bottom: 20upx;
+		// padding-top: 39upx;
+		// margin-bottom: 20upx;
 
 		.title {
 			display: flex;
@@ -267,8 +268,8 @@
 
 		.groupTour {
 			display: flex;
-			padding-top: 60upx;
-			padding-bottom: 60upx;
+			padding-top: 48upx;
+			padding-bottom: 48upx;
 			border-bottom: 1px #F5F5F5 dotted;
 
 			.groupContent {
