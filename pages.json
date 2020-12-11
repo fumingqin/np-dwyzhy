@@ -3,7 +3,7 @@
 		{
 			"path": "pages/Home/indexZhly",
 			"style": {
-				"enablePullDownRefresh":true,
+				"enablePullDownRefresh": true,
 				// #ifdef MP
 				"navigationBarTitleText": "南平智慧旅游APP",
 				//"navigationStyle": "custom",
@@ -38,7 +38,7 @@
 					}
 				}
 			}
-		},{
+		}, {
 			"path": "pages/Home/Index",
 			"style": {
 				"navigationStyle": "custom"
@@ -50,7 +50,7 @@
 			"style": {
 				"navigationBarTitleText": "景区列表",
 				"navigationBarBackgroundColor": "#FFFFFF",
-				"enablePullDownRefresh":true,
+				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 0,
 				"app-plus": {
 					"softinputNavBar": "none"
@@ -61,7 +61,35 @@
 			"path": "pages/LYFW/scenicSpotTickets/ticketsDetails",
 			"style": {
 				"navigationBarTitleText": "景区详情",
-				"enablePullDownRefresh":true,
+				"enablePullDownRefresh": true,
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/JDDG/scenicSpotTickets/ticketsList",
+		
+			"style": {
+				"navigationBarTitleText": "酒店列表",
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 0,
+				"app-plus": {
+					"softinputNavBar": "none"
+				}
+			}
+		},
+		{
+			"path": "pages/JDDG/scenicSpotTickets/ticketsDetails",
+			"style": {
+				"navigationBarTitleText": "酒店详情",
+				"enablePullDownRefresh": true,
 				// #ifdef APP-PLUS
 				"navigationStyle": "custom",
 				// #endif
@@ -88,7 +116,7 @@
 
 
 		{
-		
+
 			"path": "pages/LYFW/currency/travelDetails",
 			"style": {
 				"navigationBarTitleText": "详情页",
@@ -130,6 +158,47 @@
 			}
 		}, {
 			"path": "pages/LYFW/scenicSpotTickets/orderAdd",
+			"style": {
+				"navigationBarTitleText": "填写订单",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/JDDG/scenicSpotTickets/selectivePayment",
+			"style": {
+				"navigationBarTitleText": "选择支付 ",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		},
+		{
+			"path": "pages/JDDG/scenicSpotTickets/successfulPayment",
+			"style": {
+				"navigationBarTitleText": "购票成功",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+		}, {
+			"path": "pages/JDDG/scenicSpotTickets/orderAdd",
 			"style": {
 				"navigationBarTitleText": "填写订单",
 				// #ifdef APP-PLUS
@@ -352,12 +421,27 @@
 					}
 				}
 			}
+		},
+
+		{
+			"path": "pages/JDDG/scenicSpotTickets/orderDetails",
+			"style": {
+				"navigationBarTitleText": "订单详情",
+				// #ifdef APP-PLUS
+				"navigationStyle": "custom",
+				// #endif
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
 		}, {
 			// 订单列表
 			"path": "pages/order/OrderList",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh":true,
+				"enablePullDownRefresh": true,
 				"navigationBarBackgroundColor": "#f5f5f5"
 				// "navigationStyle": "custom"
 			}
@@ -367,7 +451,7 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-		},{
+		}, {
 			"path": "pages/GJCX/busIndex",
 			"style": {
 				"navigationBarTitleText": "公交查询",
@@ -400,16 +484,16 @@
 			"path": "pages/Home/navigation",
 			"style": {
 				"navigationBarTitleText": "搜索",
-				"navigationBarBackgroundColor" : "#149bf0",
-				"navigationBarTextStyle" : "white"
-			} 
+				"navigationBarBackgroundColor": "#149bf0",
+				"navigationBarTextStyle": "white"
+			}
 		}, {
 			"path": "pages/GRZX/collection",
 			"style": {
 				"navigationBarTitleText": "我的收藏"
 			}
 		}, {
-			
+
 			"path": "pages/GRZX/history",
 			"style": {
 				"navigationBarTitleText": "我的历史"
@@ -452,30 +536,26 @@
 		{
 			"path": "pages/GJCX/detailed",
 			"style": {}
-		}
-	    ,{
-            "path" : "pages/LYFW/independentTravel/it_list",
-            "style" : {}
+		}, {
+			"path": "pages/LYFW/independentTravel/it_list",
+			"style": {}
 		},
 		{
-		    "path" : "pages/CTKY/homeSattionPick",
-		    "style" : {
+			"path": "pages/CTKY/homeSattionPick",
+			"style": {
 				"navigationBarTitleText": "选择站点"
 			}
-		}
-        ,{
-            "path" : "pages/LYFW/groupTour/groupTourList",
-            "style" : {
+		}, {
+			"path": "pages/LYFW/groupTour/groupTourList",
+			"style": {
 				"navigationBarTitleText": "跟团游列表"
 			}
-        }
-        ,{
-            "path" : "pages/LYFW/groupTour/viewMore",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/Home/ho_zhly",
-            "style" : {
+		}, {
+			"path": "pages/LYFW/groupTour/viewMore",
+			"style": {}
+		}, {
+			"path": "pages/Home/ho_zhly",
+			"style": {
 				"navigationBarTitleText": "南平智慧旅游APP",
 				// #ifdef APP-PLUS
 				"navigationStyle": "custom",
@@ -486,122 +566,114 @@
 					}
 				}
 			}
-        }
-        ,{
-            "path" : "pages/CTKY/paySuccess",
-            "style" : {
+		}, {
+			"path": "pages/CTKY/paySuccess",
+			"style": {
 				"navigationBarTitleText": "支付结果"
 			}
-        }
-        ,{
-            "path" : "pages/CTKY/payFail",
-            "style" : {
+		}, {
+			"path": "pages/CTKY/payFail",
+			"style": {
 				"navigationBarTitleText": "支付结果"
 			}
-        }
-        ,{
-            "path" : "pages/GJCX/selectRoute",
-            "style" : {
+		}, {
+			"path": "pages/GJCX/selectRoute",
+			"style": {
 				"navigationBarTitleText": "线路方案"
 			}
-        }
-        ,{
-            "path" : "pages/GJCX/selectDetailed",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/FYWH/fy_index",
-            "style" : {
-				"enablePullDownRefresh":true,
+		}, {
+			"path": "pages/GJCX/selectDetailed",
+			"style": {}
+		}, {
+			"path": "pages/FYWH/fy_index",
+			"style": {
+				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 0
 			}
-        }
-        ,{
-            "path" : "pages/FYWH/fy_touristroute",
-            "style" : {}
-        },{
-		    "path" : "pages/FYWH/fy_imglist",
-		    "style" : {
+		}, {
+			"path": "pages/FYWH/fy_touristroute",
+			"style": {}
+		}, {
+			"path": "pages/FYWH/fy_imglist",
+			"style": {
 				"navigationBarTitleText": "全部图片"
 			}
-		},{
-		    "path" : "pages/FYWH/fy_imgPreview",
-		    "style" : {
+		}, {
+			"path": "pages/FYWH/fy_imgPreview",
+			"style": {
 				"navigationBarTitleText": "查看图片"
 			}
-		},{
-		    "path" : "pages/FYWH/fy_toreply",
-		    "style" : {
+		}, {
+			"path": "pages/FYWH/fy_toreply",
+			"style": {
 				"navigationBarTitleText": "回复评论"
 			}
-		}
-        ,{
-            "path" : "pages/Home/realtimeInfo",
-            "style" : {}
-        },
+		}, {
+			"path": "pages/Home/realtimeInfo",
+			"style": {}
+		},
 		{
-		    "path" : "pages/GJCX/detailedH5",
-		    "style" : {
+			"path": "pages/GJCX/detailedH5",
+			"style": {
 				"navigationBarTitleText": "线路详情"
 			}
-		}
-        ,{
-            "path" : "pages/GJCX/text",
-            "style" : {}
-        },
+		}, {
+			"path": "pages/GJCX/text",
+			"style": {}
+		},
 		{
-		    "path" : "pages/GJCX/index",
-		    "style" : {}
-		}
-        ,{
-            "path" : "pages/LYFW/scenicSpotTickets/specificPage",
-            "style" : {}
-        },
+			"path": "pages/GJCX/index",
+			"style": {}
+		}, {
+			"path": "pages/LYFW/scenicSpotTickets/specificPage",
+			"style": {}
+		},
 		{
-		    "path" : "pages/BKBW/seeAndPlayList",
-		    "style" : {
+			"path": "pages/JDDG/scenicSpotTickets/specificPage",
+			"style": {}
+		},
+		{
+			"path": "pages/BKBW/seeAndPlayList",
+			"style": {
 				"navigationBarTitleText": "必看必玩"
 			}
 		},
 		{
-		    "path" : "pages/BKBW/seeAndPlayDetail",
-		    "style" : {
+			"path": "pages/BKBW/seeAndPlayDetail",
+			"style": {
 				"navigationBarTitleText": "必看必玩详情"
 			}
 		},
 		{
-		    "path" : "pages/TravelGuide/SelectAddress",
-		    "style" : {
+			"path": "pages/TravelGuide/SelectAddress",
+			"style": {
 				"navigationBarTitleText": "选择景点"
 			}
 		},
 		{
-		    "path" : "pages/TravelGuide/tr_strategyDetails",
-		    "style" : {
-				"enablePullDownRefresh":true,
+			"path": "pages/TravelGuide/tr_strategyDetails",
+			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "攻略详情"
 			}
 		},
 		{
-		    "path" : "pages/TravelGuide/tr_strategyList",
-		    "style" : {
-				"enablePullDownRefresh":true,
+			"path": "pages/TravelGuide/tr_strategyList",
+			"style": {
+				"enablePullDownRefresh": true,
 				"navigationBarTitleText": "攻略列表"
 			}
+		}, {
+			"path": "pages/TravelGuide/ScenicDetail",
+			"style": {}
+		}, {
+			"path": "pages/TravelGuide/LookAround",
+			"style": {}
+		}, {
+			"path": "pages/JBTX/issuePeer",
+			"style": {}
 		}
-        ,{
-            "path" : "pages/TravelGuide/ScenicDetail",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/TravelGuide/LookAround",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/JBTX/issuePeer",
-            "style" : {}
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		//"navigationBarTitleText": "uni-app",
@@ -609,42 +681,42 @@
 		"backgroundColor": "#F8F8F8"
 	},
 	"tabBar": {
-			"color": "#333333",
-			"selectedColor": "#4EB3F7",
-			"backgroundColor": "#FFFFFF",
-			"borderStyle": "black",
-			//#ifdef APP-PLUS
-			"fontSize": "16px",
-			//#endif
-			"list": [{
-					"pagePath": "pages/Home/indexZhly",
-					"text": "旅游"
-				},
-				{
-					"pagePath": "pages/GRZX/notice",
-					"text": "通知"
-				},
-				{
-					"pagePath": "pages/FYWH/fy_index",
-					"text": "文化"
-				},
-				{
-					"pagePath": "pages/order/OrderList",
-					"text": "订单"
-				},
-				{
-					"pagePath": "pages/GRZX/user",
-					"text": "我的"
-				}
-			]
-		},
-	
-		"condition": { //模式配置，仅开发期间生效
-			"current": 0, //当前激活的模式(list 的索引项)
-			"list": [{
-				"name": "", //模式名称
-				"path": "", //启动页面，必选
-				"query": "" //启动参数，在页面的onLoad函数里面得到
-			}]
-		}
+		"color": "#333333",
+		"selectedColor": "#4EB3F7",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		//#ifdef APP-PLUS
+		"fontSize": "16px",
+		//#endif
+		"list": [{
+				"pagePath": "pages/Home/indexZhly",
+				"text": "旅游"
+			},
+			{
+				"pagePath": "pages/GRZX/notice",
+				"text": "通知"
+			},
+			{
+				"pagePath": "pages/FYWH/fy_index",
+				"text": "文化"
+			},
+			{
+				"pagePath": "pages/order/OrderList",
+				"text": "订单"
+			},
+			{
+				"pagePath": "pages/GRZX/user",
+				"text": "我的"
+			}
+		]
+	},
+
+	"condition": { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [{
+			"name": "", //模式名称
+			"path": "", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
 	}
+}

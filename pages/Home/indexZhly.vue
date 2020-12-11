@@ -220,7 +220,13 @@
 								ImageURL:'../../static/Home/indexzhly/lygl.jpg',
 								ItemTitle:'旅游攻略',
 								clickURL:'/pages/TravelGuide/tr_strategyList',
-							}]
+							},{
+								IsUse: true,
+								ImageURL:'../../static/Home/indexzhly/chepiao.png',
+								ItemTitle:'酒店订购',
+								clickURL:'/pages/JDDG/scenicSpotTickets/ticketsList',
+							}
+							]
 				}]
 			}
 		},
