@@ -187,7 +187,7 @@
 		{
 			"path": "pages/JDDG/scenicSpotTickets/successfulPayment",
 			"style": {
-				"navigationBarTitleText": "购票成功",
+				"navigationBarTitleText": "预约成功",
 				// #ifdef APP-PLUS
 				"navigationStyle": "custom",
 				// #endif
@@ -270,6 +270,10 @@
 		},
 		{
 			"path": "pages/GRZX/personal",
+			"style": {}
+		},
+		{
+			"path": "pages/JDDG/time/day",
 			"style": {}
 		},
 		{

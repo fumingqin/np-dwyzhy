@@ -155,6 +155,25 @@
 				</view>
 				
 			</view>
+			<!-- 酒店开始 -->
+			<view v-for="(item,index) in hotelInfo" :key="index">
+				<view class="order">
+					    <view style="margin-top: 10rpx;">酒店名：{{item.hotel.name}}</view>
+						<view style="margin-top: 10rpx;">酒店地址：{{item.hotel.address}}</view>
+						<view style="margin-top: 10rpx;">酒店产品：{{item.hotelProduct.name}}</view>
+						<view style="margin-top: 10rpx;">酒店电话：{{item.hotel.tel}}</view>
+						<view style="margin-top: 10rpx;">预定人：{{item.checkinMan}}</view>
+						<view style="margin-top: 10rpx;">预定入住时间：{{item.time}}</view>
+						<view style="margin-top: 10rpx;">数量：{{item.amount}}间</view>
+						<view style="margin-top: 10rpx;">个人电话：{{item.tel}}</view>
+						<view style="margin-top: 10rpx;">需支付金额：{{item.orderPrice}}</view>
+						<view style="margin-top: 10rpx;">个人身份证：{{item.idNo}}</view>
+						<view>
+							<button @click="call(item.hotel.tel)" class="button">拨打电话</button>
+						</view>
+				</view>
+ 			</view>
+			<!-- 结束 -->
 		</view>
 
 
@@ -266,6 +285,25 @@
 						</view>
 					</view>
 				</view>
+				<!-- 酒店开始 -->
+				<view v-for="(item,index) in hotelFinishArr" :key="index">
+					<view class="order">
+						    <view style="margin-top: 10rpx;">酒店名：{{item.hotel.name}}</view>
+							<view style="margin-top: 10rpx;">酒店地址：{{item.hotel.address}}</view>
+							<view style="margin-top: 10rpx;">酒店产品：{{item.hotelProduct.name}}</view>
+							<view style="margin-top: 10rpx;">酒店电话：{{item.hotel.tel}}</view>
+							<view style="margin-top: 10rpx;">预定人：{{item.checkinMan}}</view>
+							<view style="margin-top: 10rpx;">预定入住时间：{{item.time}}</view>
+							<view style="margin-top: 10rpx;">数量：{{item.amount}}间</view>
+							<view style="margin-top: 10rpx;">个人电话：{{item.tel}}</view>
+							<view style="margin-top: 10rpx;">需支付金额：{{item.orderPrice}}</view>
+							<view style="margin-top: 10rpx;">个人身份证：{{item.idNo}}</view>
+							<view>
+								<button @click="call(item.hotel.tel)" class="button">拨打电话</button>
+							</view>
+					</view>
+				</view>
+				<!-- 结束 -->
 			</view>
 
 			<!-- 进行中 -->
@@ -806,6 +844,8 @@
 				goingArr: [],
 				unfinishArr: [],
 				cancelArr: [],
+				hotelInfo:[],//酒店订单列表
+				hotelFinishArr: [],
 				keYunTicketArray:[],//客运订单
 				keYunOrderID:'',//客运订单ID
 				keYunTicket:[],//客运订单
@@ -830,9 +870,9 @@
 		},
 		onLoad() {
 			var that = this;
-			
+			that.hotelOrderList();//请求酒店接口数据
 			//请求景区门票数据
-			that.toFinished();
+			// that.toFinished();
 			
 			//请求客运订单数据
 			// this.getKeYunOrderInfo();
@@ -840,7 +880,8 @@
 		},
 		onShow:function(){
 			var that = this;
-			this.toFinished();
+			that.hotelOrderList();//请求酒店接口数据
+			// this.toFinished();
 			//-------------------------客运退票-------------------------
 			// uni.getStorage({
 			// 	key:'payInfo',
@@ -857,7 +898,8 @@
 		},
 		//-------------------------下拉刷新-------------------------
 		onPullDownRefresh:function(){
-			this.toFinished(); //请求接口数据
+			this.hotelOrderList();//请求酒店接口数据
+			// this.toFinished(); //请求接口数据
 			// this.getKeYunOrderInfo();//请求客运接口
 		},
 		methods: {
@@ -1170,6 +1212,65 @@
 				setTimeout(()=>{
 					uni.stopPullDownRefresh();
 				},1000)
+			},
+			
+			//酒店订单列表模块请求
+			hotelOrderList: function() {
+				var that = this;
+				uni.getStorage({
+					key:'userInfo',
+					success:(res) =>{
+						this.userInfo = res.data;
+						console.log(that.userInfo.unid)
+						uni.request({
+							url:'http://218.67.107.93:9210/api/app/hotelOrderList?touristId=' +that.userInfo.unid,
+							method:'GET',
+							success:(res)=>{
+								console.log(res,'酒店订单列表')
+								if(res.data.msg == '获取酒店订单信息成功！'){
+									that.hotelInfo = res.data.data;
+									that.hotelFinishArr = [];
+									if(that.hotelInfo){
+										for (var i = 0; i < that.hotelInfo.length; i++) {
+											if (that.hotelInfo[i].orderStatus == '预定') {
+												that.hotelFinishArr.push(that.hotelInfo[i]);
+											} 
+										}
+									}
+									//景区
+									//获取用户信息
+									that.toFinished();
+								}else {
+									that.hotelInfo = [];
+									that.hotelFinishArr = [];
+									that.toFinished();
+								}
+							}
+						})
+					},
+					fail() {
+						uni.showToast({
+						       title:'暂无订单数据，请先登录后查看订单',
+						       icon:'none',
+						       success:function(){
+						        uni.redirectTo({
+						         url:'../GRZX/userLogin?loginType=4'
+						        })
+						       }
+						})
+					}
+				})
+				setTimeout(()=>{
+					uni.stopPullDownRefresh();
+				},1000)
+			},
+			//拨打电话
+			call: function(e) {
+				//呼叫
+				let that = this;
+				uni.makePhoneCall({
+					phoneNumber: e
+				});
 			},
 			
 			//-------------------------景区门票-打开二维码弹框-------------------------
@@ -1561,6 +1662,24 @@
 		color: #FFFFFF;
 		border-radius: 24rpx;
 		font-size: 24rpx;
+	}
+	.order {
+		background-color: #FFF;
+		box-shadow: 0px 6px 20px 0px rgba(231, 231, 231, 0.53);
+		border-radius: 20rpx;
+		width: 84%;
+		padding: 30rpx;
+		margin-left: 26rpx;
+		margin-top: 20rpx;
+		margin-bottom: 20rpx;
+	}
+	.button{
+		margin-top: 20rpx;
+		width: 28%;
+		font-size: 28rpx;
+		margin-right: 20rpx;
+		color: #FFFFFF;
+		background-color: #000000;
 	}
 	//须知弹框
 	.box_Vlew {

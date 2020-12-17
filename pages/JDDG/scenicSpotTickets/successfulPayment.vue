@@ -7,11 +7,16 @@
 
 		<view class="cover-container">
 			<image class="okImage" mode="aspectFill" src="../../../static/LYFW/scenicSpotTickets/successfulPayment/ok.png"></image>
-			<text class="title">提交成功，审核中</text>
+			<text class="title">预约成功，请与酒店联系核实。</text>
 			<text class="content">无选择操作，将在10秒后自动返回首页</text>
 			<view class="buttonView">
 				<view class="orderButton" @click="godetail(0)">查看订单</view>
 				<view class="homeButton" @click="godetail(1)">返回首页</view>
+			</view>
+			<view class="buttonView1">
+			<view class="orderButton" >大转盘</view>
+			<view class="orderButton" >刮刮乐</view>
+			<view class="orderButton" >砸金蛋</view>
 			</view>
 		</view>
 	</view>
@@ -25,7 +30,7 @@
 			}
 		},
 		onReady() {
-			this.backHome();
+			// this.backHome();
 		},
 		methods: {
 			//路由统一事件
@@ -84,7 +89,7 @@
 		margin-top: 180upx;
 		margin-bottom: 52upx;
 		width: 702upx;
-		height: 85%;
+		height: 92%;
 		background: #FFFFFF;
 		box-shadow: 0px 0.2px 0px #aaa;
 		border-radius: 16upx;
@@ -93,7 +98,7 @@
 		.okImage {
 			width: 136upx;
 			height: 116upx;
-			margin-top: 35%;
+			margin-top: 20%;
 		}
 
 		.title {
@@ -135,6 +140,33 @@
 				border: 1px solid #3EABFC;
 			}
 		}
+		.buttonView1 {
+			margin-top: 50upx;
+			text-align: center;
+			line-height: 100upx;
+			margin-left: 200rpx;
+		
+			.orderButton {
+				width: 280upx;
+				height: 94upx;
+				font-size: 34upx;
+				background: #3EABFC;
+				border-radius: 10upx;
+				color: #fff;
+				margin-top: 20upx;
+			}
+		
+			.homeButton {
+				margin-left: 40upx;
+				width: 280upx;
+				height: 104upx;
+				font-size: 34upx;
+				border-radius: 16upx;
+				color: #3EABFC;
+				border: 1px solid #3EABFC;
+			}
+		}
+		
 
 	}
 	

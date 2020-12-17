@@ -10,48 +10,20 @@
 		<!-- 命名：MP -->
 		<view class="cover-container">
 			<view class="MP_information1">
-				<view class="MP_title">{{admissionTicket.admissionTicketName}}</view>
-				<text class="MP_text" @click="open2(1)">{{admissionTicket.ticketComment_s1}}&nbsp;|&nbsp;{{admissionTicket.ticketComment_s2}}&nbsp;|&nbsp;{{admissionTicket.ticketComment_s3}}&nbsp; > </text>
-				<!-- 嵌套弹框组件popup -->
-				<uni-popup ref="popup1" type="bottom">
-					<view class="boxVlew">
-						<view class="titleView">
-							<text class="Nb_text1">预订须知</text>
-							<text class="Nb_text2 jdticon icon-fork " @click="close(1)"></text>
-						</view>
-						<scroll-view class="noticeBox" scroll-y="ture">
-							<text class="Nb_text3">费用包含</text>
-							<text class="Nb_text4">
-								{{admissionTicket.ticketContain}}
-							</text>
-							<text class="Nb_text3">预订说明</text>
-							<text class="Nb_text4">{{notice.explain}}</text>
-							<text class="Nb_text3">使用方法</text>
-							<text class="Nb_text4">{{notice.way}}</text>
-							<text class="Nb_text3">使用时间</text>
-							<text class="Nb_text4">{{notice.date}}</text>
-							<text class="Nb_text3">免票政策</text>
-							<text class="Nb_text4">{{notice.policy}}</text>
-							<text class="Nb_text3">退改规则</text>
-							<text class="Nb_text4">{{notice.rule}}</text>
-						</scroll-view>
-					</view>
-				</uni-popup>
+				<view class="MP_title">{{name}}</view>
+				<view class="MP_text">{{productName}}</view>
+				<!-- <text class="MP_text" @click="open2(1)">{{admissionTicket.ticketComment_s1}}&nbsp;|&nbsp;{{admissionTicket.ticketComment_s2}}&nbsp;|&nbsp;{{admissionTicket.ticketComment_s3}}&nbsp; > </text> -->
 
-			<!-- 预约时间代码开始 -->
-				<view class="MP_selectionDate" :hidden="ape_entry==0">
-					<text>预约时间</text>
-					<text class="MP_textDate" style="font-size: 30upx;">{{ape_time}}</text>
-					<text class="MP_textDate" style="margin-right: 24upx; font-size: 30upx;">{{date}}</text>
-					<text class="MP_textReminder">{{dateReminder}}</text>
+				<!-- 预约时间代码开始 -->
+				<view class="MP_selectionDate">
+					<text>预约入住时间:</text>
+					<text class="MP_textDate" style="font-size: 30upx;">{{startTime}}-{{endTime}} </text>
 				</view>
-				
-				<view class="MP_selectionDate" :hidden="ape_entry==1">
-					<text>预约时间</text>
-					<text class="MP_textDate" @click="open">{{date}}&nbsp;> </text>
-					<text class="MP_textReminder">{{dateReminder}}</text>
-				</view>
-			<!-- 预约时间代码结束 -->
+				<!-- 预约时间代码结束 -->
+				<navigator url="../time/day" class="text-area">
+					<button @click="set" type="primary">请选择入住时间</button>
+				</navigator>
+
 			</view>
 
 			<!-- 购票人信息 -->
@@ -78,13 +50,13 @@
 			</view>
 
 			<!-- 优惠券 -->
-			<view class="MP_information2" @click="toggleMask('show')">
+			<!-- <view class="MP_information2" @click="toggleMask('show')">
 				<view class="MP_optionBar">
 					<text class="Mp_title">优惠券</text>
 					<text class="Mp_arrow"> > </text>
 					<text class="Mp_text">{{couponIndex}}</text>
 				</view>
-			</view>
+			</view> -->
 
 			<!-- 呼出优惠券面板 -->
 			<view class="mask" :class="maskState===0 ? 'none' : maskState===1 ? 'show' : ''" @click="toggleMask">
@@ -114,7 +86,22 @@
 					</view>
 				</view>
 			</view>
-
+			<view class="MP_information2" style="display: flex;">
+				<view>数量</view>
+				<view style="display: flex;align-items: center;">
+					<view style="border:solid 1px #999999;width: 36rpx;height: 36rpx;border-radius: 100px;color: #999999;line-height: 30rpx;text-align: center;margin-left: 400rpx;"
+					 @click="changeNum(false)">
+						—
+					</view>
+					<view>
+						<input style="width: 60rpx;text-align: center;" v-model="num" type="number" @change="checknum" />
+					</view>
+					<view style="border:solid 1px #999999;width: 36rpx;height: 36rpx;border-radius: 100px;color: #999999;line-height: 30rpx;text-align: center;"
+					 @click="changeNum(true)">
+						+
+					</view>
+				</view>
+			</view>
 			<view class="MP_information2">
 				<view class="MP_optionBar">
 					<text class="Mp_title">同意游客须知</text>
@@ -167,7 +154,7 @@
 				actualPayment: '', //实际付款
 				selectedValue: 0, //同意须知的选中值
 				dateReminder: '今天', //日期提醒
-				date:'', //默认时间
+				date: '', //默认时间
 				maskState: 0, //优惠券面板显示状态
 
 				admissionTicket: '', //门票内容
@@ -185,28 +172,37 @@
 
 				couponList: [],
 				//---------------预约时段专用参数---------------------
-				ape_entry: '',//预约入口参数
-				ape_time:'',//预约时段
-				AID:'',//预约下单用的AID，必传
+				ape_entry: '', //预约入口参数
+				ape_time: '', //预约时段
+				AID: '', //预约下单用的AID，必传
+				name: '',
+				productName: '',
+				price: '',
+				startTime: '',
+				endTime: '',
+				day: '',
+				num: 1,
+				productId: '',
 				//---------------预约时段专用参数---------------------
 			}
 		},
 
-		onLoad:function(options) {
+		onLoad: function(options) {
+			var that = this;
+			that.name = options.name;
+			that.productName = options.productName;
+			that.price = options.price;
+			that.productId = options.productId;
 			console.log(options.ape_entry)
 			//预约时间代码开始
-			if(options.ape_entry==1){
+			if (options.ape_entry == 1) {
 				this.ape_entry = options.ape_entry;
 				this.date = options.ape_date;
 				this.dateReminder = options.ape_week;
 				this.ape_time = options.ape_time;
 				this.AID = options.AID;
-				console.log(this.ape_date)
-				console.log(this.ape_week)
-				console.log(this.ape_time)
-				console.log(this.AID)
 				this.lyfwData();
-			}else{
+			} else {
 				this.ape_entry = 0;
 				this.getDate();
 				this.lyfwData();
@@ -214,8 +210,19 @@
 			//预约时间代码结束
 		},
 		onShow() {
-			this.getUserInfo();
-			this.userData();
+			var that = this;
+			uni.getStorage({
+				key: 'Time',
+				success(res) {
+					that.startTime = JSON.parse(res.data).start;
+					that.endTime = JSON.parse(res.data).end;
+					that.day = JSON.parse(res.data).day;
+					that.numberChange();
+				},
+			})
+			that.getUserInfo();
+			that.userData();
+
 		},
 		components: {
 			//加载多方弹框组件
@@ -224,44 +231,53 @@
 			uniCalendar,
 		},
 		methods: {
+			set() {
+
+				uni.removeStorage({
+					key: 'Price',
+					success: () => {
+						// this.price = null
+					}
+				})
+			},
 			//获取用户信息
-			getUserInfo:function(){
+			getUserInfo: function() {
 				uni.getStorage({
-					key:'userInfo',
-					success:(res)=>{
+					key: 'userInfo',
+					success: (res) => {
 						console.log(res)
-						if(res.data==undefined){
+						if (res.data == undefined) {
 							// #ifdef APP-PLUS
 							uni.showToast({
-								title:'检测到未登录，即将跳转登录页面',
-								icon:'none',
-								success:function(){
+								title: '检测到未登录，即将跳转登录页面',
+								icon: 'none',
+								success: function() {
 									uni.navigateTo({
-										url:'../../GRZX/userLogin?loginType=4'
+										url: '../../GRZX/userLogin?loginType=4'
 									})
 								}
 							})
 							// #endif
 							// #ifdef H5
 							uni.showToast({
-								title:'检测到未登录，即将跳转授权主页',
-								icon:'none',
-								success:function(){
+								title: '检测到未登录，即将跳转授权主页',
+								icon: 'none',
+								success: function() {
 									uni.switchTab({
-										url:'../../Home/indexZhly'
+										url: '../../Home/indexZhly'
 									})
 								}
 							})
 							// #endif
-						}else{
+						} else {
 							this.userInfo = res.data;
 						}
-						
+
 					},
-					
+
 				})
 			},
-			
+
 			//读取静态数据
 			async lyfwData() {
 				uni.getStorage({
@@ -271,7 +287,7 @@
 						// console.log(res)
 					}
 				})
-				
+
 				let notice = await this.$api.lyfwfmq('notice');
 				this.notice = notice.data;
 			},
@@ -297,12 +313,12 @@
 				if (e == 0) {
 					uni.getStorage({
 						key: 'userInfo',
-						success:function(res) {
+						success: function(res) {
 							uni.navigateTo({
 								url: '../../GRZX/addPassenger?type=add',
 							})
 						},
-						fail:function(){
+						fail: function() {
 							uni.showToast({
 								icon: 'none',
 								title: '未登录无法添加乘车人,请先登录'
@@ -320,12 +336,12 @@
 				} else if (e == 1) {
 					uni.getStorage({
 						key: 'userInfo',
-						success:function(res) {
+						success: function(res) {
 							uni.navigateTo({
 								url: '../../GRZX/passengerInfo?submitType=1',
 							})
 						},
-						fail:function(err){
+						fail: function(err) {
 							uni.showToast({
 								icon: 'none',
 								title: '未登录无法选择乘车人,请先登录'
@@ -357,7 +373,7 @@
 			//数组提取
 			screenUser: function() {
 				let adult = this.addressData.filter(item => {
-					return item.userType == '成人' || item.userType == '军人' || item.userType == '教师' || item.userType == '学生' ;
+					return item.userType == '成人' || item.userType == '军人' || item.userType == '教师' || item.userType == '学生';
 				})
 				let children = this.addressData.filter(item => {
 					return item.userType == '儿童';
@@ -367,72 +383,21 @@
 				this.numberChange();
 			},
 
-			//显示优惠券面板
-			toggleMask(type) {
-				let timer = type === 'show' ? 10 : 300;
-				let state = type === 'show' ? 1 : 0;
-				this.maskState = 2;
-				setTimeout(() => {
-					this.maskState = state;
-				}, timer)
-			},
-
-			//优惠券赋值
-			couponEvent: function(index) {
-				if (this.actualPayment >= this.couponList[index].condition) {
-					this.couponIndex = '-' + this.couponList[index].price;
-					this.couponColor = this.couponList[index].couponID;
-					this.couponCondition = this.couponList[index].condition;
-					this.numberChange();
-					this.toggleMask();
-				} else {
-					uni.showToast({
-						title: '您的实付款未达到条件，请重新选择',
-						icon: 'none'
-					})
-				}
-
-			},
-
-			//取消优惠券
-			couponReset: function(index) {
-				this.couponIndex = '请选择优惠券';
-				this.couponColor = '';
-				this.numberChange();
-				this.toggleMask();
-			},
-
 			//仿穿透事件
 			stopPrevent() {},
 
 			// 数量+计价
 			numberChange() {
-				const b = (this.admissionTicket.ticketAdultPrice * this.adultIndex) + (this.admissionTicket.ticketChildPrice * this
-					.childrenIndex);
-				const a = b.toFixed(2);
-				if (this.couponColor == '') {
-					this.actualPayment = a;
-				} else if (a >= this.couponCondition) {
-					var total = a - this.couponList[this.couponColor].price;
-					this.actualPayment = total;
-				} else if (a < this.couponCondition) {
-					uni.showToast({
-						title: '您的金额不满足优惠券条件，已取消优惠券',
-						icon: 'none',
-						duration: 2000
-					})
-					this.couponIndex = '请选择优惠券';
-					this.couponColor = '';
-					this.couponCondition = 0;
-					this.actualPayment = a;
-				}
+				var that = this;
+				that.changeNum();
+				console.log(that.price, that.day, that.num, '数量计价');
 			},
 
 			//提交按钮状态赋值
 			submitState: function() {
 				//这边还得加上是否选择人数和勾选同意的判断
 				if (this.selectedValue == 1 && this.addressData.length > 0) {
-					
+
 					if (this.submissionState == false) {
 						this.submissionState = true;
 						this.submit();
@@ -456,212 +421,54 @@
 					})
 				}
 			},
-			
-			//提交表单
+
+			//预约酒店订单
 			submit: function() {
 				var that = this;
 				uni.showLoading({
 					title: '提交订单中...'
 				})
 				uni.request({
-					url: 'http://218.67.107.93:9210/api/app/getScenicspotOrderList?unid=' + this.userInfo.unid,
+					url: 'http://218.67.107.93:9210/api/app/addHotelOrder',
+					data: {
+						touristId: that.userInfo.unid,
+						productId: that.productId, //产品id
+						amount: that.num, //数量
+						time: that.startTime + ',' + that.endTime, //入住时间
+						checkinMan: that.addressData[0].userName, //入住人
+						tel: that.addressData[0].userPhoneNum, //电话号码
+						idNo: that.addressData[0].userCodeNum, //身份证
+						orderPrice: that.price, //订单价格
+						remark: '',
+					},
 					method: 'POST',
 					success: (res) => {
-						// console.log(res)
-						var a = '';
-						if(res.data.msg =='获取订单列表成功！'){
-							a = res.data.data.filter(item => {
-								return item.orderType == '待支付' || item.orderType == '待确认';
-							})
-						}
-						console.log(a)
-						console.log(that.dateReminder)
-						console.log(that.date)
-						console.log(that.AID)
-						console.log(that.ape_time)
-						console.log(that.userInfo.phoneNumber)
-						if (a == '') {
-							// #ifdef H5
-							uni.getStorage({
-								key:'scenicSpotOpenId',
-								success:(res)=>{
-									uni.request({
-										url: 'http://218.67.107.93:9210/api/app/scenicSpotSetOrder',
-										data: {
-											unid: that.userInfo.unid,
-											ticketProductId: that.admissionTicket.admissionTicketID,
-											ticketId: 0,
-											ticketContain: that.admissionTicket.ticketContain,
-									
-											companyId: that.admissionTicket.companyId,
-											executeScheduleId: that.admissionTicket.executeScheduleId,
-									
-											addressData: that.addressData,
-											couponID: that.couponColor,
-									
-											orderDateReminder: that.dateReminder,
-											orderDate: that.date,
-											orderInsure: '',
-											orderInsurePrice: '',
-											orderActualPayment: that.actualPayment,
-											sellerCompanyCode: '南平旅游H5',
-											tppId: res.data,
-											appointmentId : that.AID,
-											tel:that.userInfo.phoneNumber,
-										},
-									
-										method: 'POST',
-										//向服务器发送订单数据，返回订单编号
-										success: (res) => {
-											uni.hideLoading()
-											console.log(res)
-											if (res.data.msg == '无可售门票！') {
-												uni.showToast({
-													title: '该景区无可售门票！',
-													icon: 'none',
-												})
-												that.submissionState = false;
-											} else if (res.data.msg == '下单失败，联系管理员！') {
-												uni.showToast({
-													title: '下单失败，联系管理员！',
-													icon: 'none',
-												})
-												that.submissionState = false;
-											} else if (res.data.message == '账号ID不能为空') {
-												uni.showToast({
-													title: '账号ID不能为空，请重新登录账户',
-													icon: 'none',
-												})
-												that.submissionState = false;
-											} else if (res.data.msg == '下单成功') {
-												if(that.ape_entry=='1'){
-													uni.setStorage({
-														key: 'submitH5Data',
-														data: res.data.data,
-														success: function() {
-															uni.redirectTo({
-																url:'successfulPayment'
-															})
-														}
-													})
-												}else{
-													uni.setStorage({
-														key: 'submitH5Data',
-														data: res.data.data,
-														success: function() {
-															uni.redirectTo({
-																url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
-															})
-														}
-													})
-												}
-												
-									
-											}
-									
-										}
-									})
-								},
-								fail:function(){
-									uni.hideLoading()
-									uni.showToast({
-										title:'请允许授权给公众号，即将为您返回主页！'
-									})
-									uni.switchTab({
-										url:'../../Home/indexZhly'
-									})
-									that.submissionState = false;
-								}
-							})
-							
-							// #endif
-
-							// #ifdef APP-PLUS
-							
-							uni.request({
-								url: 'http://218.67.107.93:9210/api/app/scenicSpotSetOrder',
-								data: {
-									unid: this.userInfo.unid,
-									ticketProductId: this.admissionTicket.admissionTicketID,
-									ticketId: 0,
-									ticketContain: this.admissionTicket.ticketContain,
-
-									companyId: this.admissionTicket.companyId,
-									executeScheduleId: this.admissionTicket.executeScheduleId,
-
-									addressData: this.addressData,
-									couponID: this.couponColor,
-
-									orderDateReminder: this.dateReminder,
-									orderDate: this.date,
-									orderInsure: '',
-									orderInsurePrice: '',
-									orderActualPayment: this.actualPayment,
-									sellerCompanyCode: '南平旅游APP',
-									tppId: 0,
-									appointmentId : that.AID,
-									tel:that.userInfo.phoneNumber,
-								},
-
-								method: 'POST',
-								//向服务器发送订单数据，返回订单编号
-								success: (res) => {
-									uni.hideLoading()
-									console.log(res)
-									if (res.data.msg == '无可售门票！') {
-										uni.showToast({
-											title: '该景区无可售门票！',
-											icon: 'none',
-										})
-										that.submissionState = false;
-									} else if (res.data.msg == '下单失败，联系管理员！') {
-										uni.showToast({
-											title: '下单失败，联系管理员！',
-											icon: 'none',
-										})
-										that.submissionState = false;
-									} else if (res.data.msg == '下单成功') {
-										console.log('下单成功')
-										if(that.ape_entry == '1'){
-											console.log('跳转预约成功')
-											uni.redirectTo({
-												url:'successfulPayment'
-											})
-										}else{
-											console.log('跳转支付成功')
-											uni.redirectTo({
-												url: '/pages/LYFW/scenicSpotTickets/selectivePayment?orderNumber=' + res.data.data.orderNumber
-											})
-										}
-										
-										
-									}
-
-								}
-							})
-							// #endifA
-
-
-						} else if (a.length > 0) {
-							uni.hideLoading()
-							uni.showToast({
-								title: '订单中，存在待支付/审核订单，请支付/取消后再下单',
-								icon: 'none',
-								duration: 2000
-							})
-							uni.switchTab({
-								url: '../../order/OrderList'
-							})
+						uni.hideLoading()
+						console.log(res)
+						if (res.data.msg == '下单成功') {
+							that.showToast('预约酒店成功,请打电话与酒店联系核实！');
+							setTimeout(function() {
+								uni.navigateTo({
+									url: './successfulPayment'
+								})
+							}, 1500)
+						} else {
+							that.showToast('预约失败');
 						}
 					},
-					fail:function(ee){
-						console.log(ee)
-						uni.hideLoading()
-						that.submissionState = false;
+					fail: function(res) {
+						console.log(res);
+						that.showToast('预约失败');
 					}
 				})
 
 
+			},
+			showToast: function(title, icon = 'none') {
+				uni.showToast({
+					title: title,
+					icon: icon
+				});
 			},
 
 			//打开选择器
@@ -689,7 +496,7 @@
 
 
 			//获取当前时间并格式化
-			getDate:function() {
+			getDate: function() {
 				const date = new Date();
 				let year = date.getFullYear();
 				let month = date.getMonth() + 1;
@@ -746,9 +553,56 @@
 					this.selectedValue = 0;
 				}
 			},
+			checknum: function(e) {
+				console.log(e);
+				var a = e.detail.value;
+				console.log(a);
+				if (this.num < 1 || this.num == '') {
+					uni.showToast({
+						title: "票数不能小于1",
+						icon: "none"
+					})
+					this.num = 1;
+				} else if (this.num > 60) {
+					uni.showToast({
+						title: "票数不能大于60",
+						icon: "none"
+					})
+					this.num = 1;
+				} else {
+					this.num = a;
+				}
 
-
-
+			},
+			changeNum: function(type) {
+				var that = this;
+				if (type) {
+					if (that.num == 60) {
+						uni.showToast({
+							title: "票数不能大于60",
+							icon: "none"
+						})
+					} else {
+						that.num++;
+						console.log(that.num);
+					}
+				} else {
+					if (that.num == 1) {
+						uni.showToast({
+							title: "票数不能小于1",
+							icon: "none"
+						})
+					} else {
+						that.num--;
+						console.log(that.num);
+					}
+				}
+				if (that.day == '') {
+					that.actualPayment = that.price;
+				} else {
+					that.actualPayment = that.price * that.day * that.num;
+				}
+			},
 
 		}
 	}
@@ -1133,6 +987,11 @@
 		}
 	}
 
+	.text-area {
+		display: flex;
+		justify-content: center;
+	}
+
 	//底部
 	.footer {
 		position: fixed;
@@ -1186,6 +1045,21 @@
 			&.submitColor {
 				background: #06B4FD;
 			}
+		}
+
+		.ticket {
+
+			background-color: #FFF;
+			border-radius: 20rpx;
+			font-size: 32rpx;
+			height: 106rpx;
+			margin-top: 20rpx;
+			color: rgba(51, 51, 51, 1);
+			padding: 0 38rpx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			box-shadow: 0px 6px 20px 0px rgba(231, 231, 231, 0.53);
 		}
 	}
 </style>

@@ -376,7 +376,6 @@
 			//路由整合
 			godetail: function(e) {
 				var that=this;
-				console.log(e,'111111111111111111');
 				if(e.ticketTitle == '武夷山风景名胜区'){
 					// #ifdef H5
 					uni.navigateTo({

@@ -2,32 +2,32 @@
 	<view class="Ly_background">
 		<!-- 顶部轮播图（可点击进入相册并放大） -->
 		<swiper class="swi" circular autoplay>
-			<swiper-item class="swi-item" v-for="(item,index) in piclist" :key="index">
-				<image :src="item.ticketImage" mode="aspectFill" @click="goImgList" />
+			<swiper-item class="swi-item" v-for="(item,index) in scSpotContent" :key="index">
+				<image :src="scSpotContent.imgUrl" mode="aspectFill" @click="goImgList" />
 				<view class="view">1张图片</view>
 			</swiper-item>
 		</swiper>
 		<view>
 			<!-- 标题、发布时间、点击量、分享 -->
 			<view class="clicks">
-				<text class="title">{{scSpotContent.ticketName}}</text>
-				<text class="time">开放时间：{{scSpotContent.ticketOpenUp}} </text>
-				<text class="time">当前流量：<text style="color: #09C767;" v-if="scSpotContent.personFlow !== 0">{{visitorsFlowrate(scSpotContent.personFlow)}}</text><text style="color: #FD5745;" v-if="scSpotContent.personFlow == 0">{{visitorsFlowrate(scSpotContent.personFlow)}}</text>    </text>
+				<text class="title">{{scSpotContent.name}}</text>
+				<text class="time">联系电话：{{scSpotContent.tel}} </text>
+				<text class="time">{{scSpotContent.hotelLevel}}星级酒店</text>
 			</view>
 		</view>
 		<!-- 门票滑块 -->
 		<!-- 模块命名：Tk godetail(item) -->
-		<view :hidden="admissionTicketStatus == '该景区暂无门票产品信息！'">
+		<view :hidden="admissionTicketStatus == '该酒店暂无产品信息！'">
 			<scroll-view class="Tk_scrollview">
-				<view class="tweetsTitle2">门票</view>
-				<view class="Tk_item" v-for="(item,index) in admissionTicket" :key="item" @click="show(item)">
-					<view class="Tk_bacg">
-						<text class="Tk_text1">{{item.admissionTicketName}}</text>
-						<text class="Tk_text3">¥{{item.ticketAdultPrice}}元</text>
-						<text class="Tk_text2">包含：{{item.ticketContain}}</text>
-						<text class="Tk_text2">{{item.ticketComment_s1}}&nbsp;|&nbsp;{{item.ticketComment_s2}}&nbsp;|&nbsp;{{item.ticketComment_s3}}</text>
-						<view class="Tk_butter">立即预订</view>
-					</view>
+				<view class="tweetsTitle2">产品</view>
+				<view class="Tk_item" v-for="(item,index) in scSpotContent.hotelProductList" :key="item" @click="show(item)">
+						<image class="Tk_image" :src="item.imgUrl" />
+						<view class="Tk_bacg">
+							<text class="Tk_text1">{{item.name}}</text>
+							<text class="Tk_text2">价格：¥{{item.price}}元</text>
+							<text class="Tk_text2">{{item.bedType}}</text>
+							<view class="Tk_butter">立即预订</view>
+						</view>
 				</view>
 			</scroll-view>
 		</view>
@@ -35,7 +35,7 @@
 		<!-- 文章内容 -->
 		<view class="Zj_background">
 			<view class="tweetsTitle">介绍</view>
-			<rich-text class="tweetscontent" :nodes="scSpotContent.ticketScenicContent"></rich-text>
+			<rich-text class="tweetscontent" :nodes="scSpotContent.introduction"></rich-text>
 		</view>
 		<uni-popup ref="popup" type="bottom">
 			<view class="boxVlew">
@@ -95,11 +95,14 @@
 					ticketImage: '',
 				}], //图片内容
 				scSpotContent: [{
+					imgUrl:'',
 					hoteld: '',
-					ticketTitle: '',
-					ticketOpenUp: '',
-					ticketScenicContent: '',
-				}], //景区内容
+					tel: '',
+					name: '',
+					hotelLevel:'',
+					introduction: '',
+					hotelProductList:'',
+				}], //酒店内容
 				admissionTicket: [{
 					admissionTicketID: '',
 					admissionTicketName: '',
@@ -121,7 +124,7 @@
 				date: '', //时间轴上选中的日期
 				currentTime: '', //当前时间
 				//-----------------时间选择器参数结束-------------------
-				ticketInformation : '', //景区信息（点击预定后存）
+				ticketInformation : '', //酒店信息（点击预定后存）
 				radioCurrent: -1, //时段radio选择参数
 				apeData: [],
 				hoteld : '',//酒店详情ID
@@ -164,7 +167,7 @@
 		methods: {
 			//读取静态数据json.js 
 			lyfwData: function(e) {
-				// 请求景区图片
+				// 请求酒店图片
 				// uni.request({
 				// 	url: 'http://218.67.107.93:9210/api/app/getScenicspotDetailImg?hoteld=' + e,
 				// 	method: 'POST',
@@ -174,7 +177,7 @@
 				// 		this.piclist = res.data.data;
 				// 	}
 				// })
-				// 请求景区详情
+				// 请求酒店详情
 				var that=this;
 				console.log(that.hoteld,'酒店id');
 				uni.request({
@@ -190,7 +193,7 @@
 					}
 				})
 
-				// 请求景区门票
+				// 请求酒店门票
 				// uni.request({
 				// 	url: 'http://218.67.107.93:9210/api/app/getOneScenicspotTicket?hoteld=' + e,
 				// 	method: 'POST',
@@ -215,32 +218,37 @@
 
 			//打开弹框，判断预约功能是否开启，并执行对应操作
 			show: function(e) {
-				// console.log(e)
-				this.ticketInformation = e;
-				uni.setStorage({
-					key: 'ticketInformation',
-					data: e,
-					success: () => {
-						uni.request({
-							url:'http://218.67.107.93:9266/Appointment/getScenicSpotByID?CompanyID='+e.companyId,
-							method:'POST',
-							header: {'content-type': 'application/x-www-form-urlencoded'},
-							success:(res)=>{
-								console.log(res)
-								if (res.data.data.IsAppointment == false) {
-									uni.navigateTo({
-										url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
-									})
-								} else if (res.data.data.IsAppointment == true) {
-									this.getDate();
-									this.$refs.popup.open()
-								}
-							}
-						})
-						
-						
-					}
+				var that=this;
+				uni.navigateTo({
+					url:'./orderAdd?name='+that.scSpotContent.name + '&productName=' + e.name+ '&price=' + e.price+ '&productId=' + e.id,
 				})
+				// this.$refs.popup.open()
+				// console.log(e)
+				// this.ticketInformation = e;
+				// uni.setStorage({
+				// 	key: 'ticketInformation',
+				// 	data: e,
+				// 	success: () => {
+				// 		uni.request({
+				// 			url:'http://218.67.107.93:9266/Appointment/getScenicSpotByID?CompanyID='+e.companyId,
+				// 			method:'POST',
+				// 			header: {'content-type': 'application/x-www-form-urlencoded'},
+				// 			success:(res)=>{
+				// 				console.log(res)
+				// 				if (res.data.data.IsAppointment == false) {
+				// 					uni.navigateTo({
+				// 						url: '/pages/LYFW/scenicSpotTickets/orderAdd?ape_entry=0'
+				// 					})
+				// 				} else if (res.data.data.IsAppointment == true) {
+				// 					this.getDate();
+				// 					this.$refs.popup.open()
+				// 				}
+				// 			}
+				// 		})
+						
+						
+				// 	}
+				// })
 			},
 			//关闭弹框
 			close: function() {
@@ -596,7 +604,7 @@
 				font-size: 32upx;
 				color: #333333;
 				padding-left: 32upx;
-				margin: 24upx 0;
+				margin: 5upx 0;
 			}
 		}
 
@@ -612,6 +620,13 @@
 				border-radius: 16upx;
 				display: flex;
 				box-shadow: 0px 1px 2px 0.1px #aaa;
+				
+				.Tk_image {
+					width: 250upx;
+					height: 152upx;
+					border-radius: 12upx;
+					margin: 24rpx 0rpx;
+				}
 
 				.Tk_bacg {
 					position: relative;
@@ -651,7 +666,7 @@
 						width: 164upx;
 						height: 64upx;
 						bottom: -4upx;
-						right: -158upx;
+						right: -8upx;
 						margin-top: 24upx;
 						background: linear-gradient(to right, #65bbf9, #28a4ff);
 						border-radius: 32upx;
