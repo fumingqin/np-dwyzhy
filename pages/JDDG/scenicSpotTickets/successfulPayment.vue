@@ -14,9 +14,7 @@
 				<view class="homeButton" @click="godetail(1)">返回首页</view>
 			</view>
 			<view class="buttonView1">
-			<view class="orderButton" >大转盘</view>
-			<view class="orderButton" >刮刮乐</view>
-			<view class="orderButton" >砸金蛋</view>
+			<view class="orderButton" @click="egg">砸金蛋</view>
 			</view>
 		</view>
 	</view>
@@ -30,7 +28,7 @@
 			}
 		},
 		onReady() {
-			// this.backHome();
+			this.backHome();
 		},
 		methods: {
 			//路由统一事件
@@ -56,7 +54,12 @@
 					}
 				}, 10000)
 				
-			}
+			},
+			egg(){
+				uni.redirectTo({
+					url:'./egg'
+				})
+			},
 
 		}
 	}

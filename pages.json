@@ -677,7 +677,11 @@
 			"path": "pages/JBTX/issuePeer",
 			"style": {}
 		}
-	],
+	    ,{
+            "path" : "pages/JDDG/scenicSpotTickets/egg",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		//"navigationBarTitleText": "uni-app",
